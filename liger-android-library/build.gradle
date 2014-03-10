@@ -1,0 +1,48 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:${rootProject.ext.gradleAndroidPluginVersion}"
+    }
+}
+apply plugin: 'android-library'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile "com.android.support:support-v4:${rootProject.ext.supportLibVersion}"
+    compile "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
+
+    compile files("./libs/cordova-3.1.0.jar")
+
+    compile "org.apache.commons:commons-lang3:${rootProject.ext.commonsLangVersion}"
+    compile  "org.apache.commons:commons-io:${rootProject.ext.commonsIoVersion}"
+
+}
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+    }
+
+    release {
+        runProguard false
+        proguardFile 'proguard-rules.txt'
+        proguardFile getDefaultProguardFile('proguard-android.txt')
+    }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
+}
+
+println "Snapshot URL: ${SNAPSHOT_REPOSITORY_URL}"
+apply from: 'https://raw.github.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'

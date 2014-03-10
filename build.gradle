@@ -1,0 +1,36 @@
+rootProject.ext {
+    appVersionName = '0.0.2'
+    appVersionCode = 2
+
+    minSdkVersion = 10
+    compileSdkVersion = 18
+    targetSdkVersion = 18
+    buildToolsVersion = "19.0.1"
+    gradleAndroidPluginVersion = '0.8.+'
+    supportLibVersion = '18.0.0'
+
+    commonsLangVersion = "3.2.1";
+    commonsIoVersion = "1.3.2";
+}
+
+buildscript {
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "com.android.tools.build:gradle:0.8.+"
+    }
+}
+
+allprojects {
+    version = VERSION_NAME
+    group = GROUP
+
+    repositories {
+        mavenCentral()
+    }
+}
+
+apply plugin: 'android-reporting'

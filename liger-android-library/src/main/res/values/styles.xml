@@ -1,0 +1,71 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+    -->
+    <style name="AppBaseTheme" parent="Theme.AppCompat">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+    </style>
+
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="AppBaseTheme">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    </style>
+
+    <style name="AppDialogNoFrame" parent="android:Theme.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="toolbarGlyph">
+        <item name="fontPath">app/fonts/RL-glyphs-5-Regular.otf</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/toolbar_glyph</item>
+    </style>
+
+    <style name="menuText" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textSize">22sp</item>
+    </style>
+
+    <style name="menuTextMajor" parent="menuText">
+        <item name="android:textColor">@color/menu_text_major</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="menuTextGlyph" parent="menuTextMajor">
+        <item name="fontPath">app/fonts/RL-glyphs-5-Regular.otf</item>
+        <item name="android:textSize">32sp</item>
+        <item name="android:layout_marginRight">8dp</item>
+    </style>
+
+    <style name="menuTextMinor" parent="menuText">
+        <item name="android:textColor">@color/menu_text_minor</item>
+    </style>
+
+    <style name="menuTextMinorSub" parent="menuTextMinor">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="menuItemCell">
+        <item name="android:background">@drawable/menu_item_bg</item>
+        <item name="android:layout_gravity">fill_horizontal</item>
+        <item name="android:checked">false</item>
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingRight">32dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:clickable">true</item>
+        <item name="android:enabled">true</item>
+    </style>
+</resources>

@@ -1,0 +1,7 @@
+<resources>
+    <string name="library_name">Liger Android Library</string>
+
+    <string name="menu_open_desc">Open navigation menu</string>
+    <string name="menu_close_desc">Close navigation menu</string>
+    <string name="action_refresh">Refresh</string>
+</resources>

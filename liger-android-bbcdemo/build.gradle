@@ -1,0 +1,69 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:${rootProject.ext.gradleAndroidPluginVersion}"
+    }
+}
+apply plugin: 'android'
+
+ext {
+    demoDirectory = project.file("../../liger-common-demo", PathValidation.DIRECTORY)
+    demoAppJson = project.file(new File(demoDirectory, "app.json"), PathValidation.FILE)
+}
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    apt
+}
+
+dependencies {
+    compile project(':liger-android-library')
+}
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionName rootProject.ext.appVersionName
+        versionCode rootProject.ext.appVersionCode
+    }
+
+    buildTypes {
+        debug {
+            packageNameSuffix ".debug"
+        }
+    }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
+}
+
+task runTests(dependsOn: "connectedInstrumentTest") << {
+    exec {
+        workingDir 'build/reports/instrumentTests/connected'
+        commandLine 'open', 'index.html'
+    }
+}
+
+android.applicationVariants.all { variant ->
+
+    def demoCopyTaskName = "copy${variant.name.capitalize()}DemoAssets"
+    task "${demoCopyTaskName}" (type: Copy)
+    "${demoCopyTaskName}" {
+        from project.ext.demoDirectory
+        exclude 'vendor/cordova.js'
+        into new File(variant.mergeAssets.outputDir, "app")
+    }
+    variant.mergeAssets.dependsOn demoCopyTaskName
+
+}

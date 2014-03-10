@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheckedTextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/menu_icon_glyph"
+    style="@style/toolbarGlyph"
+    android:layout_width="0dp"
+    android:layout_weight="1"
+    android:layout_height="32dp"
+    android:minWidth="32dp"
+    android:minHeight="32dp"
+    android:gravity="center"
+    android:text="H"
+    android:checked="false"
+    android:clickable="false"
+    android:layout_margin="8dp"/>

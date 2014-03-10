@@ -1,0 +1,52 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:${rootProject.ext.gradleAndroidPluginVersion}"
+    }
+}
+apply plugin: 'android'
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    apt
+}
+
+dependencies {
+    compile project(':liger-android-library')
+}
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionName rootProject.ext.appVersionName
+        versionCode rootProject.ext.appVersionCode
+    }
+
+    buildTypes {
+        debug {
+            packageNameSuffix ".debug"
+        }
+    }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
+}
+
+task runTests(dependsOn: "connectedInstrumentTest") << {
+    exec {
+        workingDir 'build/reports/instrumentTests/connected'
+        commandLine 'open', 'index.html'
+    }
+}
+
