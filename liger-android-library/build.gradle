@@ -19,7 +19,7 @@ dependencies {
     compile files("./libs/cordova-3.1.0.jar")
 
     compile "org.apache.commons:commons-lang3:${rootProject.ext.commonsLangVersion}"
-    compile  "org.apache.commons:commons-io:${rootProject.ext.commonsIoVersion}"
+    compile "org.apache.commons:commons-io:${rootProject.ext.commonsIoVersion}"
 
 }
 
@@ -32,10 +32,12 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
     }
 
-    release {
-        runProguard false
-        proguardFile 'proguard-rules.txt'
-        proguardFile getDefaultProguardFile('proguard-android.txt')
+    buildTypes {
+        release {
+            runProguard false
+            proguardFile 'proguard-rules.txt'
+            proguardFile getDefaultProguardFile('proguard-android.txt')
+        }
     }
 
     packagingOptions {
@@ -44,5 +46,5 @@ android {
     }
 }
 
-println "Snapshot URL: ${SNAPSHOT_REPOSITORY_URL}"
-apply from: 'https://raw.github.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
+//println "Snapshot URL: ${SNAPSHOT_REPOSITORY_URL}"
+//apply from: 'https://raw.github.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
