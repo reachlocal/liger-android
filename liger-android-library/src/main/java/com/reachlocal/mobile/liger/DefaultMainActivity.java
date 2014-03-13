@@ -91,7 +91,7 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
 
     }
 
-    public Map<String, Object> getJavascriptInterfaces() {
+    public Map<String, Object> getJavascriptInterfaces(PageFragment page) {
         return new HashMap<String, Object>();
     }
 
