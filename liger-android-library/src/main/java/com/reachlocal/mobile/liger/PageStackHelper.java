@@ -146,6 +146,7 @@ public class PageStackHelper {
                 break;
             } else {
                 mFragDeck.removeLast();
+                top.doPageClosed();
                 ft.remove(top);
                 hasRemoved = true;
             }
@@ -175,6 +176,7 @@ public class PageStackHelper {
         if(closePage == null || closePage == lastPage) {
             FragmentTransaction ft = mActivity.getSupportFragmentManager().beginTransaction();
             mFragDeck.removeLast();
+            lastPage.doPageClosed();
             ft.remove(lastPage);
             if (parentPage == null) {
                 ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);

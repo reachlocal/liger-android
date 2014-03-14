@@ -16,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.cordova.CordovaWebViewClient;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -43,6 +44,8 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     private String childUpdateArgs;
     private String actionBarTitle;
     private boolean canRefresh;
+
+    private List<PageLifecycleListener> mLifecycleListeners = new ArrayList<PageLifecycleListener>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -117,15 +120,6 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         return view;
     }
 
-    private void addJavascriptInterfaces() {
-        Map<String,Object> interfaces = activity.getJavascriptInterfaces();
-        Set<String> keys = interfaces.keySet();
-        for(String key: keys) {
-            mWebView.addJavascriptInterface(interfaces.get(key), key);
-
-        }
-    }
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -168,7 +162,11 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
             updateTitle();
             doPageAppear();
         }
+        for (PageLifecycleListener listener : mLifecycleListeners) {
+            listener.onHiddenChanged(this, hidden);
+        }
     }
+
 
     public void updateTitle() {
         boolean isResumed = isResumed();
@@ -273,6 +271,26 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         }
         sendPageArgs();
         sendChildArgs();
+    }
+
+    @Override
+    public void doPageClosed() {
+        super.doPageClosed();
+        for (PageLifecycleListener listener : mLifecycleListeners) {
+            listener.onPageClosed(this);
+        }
+    }
+
+    private void addJavascriptInterfaces() {
+        Map<String,Object> interfaces = activity.getJavascriptInterfaces(this);
+        Set<String> keys = interfaces.keySet();
+        for(String key: keys) {
+            Object jsInterface = interfaces.get(key);
+            mWebView.addJavascriptInterface(jsInterface, key);
+            if(jsInterface instanceof PageLifecycleListener) {
+                mLifecycleListeners.add((PageLifecycleListener) jsInterface);
+            }
+        }
     }
 
     private WebClient getWebClient() {

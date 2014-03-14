@@ -25,6 +25,8 @@ public abstract class PageFragment extends Fragment {
 
     public void doPageAppear() {};
 
+    public void doPageClosed() {};
+
     public void sendJavascriptWithArgs(String object, String function, String args) {};
 
     public void sendJavascript(String js) {};
