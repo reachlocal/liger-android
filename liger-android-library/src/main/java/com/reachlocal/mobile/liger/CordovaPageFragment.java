@@ -269,7 +269,6 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         if (!isHidden()) {
             updateTitle();
         }
-        sendPageArgs();
         sendChildArgs();
     }
 
