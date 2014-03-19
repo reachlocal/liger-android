@@ -365,14 +365,6 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         if (LIGER.LOGGING) {
             Log.d(LIGER.TAG, "PageFragment.getPageArgs() " + pageName);
         }
-//        if(activity != null) {
-//            activity.runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    sendPageArgs();
-//                }
-//            });
-//        }
         return pageArgs;
     }
 
