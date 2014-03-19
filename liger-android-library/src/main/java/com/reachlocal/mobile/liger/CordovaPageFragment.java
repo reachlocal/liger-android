@@ -11,7 +11,6 @@ import android.webkit.WebView;
 import com.reachlocal.mobile.liger.model.ToolbarItemSpec;
 import com.reachlocal.mobile.liger.utils.CompatUtils;
 import com.reachlocal.mobile.liger.widgets.ToolbarLayout;
-import com.reachlocal.mobile.liger.widgets.ToolbarLayout;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.cordova.CordovaWebViewClient;
 import org.json.JSONObject;
@@ -40,7 +39,6 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     // Instance State
     private String parentUpdateArgs;
     private String toolbarSpec;
-    private Bundle webviewState;
     private String childUpdateArgs;
     private String actionBarTitle;
     private boolean canRefresh;
@@ -59,7 +57,6 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         if (savedInstanceState != null) {
             parentUpdateArgs = savedInstanceState.getString("parentUpdateArgs");
             toolbarSpec = savedInstanceState.getString("toolbarSpec");
-            webviewState = savedInstanceState.getBundle("webviewState");
             childUpdateArgs = savedInstanceState.getString("childUpdateArgs");
             actionBarTitle = savedInstanceState.getString("actionBarTitle");
             canRefresh = savedInstanceState.getBoolean("canRefresh");
@@ -76,7 +73,6 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         super.onSaveInstanceState(outState);
         outState.putString("parentUpdateArgs", parentUpdateArgs);
         outState.putString("toolbarSpec", toolbarSpec);
-        outState.putBundle("webviewState", webviewState);
         outState.putString("childUpdateArgs", childUpdateArgs);
         outState.putString("actionBarTitle", actionBarTitle);
         outState.putBoolean("canRefresh", canRefresh);
@@ -107,15 +103,11 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         mToolbarLayout.setOnToolbarItemClickListener(this);
         setToolbar(toolbarSpec);
 
-        if (webviewState == null) {
-            if (pageName.startsWith("http://") || pageName.startsWith("https://")) {
-                mWebView.loadUrl(pageName);
-            } else {
-                String url = String.format("file:///android_asset/%1$s/%2$s.html", activity.getAssetBaseDirectory(), pageName);
-                mWebView.loadUrl(url);
-            }
+        if (pageName.startsWith("http://") || pageName.startsWith("https://")) {
+            mWebView.loadUrl(pageName);
         } else {
-            mWebView.restoreState(webviewState);
+            String url = String.format("file:///android_asset/%1$s/%2$s.html", activity.getAssetBaseDirectory(), pageName);
+            mWebView.loadUrl(url);
         }
         return view;
     }
@@ -126,8 +118,6 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         if (LIGER.LOGGING) {
             Log.d(LIGER.TAG, "PageFragment.onDestroyView() " + pageName);
         }
-        webviewState = new Bundle();
-        mWebView.saveState(webviewState);
         mWebView.removeAllViews();
         mWebView.handleDestroy();
         mWebView = null;
@@ -170,7 +160,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
 
     public void updateTitle() {
         boolean isResumed = isResumed();
-        if(isResumed && !isHidden()) {
+        if (isResumed && !isHidden()) {
             activity.setActionBarTitle(actionBarTitle);
         }
     }
@@ -259,7 +249,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
 
     @Override
     public void doPageAppear() {
-        if(isLoaded) {
+        if (isLoaded) {
             sendJavascript("PAGE.onPageAppear();");
         }
         mWebView.applyAfterMoveFix();
@@ -281,12 +271,12 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     }
 
     private void addJavascriptInterfaces() {
-        Map<String,Object> interfaces = activity.getJavascriptInterfaces(this);
+        Map<String, Object> interfaces = activity.getJavascriptInterfaces(this);
         Set<String> keys = interfaces.keySet();
-        for(String key: keys) {
+        for (String key : keys) {
             Object jsInterface = interfaces.get(key);
             mWebView.addJavascriptInterface(jsInterface, key);
-            if(jsInterface instanceof PageLifecycleListener) {
+            if (jsInterface instanceof PageLifecycleListener) {
                 mLifecycleListeners.add((PageLifecycleListener) jsInterface);
             }
         }
@@ -319,7 +309,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                   CordovaPageFragment.this.onPageFinished(url);
+                    CordovaPageFragment.this.onPageFinished(url);
                 }
             });
         }
@@ -356,7 +346,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     }
 
     private void sendPageArgs() {
-        if(!StringUtils.isEmpty(pageArgs)) {
+        if (!StringUtils.isEmpty(pageArgs)) {
             sendJavascriptWithArgs("PAGE", "gotPageArgs", pageArgs);
         }
     }
@@ -375,7 +365,14 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         if (LIGER.LOGGING) {
             Log.d(LIGER.TAG, "PageFragment.getPageArgs() " + pageName);
         }
-
+//        if(activity != null) {
+//            activity.runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    sendPageArgs();
+//                }
+//            });
+//        }
         return pageArgs;
     }
 
