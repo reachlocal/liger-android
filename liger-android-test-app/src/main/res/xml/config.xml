@@ -28,7 +28,7 @@
     <plugins>
         <feature name="Liger">
             <param name="ios-package" value="LGRLiger"/>
-            <param name="android-package" value="com.reachlocal.mobile.ligerLigerPlugin"/>
+            <param name="android-package" value="com.reachlocal.mobile.liger.LigerPlugin"/>
         </feature>
     </plugins>
 </widget>

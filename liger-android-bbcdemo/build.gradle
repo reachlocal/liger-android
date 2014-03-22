@@ -9,7 +9,7 @@ buildscript {
 apply plugin: 'android'
 
 ext {
-    demoDirectory = project.file("../../liger-common-demo", PathValidation.DIRECTORY)
+    demoDirectory = project.file("../../ligermobile-workshop/app", PathValidation.DIRECTORY)
     demoAppJson = project.file(new File(demoDirectory, "app.json"), PathValidation.FILE)
 }
 
