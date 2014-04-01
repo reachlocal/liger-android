@@ -12,6 +12,7 @@ import com.reachlocal.mobile.liger.model.ToolbarItemSpec;
 import com.reachlocal.mobile.liger.utils.CompatUtils;
 import com.reachlocal.mobile.liger.widgets.ToolbarLayout;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.CordovaWebViewClient;
 import org.json.JSONObject;
 
@@ -98,7 +99,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
 
         mWebView.setTag(R.id.web_view_parent_frag, this);
         mWebView.setWebChromeClient(new LoggingChromeClient());
-        mWebView.setWebViewClient(getWebClient());
+        mWebView.setWebViewClient(activity.createLigerWebClient(this, mWebView));
         addJavascriptInterfaces();
         mToolbarLayout.setOnToolbarItemClickListener(this);
         setToolbar(toolbarSpec);
@@ -255,7 +256,15 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         mWebView.applyAfterMoveFix();
     }
 
-    protected void onPageFinished(String url) {
+    protected void onPageFinished(WebView webView, String url) {
+        if (LIGER.LOGGING) {
+            Log.d(LIGER.TAG, "CordovaPageFragment.onPageFinished() " + pageName + ", " + url);
+        }
+        isLoaded = true;
+        String webTitle = webView.getTitle();
+        if (StringUtils.isEmpty(actionBarTitle) && !StringUtils.isEmpty(webTitle)) {
+            actionBarTitle = webTitle;
+        }
         if (!isHidden()) {
             updateTitle();
         }
@@ -279,62 +288,6 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
             if (jsInterface instanceof PageLifecycleListener) {
                 mLifecycleListeners.add((PageLifecycleListener) jsInterface);
             }
-        }
-    }
-
-    private WebClient getWebClient() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            return new ICSWebClient();
-        }
-        return new WebClient();
-    }
-
-    class WebClient extends CordovaWebViewClient {
-
-        WebClient() {
-            super(activity, mWebView);
-        }
-
-        @Override
-        public void onPageFinished(WebView view, final String url) {
-            super.onPageFinished(view, url);
-            if (LIGER.LOGGING) {
-                Log.d(LIGER.TAG, "PageFragment.onPageFinished() " + pageName + ", " + url);
-            }
-            isLoaded = true;
-            String webTitle = view.getTitle();
-            if (StringUtils.isEmpty(actionBarTitle) && !StringUtils.isEmpty(webTitle)) {
-                actionBarTitle = webTitle;
-            }
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    CordovaPageFragment.this.onPageFinished(url);
-                }
-            });
-        }
-
-        @Override
-        public void onLoadResource(WebView view, String url) {
-            if (LIGER.LOGGING) {
-                Log.d(LIGER.TAG, "PageFragment.onLoadResource() " + url);
-            }
-        }
-
-        @Override
-        public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-            if (LIGER.LOGGING) {
-                Log.d(LIGER.TAG, String.format("PageFragment.onReceivedError(), errorCode %d, description: %s, failuingUrl: %s ", errorCode, description, failingUrl));
-            }
-        }
-
-
-    }
-
-    class ICSWebClient extends WebClient {
-        @Override
-        public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
-            return CompatUtils.icsShouldInterceptRequest(getActivity(), view, url);
         }
     }
 

@@ -3,6 +3,7 @@ package com.reachlocal.mobile.liger;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
@@ -15,6 +16,7 @@ import com.reachlocal.mobile.liger.widgets.MenuInterface;
 import org.apache.cordova.Config;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.CordovaWebView;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -97,6 +99,13 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
 
     public String getAssetBaseDirectory() {
         return "app";
+    }
+
+    public LigerWebClient createLigerWebClient(CordovaPageFragment fragment, CordovaWebView webView) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            return new LigerWebClient.LigerICSWebClient(fragment, this, webView);
+        }
+        return new LigerWebClient(fragment, this, webView);
     }
 
     @Override
