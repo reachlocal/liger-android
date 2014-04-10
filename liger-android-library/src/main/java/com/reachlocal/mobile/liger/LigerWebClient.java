@@ -1,6 +1,7 @@
 package com.reachlocal.mobile.liger;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 import android.webkit.WebResourceResponse;
@@ -57,8 +58,13 @@ public class LigerWebClient extends CordovaWebViewClient {
         @TargetApi(Build.VERSION_CODES.HONEYCOMB)
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+            return getTrimmedAsset(mActivity, url);
+        }
+
+
+        public static WebResourceResponse getTrimmedAsset(Context context, String url) {
             if (LIGER.LOGGING) {
-                Log.d(LIGER.TAG, "LigerICSWebClient.shouldInterceptRequest: " + url);
+                Log.d(LIGER.TAG, "LigerICSWebClient.getTrimmedAsset: " + url);
             }
             try {
                 if (url.startsWith(ASSET_BASE_URL)) {
@@ -66,7 +72,7 @@ public class LigerWebClient extends CordovaWebViewClient {
                     if (endPos > 0) {
                         int startPos = ASSET_BASE_URL.length();
                         String assetPath = url.substring(startPos, endPos);
-                        InputStream is = mActivity.getResources().getAssets().open(assetPath);
+                        InputStream is = context.getResources().getAssets().open(assetPath);
                         return new WebResourceResponse(null, "UTF-8", is);
                     }
                 }
@@ -75,7 +81,6 @@ public class LigerWebClient extends CordovaWebViewClient {
             }
             return null;
         }
-
     }
 }
 
