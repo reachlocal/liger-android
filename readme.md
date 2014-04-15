@@ -7,6 +7,8 @@ specific part of the project. This project contains the LigerMobile android
 library code, the LigerMobile test app, and a build for the LigerMobile
 workshop application that it references from an outside directory.
 
+[![Build Status](https://travis-ci.org/reachlocal/liger-android.svg?branch=master)](https://travis-ci.org/reachlocal/liger-android)
+
 ## Getting Started
 
 This project depends on you also checking out the [Ligermobile
