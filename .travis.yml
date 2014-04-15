@@ -1,0 +1,34 @@
+# Travis CI build configuration
+
+language:
+  - java
+jdk:
+  - oraclejdk7
+
+# Explicitly disable build caching
+cache: false
+
+# Tell commands to behave
+env:
+  global:
+    - TERM=dumb
+
+# Prep
+before_install:
+  - ./ci/prepare.sh
+
+# Disable travis gradle fiddling
+install:
+  - true
+
+# Build
+script:
+  - ./gradlew assembleRelease
+
+# Finalize
+after_success:
+  - echo "victory"
+after_failure:
+  - echo "defeat"
+after_script:
+  - true

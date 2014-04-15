@@ -1,1 +1,1 @@
-include ':liger-android-library', 'liger-android-test-app', 'liger-android-bbcdemo'
+include ':liger-android-library'
