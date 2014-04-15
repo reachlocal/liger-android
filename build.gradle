@@ -21,6 +21,8 @@ buildscript {
 
     dependencies {
         classpath "com.android.tools.build:gradle:0.9.+"
+        classpath 'com.jakewharton.sdkmanager:gradle-plugin:0.9.+'
+
     }
 }
 
@@ -33,4 +35,5 @@ allprojects {
     }
 }
 
+apply plugin: 'android-sdk-manager'
 apply plugin: 'android-reporting'
