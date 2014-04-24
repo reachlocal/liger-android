@@ -2,7 +2,6 @@ package com.reachlocal.mobile.liger;
 
 import android.util.Log;
 import com.reachlocal.mobile.liger.utils.CordovaUtils;
-import com.reachlocal.mobile.liger.widgets.DialogPageFragment;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaArgs;
