@@ -67,15 +67,13 @@ public class PageStackHelper {
         logStack("openPage " + pageName);
     }
 
-    public void openDialog(String title, String link, JSONObject args) {
+    public void openDialog(String pageName, String title, JSONObject args) {
         if (LIGER.LOGGING) {
             Log.d(LIGER.TAG,
-                    "PageStackHelper.openDialog() title:" + title + ", link:" + link + ", args:"
+                    "PageStackHelper.openDialog() title:" + title + ", pageName:" + pageName + ", args:"
                             + (args == null ? null : args.toString()));
         }
-        DialogPageFragment dialog =  new DialogPageFragment();
-        dialog.setTitle(title);
-        dialog.setLink(link);
+        CordovaPageFragment dialog =  CordovaPageFragment.build(pageName, title, args);
         dialog.show(mActivity.getSupportFragmentManager(), DIALOG_FRAGMENT);
     }
 

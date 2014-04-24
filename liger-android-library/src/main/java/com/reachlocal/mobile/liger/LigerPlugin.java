@@ -100,12 +100,12 @@ public class LigerPlugin extends CordovaPlugin {
         return true;
     }
 
-    public boolean openDialog(final String title, final String link, final JSONObject args, CallbackContext callbackContext) {
+    public boolean openDialog(final String title, final String pageName, final JSONObject args, CallbackContext callbackContext) {
         final DefaultMainActivity activity = (DefaultMainActivity) cordova.getActivity();
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                activity.openDialog(title, link, args);
+                activity.openDialog(pageName, title, args);
             }
         });
         callbackContext.success();
@@ -171,7 +171,7 @@ public class LigerPlugin extends CordovaPlugin {
      */
     public boolean closeDialog(final String args, CallbackContext callbackContext) {
         final DefaultMainActivity activity = (DefaultMainActivity) cordova.getActivity();
-        final DialogPageFragment dialog = DialogPageFragment.fromCallbackContext(callbackContext);
+        final PageFragment dialog = PageFragment.fromCallbackContext(callbackContext);
 
         activity.runOnUiThread(new Runnable() {
             @Override
@@ -181,7 +181,6 @@ public class LigerPlugin extends CordovaPlugin {
                 boolean hasReset = argObj.optBoolean("resetApp") || StringUtils.isEmpty(page);
 
                 if (dialog != null) {
-                    String dialogName = dialog.getLink();
                     dialog.dismiss();
                 }
                 if (hasReset) {

@@ -1,10 +1,11 @@
 package com.reachlocal.mobile.liger;
 
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import com.reachlocal.mobile.liger.utils.CordovaUtils;
 import org.apache.cordova.CallbackContext;
 
-public abstract class PageFragment extends Fragment {
+public abstract class PageFragment extends DialogFragment {
     public static PageFragment fromCallbackContext(CallbackContext cc) {
         return CordovaUtils.fromCallbackContext(cc, R.id.web_view_parent_frag);
     }
