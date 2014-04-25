@@ -275,9 +275,9 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
         setMenuSelection(screenName);
     }
 
-    public void openDialog(String title, String link, JSONObject args) {
+    public void openDialog(String pageName, String title, JSONObject args) {
         menuDrawer.closeDrawers();
-        fragStack.openDialog(title, link, args);
+        fragStack.openDialog(pageName, title, args);
     }
 
     private void setMenuSelection(String pageName) {

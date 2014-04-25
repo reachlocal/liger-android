@@ -1,6 +1,7 @@
 package com.reachlocal.mobile.liger;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.*;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
+import android.widget.FrameLayout;
 import com.reachlocal.mobile.liger.model.ToolbarItemSpec;
 import com.reachlocal.mobile.liger.utils.CompatUtils;
 import com.reachlocal.mobile.liger.widgets.ToolbarLayout;
@@ -36,6 +38,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     // Fragment arguments
     String pageName;
     String pageArgs;
+    boolean isDialog;
 
     // Instance State
     private String parentUpdateArgs;
@@ -43,6 +46,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     private String childUpdateArgs;
     private String actionBarTitle;
     private boolean canRefresh;
+
 
     private List<PageLifecycleListener> mLifecycleListeners = new ArrayList<PageLifecycleListener>();
 
@@ -93,6 +97,14 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         if (LIGER.LOGGING) {
             Log.d(LIGER.TAG, "PageFragment.onCreateView() " + pageName);
         }
+        if(isDialog) {
+            return super.onCreateView(inflater, container, savedInstanceState);
+        }
+
+        return createContentView(inflater, container, savedInstanceState);
+    }
+
+    protected View createContentView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.page_fragment, container, false);
         mWebView = (FixedCordovaWebView) view.findViewById(R.id.web_view);
         mToolbarLayout = (ToolbarLayout) view.findViewById(R.id.toolbar);
@@ -111,6 +123,28 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
             mWebView.loadUrl(url);
         }
         return view;
+    }
+
+    @Override
+    public Dialog onCreateDialog(Bundle inState) {
+        final Dialog dialog = new Dialog(getActivity(), R.style.AppDialogNoFrame);
+        isDialog = true;
+
+        View contentView = createContentView(LayoutInflater.from(getActivity()), null, inState);
+        mWebView.setOnKeyListener(new DialogKeyListener());
+
+        Window window = dialog.getWindow();
+
+        window.requestFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(contentView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+        boolean cancelable = !(StringUtils.equalsIgnoreCase(pageName, "signin") || StringUtils.equalsIgnoreCase(pageName, "advertisers"));
+        dialog.setCancelable(cancelable);
+        dialog.setCanceledOnTouchOutside(cancelable);
+
+        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+        return dialog;
     }
 
     @Override
@@ -161,7 +195,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
 
     public void updateTitle() {
         boolean isResumed = isResumed();
-        if (isResumed && !isHidden()) {
+        if (isResumed && !isHidden() && !isDialog) {
             activity.setActionBarTitle(actionBarTitle);
         }
     }
@@ -331,8 +365,27 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         this.parentUpdateArgs = parentUpdateArgs;
     }
 
-    public static PageFragment build(String pageName, String pageTitle, String pageArgs) {
-        PageFragment newFragment = new CordovaPageFragment();
+    private class DialogKeyListener implements View.OnKeyListener {
+        @Override
+        public boolean onKey(View view, int i, KeyEvent keyEvent) {
+            int keyCode = keyEvent.getKeyCode();
+            if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+                if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
+                    if (StringUtils.equalsIgnoreCase(pageName, "signin")) {
+                        getActivity().finish();
+                    } else {
+                        dismiss();
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+
+    }
+
+    public static CordovaPageFragment build(String pageName, String pageTitle, String pageArgs) {
+        CordovaPageFragment newFragment = new CordovaPageFragment();
         Bundle args = new Bundle();
         if (pageName != null) {
             args.putString("pageName", pageName);
@@ -349,7 +402,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         return newFragment;
     }
 
-    public static PageFragment build(String pageName, String pageTitle, JSONObject pageArgs) {
+    public static CordovaPageFragment build(String pageName, String pageTitle, JSONObject pageArgs) {
         return build(pageName, pageTitle, pageArgs == null ? null : pageArgs.toString());
     }
 
