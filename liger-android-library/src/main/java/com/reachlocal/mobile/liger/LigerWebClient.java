@@ -31,6 +31,7 @@ public class LigerWebClient extends CordovaWebViewClient {
                 mPageFragment.onPageFinished((CordovaWebView) view, url);
             }
         });
+        super.onPageFinished(view, url);
     }
 
     @Override
@@ -38,6 +39,7 @@ public class LigerWebClient extends CordovaWebViewClient {
         if (LIGER.LOGGING) {
             Log.d(LIGER.TAG, "PageFragment.onLoadResource() " + url);
         }
+        super.onLoadResource(view, url);
     }
 
     @Override
@@ -45,6 +47,7 @@ public class LigerWebClient extends CordovaWebViewClient {
         if (LIGER.LOGGING) {
             Log.d(LIGER.TAG, String.format("PageFragment.onReceivedError(), errorCode %d, description: %s, failuingUrl: %s ", errorCode, description, failingUrl));
         }
+        super.onReceivedError(view, errorCode, description, failingUrl);
     }
 
     public static class LigerICSWebClient extends LigerWebClient {
