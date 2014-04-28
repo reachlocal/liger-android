@@ -2,20 +2,14 @@ package com.reachlocal.mobile.liger;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.*;
-import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
-import android.widget.FrameLayout;
 import com.reachlocal.mobile.liger.model.ToolbarItemSpec;
-import com.reachlocal.mobile.liger.utils.CompatUtils;
 import com.reachlocal.mobile.liger.widgets.ToolbarLayout;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.cordova.CordovaWebView;
-import org.apache.cordova.CordovaWebViewClient;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -97,7 +91,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         if (LIGER.LOGGING) {
             Log.d(LIGER.TAG, "PageFragment.onCreateView() " + pageName);
         }
-        if(isDialog) {
+        if (isDialog) {
             return super.onCreateView(inflater, container, savedInstanceState);
         }
 
@@ -110,7 +104,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         mToolbarLayout = (ToolbarLayout) view.findViewById(R.id.toolbar);
 
         mWebView.setTag(R.id.web_view_parent_frag, this);
-        mWebView.setWebChromeClient(new LoggingChromeClient());
+        mWebView.setWebChromeClient(new LoggingChromeClient(activity, mWebView));
         mWebView.setWebViewClient(activity.createLigerWebClient(this, mWebView));
         addJavascriptInterfaces();
         mToolbarLayout.setOnToolbarItemClickListener(this);
