@@ -41,6 +41,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     private String actionBarTitle;
     private boolean canRefresh;
 
+    private List<String> javascriptQueue;
 
     private List<PageLifecycleListener> mLifecycleListeners = new ArrayList<PageLifecycleListener>();
 
@@ -208,12 +209,37 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
 
     @Override
     public void sendJavascript(String js) {
+        if (isLoaded) {
+            doSendJavascript(js);
+        } else {
+            queueJavascript(js);
+        }
+    }
+
+    private void queueJavascript(String js) {
+        if(javascriptQueue == null) {
+            javascriptQueue = new ArrayList<String>();
+        }
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "PageFragment.sendJavascript() to " + (mWebView == null ? "(null webView)" : mWebView.getUrl()) + ", js:" + js);
+            Log.d(LIGER.TAG, "CordovaPageFragment.queueJavascript() js:" + js);
         }
-        if (mWebView != null) {
+        javascriptQueue.add(js);
+    }
+
+    private void processJavascriptQueue() {
+        if(javascriptQueue != null) {
+            for (String js : javascriptQueue) {
+                doSendJavascript(js);
+            }
+            javascriptQueue = null;
+        }
+    }
+
+    private void doSendJavascript(String js) {
+        if (LIGER.LOGGING) {
+            Log.d(LIGER.TAG, "CordovaPageFragment.doSendJavascript() to " + (mWebView == null ? "(null webView)" : mWebView.getUrl()) + ", js:" + js);
+        }
             mWebView.sendJavascript(js);
-        }
     }
 
     @Override
@@ -297,6 +323,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
             updateTitle();
         }
         sendChildArgs();
+        processJavascriptQueue();
     }
 
     @Override
