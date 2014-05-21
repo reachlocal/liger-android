@@ -92,7 +92,7 @@ public class LigerPlugin extends CordovaPlugin {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                activity.openPage(title, link, args);
+                activity.openPage(link, title, args);
             }
         });
         callbackContext.success();
@@ -185,7 +185,7 @@ public class LigerPlugin extends CordovaPlugin {
                 if (hasReset) {
                     activity.resetApp();
                 } else {
-                    activity.openPage(null, page, argObj);
+                    activity.openPage(page, null, argObj);
                     activity.sendJavascriptWithArgs("PAGE", "closeDialogArguments", args);
                 }
             }
