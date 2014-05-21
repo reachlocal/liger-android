@@ -35,7 +35,7 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
 
     protected CordovaPlugin activityResultCallback;
     protected DrawerLayout menuDrawer;
-    protected PageFragment menuFragment;
+    protected PageFragment mRootPageFragment;
     protected ActionBarDrawerToggle menuToggle;
 
     protected boolean activityResultKeepRunning = false;
@@ -235,11 +235,11 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
         getSupportActionBar().setHomeButtonEnabled(true);
 
         menuDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        menuFragment = createMenuPage();
-        if (menuFragment instanceof MenuInterface) {
-            ((MenuInterface) menuFragment).setMenuItems(mAppConfig.getMajorMenuItems(), mAppConfig.getMinorMenuItems());
+        mRootPageFragment = createRootPage();
+        if (mRootPageFragment instanceof MenuInterface) {
+            ((MenuInterface) mRootPageFragment).setMenuItems(mAppConfig.getMajorMenuItems(), mAppConfig.getMinorMenuItems());
         }
-        getSupportFragmentManager().beginTransaction().add(R.id.drawer_menu, menuFragment).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.drawer_menu, mRootPageFragment).commit();
 
         menuToggle = new ActionBarDrawerToggle(this, /* host Activity */
                 menuDrawer, /* DrawerLayout object */
@@ -257,7 +257,7 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
                 //getSupportActionBar().setTitle(getTitle());
                 supportInvalidateOptionsMenu(); // creates call to
                 // onPrepareOptionsMenu()
-                menuFragment.doPageAppear();
+                mRootPageFragment.doPageAppear();
             }
         };
         menuToggle.setDrawerIndicatorEnabled(true);
@@ -281,8 +281,8 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
     }
 
     private void setMenuSelection(String pageName) {
-        if (menuFragment instanceof MenuInterface) {
-            ((MenuInterface) menuFragment).setSelectedItem(pageName);
+        if (mRootPageFragment instanceof MenuInterface) {
+            ((MenuInterface) mRootPageFragment).setSelectedItem(pageName);
         }
     }
 
@@ -292,7 +292,7 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
      *
      * @return
      */
-    public PageFragment createMenuPage() {
+    protected PageFragment createRootPage() {
         return new DefaultMenuFragment();
     }
 
