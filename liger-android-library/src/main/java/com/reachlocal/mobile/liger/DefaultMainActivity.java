@@ -266,18 +266,18 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
 
     }
 
-    public void openPage(String pageName, String title, JSONObject pageArgs) {
+    public void openPage(String pageName, String title, JSONObject pageArgs, JSONObject pageOptions) {
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "openPage() pageName:" + pageName + ", args:" + pageArgs);
+            Log.d(LIGER.TAG, "openPage() pageName:" + pageName + ", args:" + pageArgs+ ", options:" + pageOptions);
         }
         menuDrawer.closeDrawers();
-        fragStack.openPage(pageName, title, pageArgs);
+        fragStack.openPage(pageName, title, pageArgs, pageOptions);
         setMenuSelection(pageName);
     }
 
-    public void openDialog(String pageName, String title, JSONObject args) {
+    public void openDialog(String pageName, String title, JSONObject args, JSONObject options) {
         menuDrawer.closeDrawers();
-        fragStack.openDialog(pageName, title, args);
+        fragStack.openDialog(pageName, title, args, options);
     }
 
     private void setMenuSelection(String pageName) {

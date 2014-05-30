@@ -32,6 +32,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     // Fragment arguments
     String pageName;
     String pageArgs;
+    String pageOptions;
     boolean isDialog;
 
     // Instance State
@@ -52,6 +53,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         Bundle args = getArguments();
         pageName = args.getString("pageName");
         pageArgs = args.getString("pageArgs");
+        pageOptions = args.getString("pageOptions");
         actionBarTitle = args.getString("pageTitle");
 
         if (savedInstanceState != null) {
@@ -405,7 +407,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
 
     }
 
-    public static CordovaPageFragment build(String pageName, String pageTitle, String pageArgs) {
+    public static CordovaPageFragment build(String pageName, String pageTitle, String pageArgs, String pageOptions) {
         CordovaPageFragment newFragment = new CordovaPageFragment();
         Bundle args = new Bundle();
         if (pageName != null) {
@@ -417,14 +419,17 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         if (pageArgs != null) {
             args.putString("pageArgs", pageArgs);
         }
+        if (pageOptions != null) {
+            args.putString("pageOptions", pageOptions);
+        }
 
         newFragment.setArguments(args);
 
         return newFragment;
     }
 
-    public static CordovaPageFragment build(String pageName, String pageTitle, JSONObject pageArgs) {
-        return build(pageName, pageTitle, pageArgs == null ? null : pageArgs.toString());
+    public static CordovaPageFragment build(String pageName, String pageTitle, JSONObject pageArgs, JSONObject pageOptions) {
+        return build(pageName, pageTitle, pageArgs == null ? null : pageArgs.toString(), pageOptions == null ? null : pageOptions.toString());
     }
 
 }
