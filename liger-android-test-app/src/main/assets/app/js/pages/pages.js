@@ -25,7 +25,7 @@ var PAGES = {
 	addBindings: function(){
 		$("#openPage, #closePage, #closeToPage, #updateParent, #updateParentPage, #refreshPage #openDialog, #openDialogWithTitle, #closeDialog, #closeDialogReset").unbind();
         $("#openPage").click(function(){
-			PAGE.openPage('Page', 'pages', {'test1': 'test2'});
+			PAGE.openPage('Page', 'system', {'test1': 'test2'});
 			return false;
         });
 
