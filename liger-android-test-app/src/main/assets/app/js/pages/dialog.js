@@ -23,28 +23,13 @@ var DIALOG = {
 	},
 
 	addBindings: function(){
-		$("#openPage, #closePage, #closeToPage, #updateParent, #updateParentPage, #closeDialog, #closeDialogReset").unbind();
-        $("#openPage").click(function(){
-			PAGE.openPage('Page', 'pages', {'test1': 'test2'});
-			return false;
-        });
+		$("#updateParent, #updateParentPage, #closeDialog, #closeDialogReset").unbind();
 
-		$("#closePage").click(function(){
-			PAGE.closePage();
-			return false;
-		});
-		
 		
 		$("#updateParent").click(function(){
 			PAGE.updateParent({'child1': 'child2'});
 			return false;
 		});
-		
-		$("#updateParentPage").click(function(){
-			PAGE.updateParentPage('pages', {'child3': 'child4'});
-			return false;
-		});
-
 		
 		$("#closeDialog").click(function(){
 			PAGE.closeDialog({'dialog': ['closed', 'arguments', 'array']});

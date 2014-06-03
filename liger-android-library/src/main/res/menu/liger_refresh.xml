@@ -2,7 +2,7 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:liger="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_refresh"
+        android:id="@+id/liger_action_refresh"
         liger:showAsAction="always"
         android:title="@string/action_refresh"
         android:icon="@drawable/ic_action_refresh"/>

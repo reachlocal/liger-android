@@ -1,7 +1,5 @@
-PAGE.refreshPage = function(){
-    REFRESHPAGES.initialize();
-	PAGE.userCanRefresh = true;
-	PAGE.setupRefresh();
+PAGE.toolbarPage = function(){
+    TOOLBARPAGE.initialize();
     return true;
 }
 
@@ -13,12 +11,11 @@ PAGE.childUpdates = function(args){
 	$('#args').append(JSON.stringify(args));
 }
 
-PAGE.refresh = function(user){
-	$('#refreshes').append('*');
-}
+PAGE.toolbarItems = [{'iconText': 'First', 'callback':"alert('First');"},
+					 {'iconText': 'Second', 'callback':"alert('Second');"},
+					 {'iconText': 'Third', 'callback':"alert('Third');"}];
 
-var REFRESHPAGES = {
-	
+var TOOLBARPAGE = {
 	initialize: function(){
 		var me = this;
 
@@ -29,16 +26,11 @@ var REFRESHPAGES = {
 	},
 
 	addBindings: function(){
-		$("#closePage, #closeDialog").unbind();
+		$("#closePage").unbind();
 
 		$("#closePage").click(function(){
 			PAGE.closePage();
 			return false;
 		});
-
-		$("#closeDialog").click(function(){
-			PAGE.closeDialog({'dialog': ['closed', 'arguments', 'array']});
-			return false;
-		});		
 	}
 }
