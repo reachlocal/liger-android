@@ -10,7 +10,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.*;
+import com.reachlocal.mobile.liger.gcm.GcmRegistrationHelper;
 import com.reachlocal.mobile.liger.model.AppConfig;
+import com.reachlocal.mobile.liger.utils.JSUtils;
 import com.reachlocal.mobile.liger.widgets.DefaultMenuFragment;
 import com.reachlocal.mobile.liger.widgets.MenuInterface;
 import org.apache.cordova.Config;
@@ -25,7 +27,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class DefaultMainActivity extends ActionBarActivity implements CordovaInterface {
+public class DefaultMainActivity extends ActionBarActivity implements CordovaInterface, GcmRegistrationHelper.OnGcmRegisteredListener {
 
     public static final String SAVE_CHILD_ARGS = "SAVE_CHILD_ARGS";
 
@@ -59,6 +61,9 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
         }
         Config.init(this);
         setupMenu();
+
+        GcmRegistrationHelper gcmHelper = new GcmRegistrationHelper(this, this);
+        gcmHelper.registerGcm();
     }
 
     @Override
@@ -299,6 +304,16 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
     public void resetApp() {
         fragStack.resetToHome();
         setMenuSelection(fragStack.getCurrentFragment().getPageName());
+    }
+
+    @Override
+    public void onGcmRegistered(String registrationId, String errorMessage) {
+        if(LIGER.LOGGING) {
+            Log.d(LIGER.TAG, "Received GCM registration ID:" + registrationId);
+        }
+        String  args = JSUtils.stringListToArgString(registrationId, "AndroidPushToken", errorMessage);
+
+        mRootPageFragment.sendJavascriptWithArgs("PAGE", "pushNotificationTokenUpdated", args);
     }
 
 }

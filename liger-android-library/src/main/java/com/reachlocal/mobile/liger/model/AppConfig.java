@@ -22,6 +22,8 @@ public class AppConfig {
 
     private String mRootPageName;
 
+    private boolean mNotifications;
+
     private static AppConfig sAppConfig;
 
     public long getAppFormatVersion() {
@@ -59,6 +61,10 @@ public class AppConfig {
         return mRootPageName;
     }
 
+    public boolean getNotificationsEnabled() {
+        return mNotifications;
+    }
+
     public static AppConfig getAppConfig(Context context) {
         if (sAppConfig != null) {
             return sAppConfig;
@@ -88,6 +94,7 @@ public class AppConfig {
                 fakeConfig.put("menu", menuParentArray);
                 appConfig.mAppConfigString = fakeConfig.toString();
                 appConfig.mRootPageName = rootPage.getString("page");
+                appConfig.mNotifications = parentObj.optBoolean("notifications");
             } else {
                 appConfig.mAppConfigString = appConfigString;
                 menuParentArray = parentObj.getJSONArray("menu");

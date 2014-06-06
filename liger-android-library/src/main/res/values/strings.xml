@@ -5,4 +5,5 @@
     <string name="menu_close_desc">Close navigation menu</string>
     <string name="action_refresh">Refresh</string>
     <string name="liger_gcm_sender_id"></string>
+    <string name="liger_main_activity_class">com.reachlocal.mobile.liger.DefaultMainActivity</string>
 </resources>
