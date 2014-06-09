@@ -1,7 +1,10 @@
 // Container for all custom liger cordova plugin functions
 var LIGER = {
-	openPage: function(title, page, args) {
-		cordova.exec(null, null, "Liger", "openPage", [ title, page, args ]);
+	openPage: function(title, page, args, options) {
+		if (options === undefined){
+			options = {};
+		}
+		cordova.exec(null, null, "Liger", "openPage", [ title, page, args, options ]);
 	},
 
 	closePage: function() {
@@ -38,12 +41,18 @@ var LIGER = {
 			}, "Liger", "getPageArgs", []);
 	},
 
-	openDialog: function(page, args){
-		cordova.exec(null, null, "Liger", "openDialog", [ page, args ]);
+	openDialog: function(page, args, options){
+		if (options === undefined){
+			options = {};
+		}
+		cordova.exec(null, null, "Liger", "openDialog", [ page, args, options ]);
 	},
 
-	openDialogWithTitle: function(title, page, args) {
-		cordova.exec(null, null, "Liger", "openDialogWithTitle", [ title, page, args ]);
+	openDialogWithTitle: function(title, page, args, options) {
+		if (options === undefined){
+			options = {};
+		}
+		cordova.exec(null, null, "Liger", "openDialogWithTitle", [ title, page, args, options ]);
 	},
 
 	closeDialog: function(args) {
@@ -54,15 +63,8 @@ var LIGER = {
         PAGE.closeDialogArguments(args);
 	},
 	
-//	toolbar: function(items) {
-//		cordova.exec(null, null, "Liger", "toolbar", [items]);
-//	},
 	toolbar: function(items) {
-		cordova.exec(this.toolbarCallback, function(error) { return false }, "Liger", "toolbar", [items]);
-	},
-	
-	toolbarCallback: function() {
-		return true;
+		cordova.exec(null, null, "Liger", "toolbar", [items]);
 	},
 
 	userCanRefresh: function(userCanRefresh) {

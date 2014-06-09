@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.*;
 import android.webkit.WebView;
 import com.reachlocal.mobile.liger.model.ToolbarItemSpec;
+import com.reachlocal.mobile.liger.utils.JsonUtils;
 import com.reachlocal.mobile.liger.widgets.ToolbarLayout;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
@@ -32,6 +33,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     // Fragment arguments
     String pageName;
     String pageArgs;
+    String pageOptions;
     boolean isDialog;
 
     // Instance State
@@ -52,6 +54,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         Bundle args = getArguments();
         pageName = args.getString("pageName");
         pageArgs = args.getString("pageArgs");
+        pageOptions = args.getString("pageOptions");
         actionBarTitle = args.getString("pageTitle");
 
         if (savedInstanceState != null) {
@@ -288,14 +291,31 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         mMenu = menu;
         mMenuInflater = inflater;
         if (canRefresh && isVisible()) {
-            mMenuInflater.inflate(R.menu.refresh, mMenu);
+            mMenuInflater.inflate(R.menu.liger_refresh, mMenu);
+        }
+        String rightButtonName = JsonUtils.getRightButtonName(pageOptions);
+        if(LIGER.LOGGING) {
+            Log.d(LIGER.TAG, "rightButtonName: " + rightButtonName);
+        }
+        if (StringUtils.equalsIgnoreCase(rightButtonName, "save")) {
+            mMenuInflater.inflate(R.menu.liger_save, mMenu);
+        }
+        if (StringUtils.equalsIgnoreCase(rightButtonName, "search")) {
+            mMenuInflater.inflate(R.menu.liger_search, mMenu);
         }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (this.canRefresh && item.getItemId() == R.id.action_refresh) {
+        int itemId = item.getItemId();
+        if (this.canRefresh && itemId == R.id.liger_action_refresh) {
             sendJavascript("PAGE.refresh(true);");
+            return true;
+        } else if (itemId == R.id.liger_action_save) {
+            sendJavascriptWithArgs("PAGE", "headerButtonTapped", "\"save\"");
+            return true;
+        } else if (itemId == R.id.liger_action_search) {
+            sendJavascriptWithArgs("PAGE", "headerButtonTapped", "\"search\"");
             return true;
         } else {
             return super.onOptionsItemSelected(item);
@@ -405,7 +425,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
 
     }
 
-    public static CordovaPageFragment build(String pageName, String pageTitle, String pageArgs) {
+    public static CordovaPageFragment build(String pageName, String pageTitle, String pageArgs, String pageOptions) {
         CordovaPageFragment newFragment = new CordovaPageFragment();
         Bundle args = new Bundle();
         if (pageName != null) {
@@ -417,14 +437,17 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         if (pageArgs != null) {
             args.putString("pageArgs", pageArgs);
         }
+        if (pageOptions != null) {
+            args.putString("pageOptions", pageOptions);
+        }
 
         newFragment.setArguments(args);
 
         return newFragment;
     }
 
-    public static CordovaPageFragment build(String pageName, String pageTitle, JSONObject pageArgs) {
-        return build(pageName, pageTitle, pageArgs == null ? null : pageArgs.toString());
+    public static CordovaPageFragment build(String pageName, String pageTitle, JSONObject pageArgs, JSONObject pageOptions) {
+        return build(pageName, pageTitle, pageArgs == null ? null : pageArgs.toString(), pageOptions == null ? null : pageOptions.toString());
     }
 
 }

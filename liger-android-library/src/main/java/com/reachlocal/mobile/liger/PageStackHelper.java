@@ -36,9 +36,9 @@ public class PageStackHelper {
         resetToHome();
     }
 
-    public void openPage(String pageName, String title, JSONObject args) {
+    public void openPage(String pageName, String title, JSONObject args, JSONObject options) {
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "PageStackHelper.openPage() pageName:" + pageName + ", args:" + args);
+            Log.d(LIGER.TAG, "PageStackHelper.openPage() pageName:" + pageName + ", args:" + args + ", options:" + options);
         }
         //pageName = pageName.toLowerCase();
 
@@ -46,7 +46,7 @@ public class PageStackHelper {
 
         if (pageName.equals(mHomePageName)) {
             if (mFragDeck.size() == 0) {
-                createAndAddPage(ft, pageName, title, args);
+                createAndAddPage(ft, pageName, title, args, options);
             } else {
                 popTo(ft, mFragDeck.getFirst());
             }
@@ -56,27 +56,28 @@ public class PageStackHelper {
                 mFragDeck.remove(reuseFrag);
                 pushFragment(ft, reuseFrag);
             } else {
-                createAndAddPage(ft, pageName, title, args);
+                createAndAddPage(ft, pageName, title, args, options);
             }
         } else {
-            createAndAddPage(ft, pageName, title, args);
+            createAndAddPage(ft, pageName, title, args, options);
         }
 
         ft.commit();
         logStack("openPage " + pageName);
     }
 
-    public void openDialog(String pageName, String title, JSONObject args) {
+    public void openDialog(String pageName, String title, JSONObject args, JSONObject options) {
         if (LIGER.LOGGING) {
             Log.d(LIGER.TAG,
                     "PageStackHelper.openDialog() title:" + title + ", pageName:" + pageName + ", args:"
-                            + (args == null ? null : args.toString()));
+                            + (args == null ? null : args.toString()) + ", options:"
+                            + (options == null ? null : options.toString()));
         }
-        CordovaPageFragment dialog =  CordovaPageFragment.build(pageName, title, args);
+        CordovaPageFragment dialog =  CordovaPageFragment.build(pageName, title, args, options);
         dialog.show(mActivity.getSupportFragmentManager(), DIALOG_FRAGMENT);
     }
 
-    public PageFragment createPage(String pageName, String title, JSONObject args) {
+    public PageFragment createPage(String pageName, String title, JSONObject args, JSONObject options) {
         PageFragment pageFrag = null;
         boolean isReusable = false;
         if (mReusablePageNames.contains(pageName)) {
@@ -84,7 +85,7 @@ public class PageStackHelper {
             pageFrag = mReusablePages.get(pageName);
         }
         if(pageFrag == null) {
-            pageFrag = CordovaPageFragment.build(pageName, title, args);
+            pageFrag = CordovaPageFragment.build(pageName, title, args, options);
             if(isReusable) {
                 mReusablePages.put(pageName, pageFrag);
             }
@@ -92,8 +93,8 @@ public class PageStackHelper {
         return pageFrag;
     }
 
-    protected void createAndAddPage(FragmentTransaction ft, String pageName, String title, JSONObject args) {
-        PageFragment newFragment = createPage(pageName, title, args);
+    protected void createAndAddPage(FragmentTransaction ft, String pageName, String title, JSONObject args, JSONObject options) {
+        PageFragment newFragment = createPage(pageName, title, args, options);
         pushFragment(ft, newFragment);
     }
 
@@ -211,7 +212,7 @@ public class PageStackHelper {
         mFragDeck.clear();
 
         FragmentTransaction ft = mActivity.getSupportFragmentManager().beginTransaction();
-        PageFragment homePage = createPage(mHomePageName, null, null);
+        PageFragment homePage = createPage(mHomePageName, null, null, null);
         mFragDeck.addLast(homePage);
         ft.replace(mContentFrameId, homePage);
         ft.commit();

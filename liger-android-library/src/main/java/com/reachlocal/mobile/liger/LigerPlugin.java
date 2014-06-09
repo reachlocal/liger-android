@@ -26,7 +26,7 @@ public class LigerPlugin extends CordovaPlugin {
         }
         try {
             if (action.equalsIgnoreCase("openPage")) {
-                return openPage(args.getString(0), args.optString(1), args.optJSONObject(2), callbackContext);
+                return openPage(args.getString(0), args.optString(1), args.optJSONObject(2), args.optJSONObject(3), callbackContext);
             }
             if (action.equalsIgnoreCase("closePage")) {
                 return closePage(callbackContext, args.optString(0));
@@ -35,13 +35,13 @@ public class LigerPlugin extends CordovaPlugin {
                 return updateParent(args.getJSONObject(1), callbackContext);
             }
             if (action.equalsIgnoreCase("openDialog")) {
-                return openDialog(null, args.getString(0), args.optJSONObject(1), callbackContext);
+                return openDialog(null, args.getString(0), args.optJSONObject(1), args.optJSONObject(2), callbackContext);
             }
             if (action.equalsIgnoreCase("userCanRefresh")) {
                 return userCanRefresh(args.getBoolean(0), callbackContext);
             }
             if (action.equalsIgnoreCase("openDialogWithTitle")) {
-                return openDialog(args.getString(0), args.optString(1), args.optJSONObject(2), callbackContext);
+                return openDialog(args.getString(0), args.optString(1), args.optJSONObject(2), args.optJSONObject(3), callbackContext);
             }
             if (action.equalsIgnoreCase("closeDialog")) {
                 return closeDialog(args.getString(0), callbackContext);
@@ -87,24 +87,24 @@ public class LigerPlugin extends CordovaPlugin {
      * @param args            json that will be sent to openLinkArguments
      * @param callbackContext the callbackContext
      */
-    public boolean openPage(final String title, final String link, final JSONObject args, CallbackContext callbackContext) {
+    public boolean openPage(final String title, final String link, final JSONObject args, final JSONObject options, CallbackContext callbackContext) {
         final DefaultMainActivity activity = (DefaultMainActivity) cordova.getActivity();
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                activity.openPage(link, title, args);
+                activity.openPage(link, title, args, options);
             }
         });
         callbackContext.success();
         return true;
     }
 
-    public boolean openDialog(final String title, final String pageName, final JSONObject args, CallbackContext callbackContext) {
+    public boolean openDialog(final String title, final String pageName, final JSONObject args, final JSONObject options, CallbackContext callbackContext) {
         final DefaultMainActivity activity = (DefaultMainActivity) cordova.getActivity();
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                activity.openDialog(pageName, title, args);
+                activity.openDialog(pageName, title, args, options);
             }
         });
         callbackContext.success();
@@ -185,7 +185,7 @@ public class LigerPlugin extends CordovaPlugin {
                 if (hasReset) {
                     activity.resetApp();
                 } else {
-                    activity.openPage(page, null, argObj);
+                    activity.openPage(page, null, argObj, null);
                     activity.sendJavascriptWithArgs("PAGE", "closeDialogArguments", args);
                 }
             }

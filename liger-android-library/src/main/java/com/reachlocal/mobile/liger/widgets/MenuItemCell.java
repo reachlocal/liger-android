@@ -60,9 +60,9 @@ public class MenuItemCell extends LinearLayout implements Checkable {
     public boolean performClick() {
         DefaultMainActivity webActivity = (DefaultMainActivity) getContext();
         if (!mDialog) {
-            webActivity.openPage(clickAction, itemTitle, null);
+            webActivity.openPage(clickAction, itemTitle, null, null);
         } else {
-            webActivity.openDialog(clickAction, itemTitle, null);
+            webActivity.openDialog(clickAction, itemTitle, null, null);
         }
         return true;
     }

@@ -1,7 +1,7 @@
 var PAGE = {
     page: null,
     args: null,
-	toolbar: null,
+	toolbarItems: null,
 	userCanRefresh: false,
 	
     initialize: function(page) {
@@ -42,10 +42,9 @@ var PAGE = {
     },
 
     addToolbar: function(){
-		// TODO Why does this not work?
-//		if (this.toolbar != null) {
-//			LIGER.toolbar(this.toolbar);
-//		}
+        if (PAGE.toolbarItems != null) {
+            PAGE.toolbar(PAGE.toolbarItems);
+        }
     },
 
 	setupRefresh: function(){
@@ -63,7 +62,7 @@ var PAGE = {
      * @param page The 'name' of the page to be open. Should not include html.
      * @param args json that will be sent to page
      */
-    openPage: function(title, page, args) { LIGER.openPage(title, page, args); },
+    openPage: function(title, page, args, options) { LIGER.openPage(title, page, args, options); },
 
     /**
      * Closes the currently open page.
@@ -106,9 +105,9 @@ var PAGE = {
      * @iOS Presents a UIViewController.
      * 
      * @param page The 'name' of the page to be open. Should not include html.
-     * @param args json that will be sent to openLinkArguments
+     * @param args json that will be sent to openPageArguments
      */
-    openDialog: function(page, args){ LIGER.openDialog(page, args); },
+    openDialog: function(page, args, options){ LIGER.openDialog(page, args, options); },
 
     /**
      * Opens a new page as a dialog
@@ -116,9 +115,9 @@ var PAGE = {
      * 
      * @param title The title of the page (title in UINavigationBar on iOS)
      * @param page The 'name' of the page to be open. Should not include html.
-     * @param args json that will be sent to openLinkArguments
+     * @param args json that will be sent to openPageArguments
      */
-    openDialogWithTitle: function(title, page, args) { LIGER.openDialogWithTitle(title, page, args); },
+    openDialogWithTitle: function(title, page, args, options) { LIGER.openDialogWithTitle(title, page, args, options); },
 
     /**
      * Closes a page in an open dialog
@@ -148,5 +147,8 @@ var PAGE = {
      * Indicates whether this web view can be refreshed by the user or not
      *
      */
-    canRefresh: function() { LIGER.userCanRefresh(PAGE.userCanRefresh); }
+    canRefresh: function() { LIGER.userCanRefresh(PAGE.userCanRefresh); },
+
+    headerButtonTapped: function(button) {}
+	
 };

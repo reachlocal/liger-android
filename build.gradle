@@ -6,7 +6,7 @@ rootProject.ext {
     compileSdkVersion = 18
     targetSdkVersion = 18
     buildToolsVersion = "19.0.1"
-    gradleAndroidPluginVersion = '0.9.+'
+    gradleAndroidPluginVersion = '0.10.+'
     supportLibVersion = '18.0.0'
 
     commonsLangVersion = "3.2.1";
