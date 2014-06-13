@@ -62,8 +62,10 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
         Config.init(this);
         setupMenu();
 
-        GcmRegistrationHelper gcmHelper = new GcmRegistrationHelper(this, this);
-        gcmHelper.registerGcm();
+        if(mAppConfig.getNotificationsEnabled()) {
+            GcmRegistrationHelper gcmHelper = new GcmRegistrationHelper(this, this);
+            gcmHelper.registerGcm();
+        }
     }
 
     @Override
