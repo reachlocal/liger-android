@@ -8,10 +8,11 @@ jdk:
 # Explicitly disable build caching
 cache: false
 
-# Tell commands to behave
+# Tell commands to behave, add bintray key
 env:
   global:
     - TERM=dumb
+    - secure: "gvLrkWptaosqPOfsc7tEATO7ectB5fVXRLQiwHk3wZZ2aF+j3ayisMr5UzDHOHj6P5VDSv1c6fz0P8jr89k2Er5nWmwDjSAVOPdc4Hi9VAxUo/lLlyTtvO4KG1mXYSR/lr5UvxehvUaaPw3g8YLyO/WTzN9Kayw0Qh/q1HAEePo="
 
 # Prep
 before_install:
