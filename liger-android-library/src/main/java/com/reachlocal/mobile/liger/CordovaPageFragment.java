@@ -299,10 +299,26 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         }
         if (StringUtils.equalsIgnoreCase(rightButtonName, "save")) {
             mMenuInflater.inflate(R.menu.liger_save, mMenu);
+            addHeaderButtonListener(menu, R.id.liger_action_save, rightButtonName);
         }
         if (StringUtils.equalsIgnoreCase(rightButtonName, "search")) {
             mMenuInflater.inflate(R.menu.liger_search, mMenu);
+            addHeaderButtonListener(menu, R.id.liger_action_search, rightButtonName);
         }
+    }
+
+    private void addHeaderButtonListener(Menu menu, int id, final String buttonName) {
+        MenuItem item = menu.findItem(id);
+        item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if(LIGER.LOGGING) {
+                    Log.d(LIGER.TAG, "Header Button clicked: " + buttonName);
+                }
+                sendJavascriptWithArgs("PAGE", "headerButtonTapped", "\"" + buttonName + "\"");
+                return true;
+            }
+        });
     }
 
     @Override
@@ -310,12 +326,6 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         int itemId = item.getItemId();
         if (this.canRefresh && itemId == R.id.liger_action_refresh) {
             sendJavascript("PAGE.refresh(true);");
-            return true;
-        } else if (itemId == R.id.liger_action_save) {
-            sendJavascriptWithArgs("PAGE", "headerButtonTapped", "\"save\"");
-            return true;
-        } else if (itemId == R.id.liger_action_search) {
-            sendJavascriptWithArgs("PAGE", "headerButtonTapped", "\"search\"");
             return true;
         } else {
             return super.onOptionsItemSelected(item);
