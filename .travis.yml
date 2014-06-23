@@ -24,12 +24,5 @@ install:
 
 # Build
 script:
-  - ./gradlew assembleRelease
-
-# Finalize
-after_success:
-  - echo "victory"
-after_failure:
-  - echo "defeat"
-after_script:
-  - true
+  - ./ci/build.sh
+  - ./ci/release.sh
