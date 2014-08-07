@@ -12,16 +12,16 @@ public class PageStackHelper {
 
     public static final String DIALOG_FRAGMENT = "ligerDialogFragment";
 
-    private String mHomePageName;
-    private String mHomePageTitle;
+    protected String mHomePageName;
+    protected String mHomePageTitle;
 
-    private Set<String> mReusablePageNames = new HashSet<String>();
-    private Map<String, PageFragment> mReusablePages = new HashMap<String, PageFragment>();
+    protected Set<String> mReusablePageNames = new HashSet<String>();
+    protected Map<String, PageFragment> mReusablePages = new HashMap<String, PageFragment>();
 
-    private DefaultMainActivity mActivity;
-    final private int mContentFrameId;
+    protected DefaultMainActivity mActivity;
+    final protected int mContentFrameId;
 
-    private Deque<PageFragment> mFragDeck = new LinkedList<PageFragment>();
+    protected Deque<PageFragment> mFragDeck = new LinkedList<PageFragment>();
 
     public PageStackHelper(int contentFrameId) {
         this.mContentFrameId = contentFrameId;
@@ -102,7 +102,7 @@ public class PageStackHelper {
         return mActivity;
     }
 
-    private void pushFragment(FragmentTransaction ft, PageFragment newCurrentFragment) {
+    protected void pushFragment(FragmentTransaction ft, PageFragment newCurrentFragment) {
 
         if (mFragDeck.size() > 0) {
             ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
@@ -117,7 +117,7 @@ public class PageStackHelper {
         mFragDeck.addLast(newCurrentFragment);
     }
 
-    private PageFragment findFragmentByPageName(String pageName) {
+    protected PageFragment findFragmentByPageName(String pageName) {
         for (PageFragment frag : mFragDeck) {
             if (frag.getPageName().equals(pageName)) {
                 return frag;
@@ -131,7 +131,7 @@ public class PageStackHelper {
      * @param newTop The fragment that will be left at the top. Must be in the queue
      * @return true if any fragments were removed
      */
-    private boolean popTo(FragmentTransaction ft, PageFragment newTop) {
+    protected boolean popTo(FragmentTransaction ft, PageFragment newTop) {
         if (mFragDeck.size() > 0 && mFragDeck.getLast().equals(newTop)) {
             return false;
         }
@@ -197,7 +197,7 @@ public class PageStackHelper {
         return mFragDeck.getLast();
     }
 
-    private void logStack(String crumb) {
+    protected void logStack(String crumb) {
         if (LIGER.LOGGING) {
             StringBuffer sb = new StringBuffer("PageStackHelper/").append(crumb).append("\n");
             for (PageFragment frag : mFragDeck) {
