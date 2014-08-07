@@ -290,7 +290,8 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         super.onCreateOptionsMenu(menu, inflater);
         mMenu = menu;
         mMenuInflater = inflater;
-        if (canRefresh && isVisible()) {
+        // Added !menu.hasVisibleItems() to ensure refresh is not added twice
+        if (canRefresh && isVisible() && !menu.hasVisibleItems()) {
             mMenuInflater.inflate(R.menu.liger_refresh, mMenu);
         }
         String rightButtonName = JsonUtils.getRightButtonName(pageOptions);
