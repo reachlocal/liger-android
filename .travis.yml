@@ -1,9 +1,25 @@
 # Travis CI build configuration
 
-language:
-  - java
-jdk:
-  - oraclejdk7
+language: android
+
+android:
+  components:
+    # Uncomment the lines below if you want to
+    # use the latest revision of Android SDK Tools
+    - platform-tools
+    - tools
+
+    - build-tools-19.1.0
+    - build-tools-20.0.0
+
+    - android-19
+    - android-18
+
+    # Additional components
+    - extra-google-google_play_services
+    - extra-google-m2repository
+    - extra-android-m2repository
+    - addon-google_apis-google-19
 
 # Explicitly disable build caching
 cache: false
@@ -13,14 +29,6 @@ env:
   global:
     - TERM=dumb
     - secure: "gvLrkWptaosqPOfsc7tEATO7ectB5fVXRLQiwHk3wZZ2aF+j3ayisMr5UzDHOHj6P5VDSv1c6fz0P8jr89k2Er5nWmwDjSAVOPdc4Hi9VAxUo/lLlyTtvO4KG1mXYSR/lr5UvxehvUaaPw3g8YLyO/WTzN9Kayw0Qh/q1HAEePo="
-
-# Prep
-before_install:
-  - ./ci/prepare.sh
-
-# Disable travis gradle fiddling
-install:
-  - true
 
 # Build
 script:
