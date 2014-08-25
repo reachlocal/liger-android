@@ -14,6 +14,7 @@ public class PageStackHelper {
 
     protected String mHomePageName;
     protected String mHomePageTitle;
+    protected PageFactory mPageFactory = new PageFactory(this);
 
     protected Set<String> mReusablePageNames = new HashSet<String>();
     protected Map<String, PageFragment> mReusablePages = new HashMap<String, PageFragment>();
@@ -73,8 +74,11 @@ public class PageStackHelper {
                             + (args == null ? null : args.toString()) + ", options:"
                             + (options == null ? null : options.toString()));
         }
-        CordovaPageFragment dialog =  CordovaPageFragment.build(pageName, title, args, options);
-        dialog.show(mActivity.getSupportFragmentManager(), DIALOG_FRAGMENT);
+        PageFragment dialog =  mPageFactory.openPage(pageName, title, args, options);
+        if(dialog != null){
+            dialog.show(mActivity.getSupportFragmentManager(), DIALOG_FRAGMENT);
+        }
+
     }
 
     public PageFragment createPage(String pageName, String title, JSONObject args, JSONObject options) {
@@ -85,9 +89,11 @@ public class PageStackHelper {
             pageFrag = mReusablePages.get(pageName);
         }
         if(pageFrag == null) {
-            pageFrag = CordovaPageFragment.build(pageName, title, args, options);
-            if(isReusable) {
-                mReusablePages.put(pageName, pageFrag);
+            pageFrag = mPageFactory.openPage(pageName, title, args, options);
+            if(pageFrag != null){
+                if(isReusable) {
+                    mReusablePages.put(pageName, pageFrag);
+                }
             }
         }
         return pageFrag;
@@ -103,18 +109,19 @@ public class PageStackHelper {
     }
 
     protected void pushFragment(FragmentTransaction ft, PageFragment newCurrentFragment) {
-
-        if (mFragDeck.size() > 0) {
-            ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
-            PageFragment oldCurrentFrag = mFragDeck.getLast();
-            ft.hide(oldCurrentFrag);
+        if(newCurrentFragment != null){
+            if (mFragDeck.size() > 0) {
+                ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
+                PageFragment oldCurrentFrag = mFragDeck.getLast();
+                ft.hide(oldCurrentFrag);
+            }
+            if (newCurrentFragment.isAdded()) {
+                ft.show(newCurrentFragment);
+            } else {
+                ft.add(mContentFrameId, newCurrentFragment);
+            }
+            mFragDeck.addLast(newCurrentFragment);
         }
-        if (newCurrentFragment.isAdded()) {
-            ft.show(newCurrentFragment);
-        } else {
-            ft.add(mContentFrameId, newCurrentFragment);
-        }
-        mFragDeck.addLast(newCurrentFragment);
     }
 
     protected PageFragment findFragmentByPageName(String pageName) {
