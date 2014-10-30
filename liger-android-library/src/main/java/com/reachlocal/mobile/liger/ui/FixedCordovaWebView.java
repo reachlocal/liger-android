@@ -1,4 +1,4 @@
-package com.reachlocal.mobile.liger;
+package com.reachlocal.mobile.liger.ui;
 
 import android.content.Context;
 import android.util.AttributeSet;

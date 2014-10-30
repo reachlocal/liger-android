@@ -1,11 +1,15 @@
-package com.reachlocal.mobile.liger;
+package com.reachlocal.mobile.liger.ui;
 
 import android.annotation.TargetApi;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
+
+import com.reachlocal.mobile.liger.LIGER;
+
 import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.CordovaWebViewClient;
 
@@ -16,6 +20,7 @@ public class LigerWebClient extends CordovaWebViewClient {
 
     protected CordovaPageFragment mPageFragment;
     protected DefaultMainActivity mActivity;
+    ProgressDialog mProgressDialog;
 
     public LigerWebClient(CordovaPageFragment fragment, DefaultMainActivity activity, CordovaWebView webView) {
         super(activity, webView);
@@ -28,7 +33,7 @@ public class LigerWebClient extends CordovaWebViewClient {
         mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mPageFragment.onPageFinished((CordovaWebView) view, url);
+                mPageFragment.onPageFinished(view, url);
             }
         });
         super.onPageFinished(view, url);

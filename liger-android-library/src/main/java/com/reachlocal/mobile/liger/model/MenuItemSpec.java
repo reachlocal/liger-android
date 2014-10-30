@@ -8,6 +8,7 @@ public class MenuItemSpec {
     private String mIconText;
     private String mPage;
     private JSONObject mArgs;
+    private JSONObject mOptions;
     private String mDetail;
     private String mAccessibilityLabel;
     private boolean mDialog;
@@ -41,8 +42,16 @@ public class MenuItemSpec {
         return mArgs;
     }
 
+    public JSONObject getOptions() {
+        return mOptions;
+    }
+
     public void setArgs(JSONObject args) {
         mArgs = args;
+    }
+
+    public void setOptions(JSONObject options) {
+        mOptions = options;
     }
 
     public String getDetail() {
@@ -84,6 +93,7 @@ public class MenuItemSpec {
             spec.mIconText = jsonObject.optString("iconText");
             spec.mPage = jsonObject.getString("page");
             spec.mArgs = jsonObject.optJSONObject("args");
+            spec.mOptions = jsonObject.optJSONObject("options");
             spec.mDetail = jsonObject.optString("detail");
             spec.mAccessibilityLabel = jsonObject.optString("accessibilityLabel");
             spec.mDialog = jsonObject.optBoolean("dialog", false);

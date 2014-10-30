@@ -1,5 +1,7 @@
 package com.reachlocal.mobile.liger;
 
+import com.reachlocal.mobile.liger.ui.PageFragment;
+
 /**
  * Interface that objects that need to listen for page lifecycle events.
  */

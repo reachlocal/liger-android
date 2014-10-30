@@ -21,6 +21,9 @@ public class AppConfig {
     private String mAppConfigString;
 
     private String mRootPageName;
+    private String mRootPageTitle = "";
+    private JSONObject mRootPageArgs;
+    private JSONObject mRootPageOptions;
 
     private boolean mNotifications;
 
@@ -61,6 +64,16 @@ public class AppConfig {
         return mRootPageName;
     }
 
+    public String getRootPageTitle() { return mRootPageTitle; }
+
+    public JSONObject getRootPageArgs() {
+        return mRootPageArgs;
+    }
+
+    public JSONObject getRootPageOptions() {
+        return mRootPageOptions;
+    }
+
     public boolean getNotificationsEnabled() {
         return mNotifications;
     }
@@ -69,7 +82,7 @@ public class AppConfig {
         if (sAppConfig != null) {
             return sAppConfig;
         }
-        InputStream is = null;
+        InputStream is;
         try {
             is = context.getAssets().open("app/app.json");
             sAppConfig = parseAppConfig(IOUtils.toString(is));
@@ -87,24 +100,28 @@ public class AppConfig {
             appConfig.setAppFormatVersion(parentObj.getLong("appFormatVersion"));
             JSONArray menuParentArray = null;
 
-            if(appConfig.appFormatVersion >= 5) {
+            if(appConfig.appFormatVersion >= 6) {
                 JSONObject rootPage = parentObj.getJSONObject("rootPage");
-                menuParentArray = rootPage.getJSONArray("args");
-                JSONObject fakeConfig = new JSONObject();
-                fakeConfig.put("menu", menuParentArray);
-                appConfig.mAppConfigString = fakeConfig.toString();
+                appConfig.mRootPageArgs = rootPage.getJSONObject("args");
                 appConfig.mRootPageName = rootPage.getString("page");
+                appConfig.mAppConfigString = appConfig.mRootPageArgs.toString();
                 appConfig.mNotifications = parentObj.optBoolean("notifications");
             } else {
-                appConfig.mAppConfigString = appConfigString;
-                menuParentArray = parentObj.getJSONArray("menu");
+                throw new RuntimeException("Not Supported appFormatVersion");
             }
 
-            JSONArray majorMenu = menuParentArray.optJSONArray(0);
+            JSONArray majorMenu = null;
+            JSONArray minorMenu = null;
+
+            if(menuParentArray != null) {
+                majorMenu = menuParentArray.optJSONArray(0);
+                minorMenu = menuParentArray.optJSONArray(1);
+            }
+
             if (majorMenu != null) {
                 appConfig.setMajorMenuItems(createMenuItems(majorMenu, true));
             }
-            JSONArray minorMenu = menuParentArray.optJSONArray(1);
+
             if (minorMenu != null) {
                 appConfig.setMinorMenuItems(createMenuItems(minorMenu, false));
             }

@@ -1,12 +1,17 @@
-package com.reachlocal.mobile.liger;
+package com.reachlocal.mobile.liger.ui;
 
 import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.*;
 import android.webkit.WebView;
+
+import com.reachlocal.mobile.liger.LIGER;
+import com.reachlocal.mobile.liger.PageLifecycleListener;
+import com.reachlocal.mobile.liger.R;
 import com.reachlocal.mobile.liger.model.ToolbarItemSpec;
 import com.reachlocal.mobile.liger.utils.JsonUtils;
 import com.reachlocal.mobile.liger.widgets.ToolbarLayout;
@@ -166,6 +171,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     @Override
     public void onResume() {
         super.onResume();
+        ((DefaultMainActivity) getActivity()).setMenuSelection(pageName);
         mWebView.handleResume(false, false);
         if (!isHidden()) {
             sendChildArgs();
@@ -190,6 +196,11 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         }
     }
 
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        updateTitle();
+    }
 
     public void updateTitle() {
         boolean isResumed = isResumed();
@@ -219,6 +230,11 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         }
     }
 
+    @Override
+    public String closeLastPage(PageFragment closePage, String closeTo) {
+        return null;
+    }
+
     private void queueJavascript(String js) {
         if(javascriptQueue == null) {
             javascriptQueue = new ArrayList<String>();
@@ -246,9 +262,25 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     }
 
     @Override
+    public void openPage(String pageName, String title, JSONObject pageArgs, JSONObject pageOptions) {
+
+    }
+
+    @Override
+    public void openDialog(String pageName, String title, JSONObject args, JSONObject options) {
+
+    }
+
+    @Override
     public String getPageName() {
         return pageName;
     }
+
+    @Override
+    public String getPageTitle() {
+        return actionBarTitle;
+    }
+
 
     @Override
     public void setToolbar(String toolbarSpec) {
@@ -434,6 +466,11 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
             return false;
         }
 
+    }
+
+    @Override
+    public void addFragments(FragmentTransaction ft, int contentViewID){
+        ft.add(contentViewID, this);
     }
 
     public static CordovaPageFragment build(String pageName, String pageTitle, String pageArgs, String pageOptions) {

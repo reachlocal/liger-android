@@ -12,7 +12,6 @@ import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.reachlocal.mobile.liger.DefaultMainActivity;
 import com.reachlocal.mobile.liger.LIGER;
 import com.reachlocal.mobile.liger.R;
 
