@@ -82,7 +82,7 @@ public abstract class PageFragment extends DialogFragment {
 
     protected void logStack(String crumb) {
         if (LIGER.LOGGING) {
-            StringBuilder sb = new StringBuilder("PageStackHelper/").append(crumb).append("\n");
+            StringBuilder sb = new StringBuilder("PageFragment/").append(crumb).append("\n");
             for (PageFragment frag : mFragDeck) {
                 sb.append("\n-->").append(frag.getPageName()).append("/").append(frag.getPageArgs());
             }

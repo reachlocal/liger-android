@@ -42,7 +42,7 @@ public class LigerWebClient extends CordovaWebViewClient {
     @Override
     public void onLoadResource(WebView view, String url) {
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "PageFragment.onLoadResource() " + url);
+            Log.d(LIGER.TAG, "LigerWebClient.onLoadResource() " + url);
         }
         super.onLoadResource(view, url);
     }
@@ -50,7 +50,7 @@ public class LigerWebClient extends CordovaWebViewClient {
     @Override
     public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, String.format("PageFragment.onReceivedError(), errorCode %d, description: %s, failuingUrl: %s ", errorCode, description, failingUrl));
+            Log.d(LIGER.TAG, String.format("LigerWebClient.onReceivedError(), errorCode %d, description: %s, failuingUrl: %s ", errorCode, description, failingUrl));
         }
         super.onReceivedError(view, errorCode, description, failingUrl);
     }
@@ -72,7 +72,7 @@ public class LigerWebClient extends CordovaWebViewClient {
 
         public static WebResourceResponse getTrimmedAsset(Context context, String url) {
             if (LIGER.LOGGING) {
-                Log.d(LIGER.TAG, "LigerICSWebClient.getTrimmedAsset: " + url);
+                Log.d(LIGER.TAG, "LigerWebClient.getTrimmedAsset: " + url);
             }
             try {
                 if (url.startsWith(ASSET_BASE_URL)) {
