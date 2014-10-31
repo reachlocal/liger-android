@@ -96,7 +96,7 @@ public class LigerNavigatorFragment extends PageFragment {
     @Override
     public void onDestroy() {
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "PageFragment.onDestroy() " + pageName);
+            Log.d(LIGER.TAG, "LigerNavigatorFragment.onDestroy() " + pageName);
         }
         super.onDestroy();
     }
@@ -105,14 +105,12 @@ public class LigerNavigatorFragment extends PageFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         createContentView(inflater, container, savedInstanceState);
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "PageFragment.onCreateView() " + pageName);
-        }
-        if (isDialog) {
-            return super.onCreateView(inflater, container, savedInstanceState);
+            Log.d(LIGER.TAG, "LigerNavigatorFragment.onCreateView() " + pageName);
         }
         FragmentManager childFragmentManager = getChildFragmentManager();
         FragmentTransaction ft = childFragmentManager.beginTransaction();
         for(PageFragment page : mFragDeck){
+            page.doPageAppear();
             page.addFragments(ft, mNavigatorContentFrame.getId());
             page.mContainer = this;
         }
@@ -151,7 +149,7 @@ public class LigerNavigatorFragment extends PageFragment {
     public void onDestroyView() {
         super.onDestroyView();
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "PageFragment.onDestroyView() " + pageName);
+            Log.d(LIGER.TAG, "LigerNavigatorFragment.onDestroyView() " + pageName);
         }
 
     }
@@ -174,7 +172,7 @@ public class LigerNavigatorFragment extends PageFragment {
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "PageFragment.onHiddenChanged() " + pageName + ", " + hidden);
+            Log.d(LIGER.TAG, "LigerNavigatorFragment.onHiddenChanged() " + pageName + ", " + hidden);
         }
         if (!hidden) {
             sendChildArgs();
@@ -188,7 +186,7 @@ public class LigerNavigatorFragment extends PageFragment {
     @Override
     public void openPage(String pageName, String title, JSONObject pageArgs, JSONObject pageOptions) {
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "openPage() pageName:" + pageName + ", args:" + pageArgs+ ", options:" + pageOptions);
+            Log.d(LIGER.TAG, "LigerNavigatorFragment openPage() pageName:" + pageName + ", args:" + pageArgs+ ", options:" + pageOptions);
         }
         PageFragment page = null;
 
@@ -200,6 +198,7 @@ public class LigerNavigatorFragment extends PageFragment {
 
 
         if(page != null) {
+            page.doPageAppear();
             FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
             page.addFragments(ft, mNavigatorContentFrame.getId());
             ft.commit();
@@ -215,7 +214,7 @@ public class LigerNavigatorFragment extends PageFragment {
     public void openDialog(String pageName, String title, JSONObject args, JSONObject options) {
         if (LIGER.LOGGING) {
             Log.d(LIGER.TAG,
-                    "DefaultMainActivity openDialog() title:" + title + ", pageName:" + pageName + ", args:"
+                    "LigerNavigatorFragment openDialog() title:" + title + ", pageName:" + pageName + ", args:"
                             + (args == null ? null : args.toString()) + ", options:"
                             + (options == null ? null : options.toString()));
         }
@@ -325,8 +324,8 @@ public class LigerNavigatorFragment extends PageFragment {
             String parentUpdateArgs = lastPage.getParentUpdateArgs();
             parentPage.setChildArgs(parentUpdateArgs);
             ft.commit();
-            ((DefaultMainActivity) getActivity()).setActionBarTitle(mFragDeck.getLast().getPageTitle());
-
+            ((DefaultMainActivity) getActivity()).setActionBarTitle(parentPage.getPageTitle());
+            parentPage.doPageAppear();
             logStack("closeLastPage");
         }
 
