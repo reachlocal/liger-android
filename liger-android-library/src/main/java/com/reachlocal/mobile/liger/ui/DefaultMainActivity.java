@@ -231,7 +231,7 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
 
     public void openPage(String pageName, String title, JSONObject pageArgs, JSONObject pageOptions) {
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "openPage() pageName:" + pageName + ", args:" + pageArgs+ ", options:" + pageOptions);
+            Log.d(LIGER.TAG, "DefaultMainActivity openPage() pageName:" + pageName + ", args:" + pageArgs+ ", options:" + pageOptions);
         }
         menuDrawer.closeDrawers();
         mRootPageFragment.openPage(pageName,title,pageArgs,pageOptions);
