@@ -70,7 +70,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
             canRefresh = savedInstanceState.getBoolean("canRefresh");
         }
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "PageFragment.onCreate() " + pageName);
+            Log.d(LIGER.TAG, "CordovaPageFragment.onCreate() " + pageName);
         }
 
         setHasOptionsMenu(true);
@@ -90,7 +90,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     @Override
     public void onDestroy() {
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "PageFragment.onDestroy() " + pageName);
+            Log.d(LIGER.TAG, "CordovaPageFragment.onDestroy() " + pageName);
         }
         super.onDestroy();
     }
@@ -98,7 +98,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "PageFragment.onCreateView() " + pageName);
+            Log.d(LIGER.TAG, "CordovaPageFragment.onCreateView() " + pageName);
         }
         if (isDialog) {
             return super.onCreateView(inflater, container, savedInstanceState);
@@ -154,7 +154,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     public void onDestroyView() {
         super.onDestroyView();
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "PageFragment.onDestroyView() " + pageName);
+            Log.d(LIGER.TAG, "CordovaPageFragment.onDestroyView() " + pageName);
         }
         mWebView.removeAllViews();
         mWebView.handleDestroy();
@@ -172,7 +172,8 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     public void onResume() {
         super.onResume();
         ((DefaultMainActivity) getActivity()).setMenuSelection(pageName);
-        mWebView.handleResume(false, false);
+        if(mWebView != null)
+            mWebView.handleResume(false, false);
         if (!isHidden()) {
             sendChildArgs();
             updateTitle();
@@ -184,7 +185,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "PageFragment.onHiddenChanged() " + pageName + ", " + hidden);
+            Log.d(LIGER.TAG, "CordovaPageFragment.onHiddenChanged() " + pageName + ", " + hidden);
         }
         if (!hidden) {
             sendChildArgs();
@@ -212,7 +213,8 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     @Override
     public void onPause() {
         super.onPause();
-        mWebView.handlePause(false);
+        if(mWebView != null)
+            mWebView.handlePause(false);
     }
 
     @Override
@@ -258,6 +260,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         if (LIGER.LOGGING) {
             Log.d(LIGER.TAG, "CordovaPageFragment.doSendJavascript() to " + (mWebView == null ? "(null webView)" : mWebView.getUrl()) + ", js:" + js);
         }
+        if(mWebView != null)
             mWebView.sendJavascript(js);
     }
 
@@ -370,7 +373,8 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         if (isLoaded) {
             sendJavascript("PAGE.onPageAppear();");
         }
-        mWebView.applyAfterMoveFix();
+        if(mWebView != null)
+            mWebView.applyAfterMoveFix();
     }
 
     protected void onPageFinished(WebView webView, String url) {
@@ -434,7 +438,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     @Override
     public String getPageArgs() {
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "PageFragment.getPageArgs() " + pageName);
+            Log.d(LIGER.TAG, "CordovaPageFragment.getPageArgs() " + pageName);
         }
         return pageArgs;
     }
