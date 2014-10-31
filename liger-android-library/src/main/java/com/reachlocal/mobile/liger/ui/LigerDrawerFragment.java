@@ -187,7 +187,7 @@ public class LigerDrawerFragment extends PageFragment implements MenuInterface {
     @Override
     public void openPage(String pageName, String title, JSONObject pageArgs, JSONObject pageOptions) {
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "openPage() pageName:" + pageName + ", args:" + pageArgs+ ", options:" + pageOptions);
+            Log.d(LIGER.TAG, "LigerDrawerFragment openPage() pageName:" + pageName + ", args:" + pageArgs+ ", options:" + pageOptions);
         }
         PageFragment page = null;
 
@@ -201,6 +201,7 @@ public class LigerDrawerFragment extends PageFragment implements MenuInterface {
         page = LigerFragmentFactory.openPage(pageName, title, pageArgs, pageOptions);
 
         if(page != null) {
+            page.doPageAppear();
             FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
             page.addFragments(ft, R.id.content_frame );
             ft.commit();
@@ -215,7 +216,7 @@ public class LigerDrawerFragment extends PageFragment implements MenuInterface {
     public void openDialog(String pageName, String title, JSONObject args, JSONObject options) {
         if (LIGER.LOGGING) {
             Log.d(LIGER.TAG,
-                    "DefaultMainActivity openDialog() title:" + title + ", pageName:" + pageName + ", args:"
+                    "LigerDrawerFragment openDialog() title:" + title + ", pageName:" + pageName + ", args:"
                             + (args == null ? null : args.toString()) + ", options:"
                             + (options == null ? null : options.toString()));
         }
@@ -333,37 +334,52 @@ public class LigerDrawerFragment extends PageFragment implements MenuInterface {
 
     @Override
     public String closeLastPage(PageFragment closePage, String closeTo) {
-        PageFragment lastPage = mFragDeck.getLast();
 
         PageFragment parentPage = null;
-        if (!StringUtils.isEmpty(closeTo)) {
-            Iterator<PageFragment> it = mFragDeck.descendingIterator();
-            while (it.hasNext()) {
-                PageFragment candidate = it.next();
-                if (StringUtils.equals(closeTo, candidate.getPageName())) {
-                    parentPage = candidate;
-                    break;
+
+        if(mFragDeck.size() > 0) {
+            PageFragment lastPage = mFragDeck.getLast();
+
+            if (!StringUtils.isEmpty(closeTo)) {
+                Iterator<PageFragment> it = mFragDeck.descendingIterator();
+                while (it.hasNext()) {
+                    PageFragment candidate = it.next();
+                    if (StringUtils.equals(closeTo, candidate.getPageName())) {
+                        parentPage = candidate;
+                        break;
+                    }
                 }
             }
-        }
-        if(closePage == null || closePage == lastPage) {
-            FragmentTransaction ft = mContext.getSupportFragmentManager().beginTransaction();
-            ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
-            mFragDeck.removeLast();
-            lastPage.doPageClosed();
-            ft.remove(lastPage);
-            if (parentPage == null) {
-                parentPage = mFragDeck.getLast();
+            if (closePage == null || closePage == lastPage) {
+                FragmentTransaction ft = mContext.getSupportFragmentManager().beginTransaction();
+                ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
+                mFragDeck.removeLast();
+                lastPage.doPageClosed();
+                ft.remove(lastPage);
+                if (parentPage == null) {
+                    if (mFragDeck.size() > 0) {
+                        parentPage = mFragDeck.getLast();
+                    }
+                } else {
+                    popTo(ft, parentPage);
+                }
+                String parentUpdateArgs = lastPage.getParentUpdateArgs();
+                if (parentPage != null) {
+                    parentPage.setChildArgs(parentUpdateArgs);
+                    parentPage.doPageAppear();
+                    ((DefaultMainActivity) getActivity()).setActionBarTitle(parentPage.getPageTitle());
+                }
+                ft.commit();
+
+                logStack("closeLastPage");
             } else {
-                popTo(ft, parentPage);
+                lastPage.closeLastPage(closePage, closeTo);
             }
-            String parentUpdateArgs = lastPage.getParentUpdateArgs();
-            parentPage.setChildArgs(parentUpdateArgs);
-            ft.commit();
-            ((DefaultMainActivity) getActivity()).setActionBarTitle(mFragDeck.getLast().getPageTitle());
-            logStack("closeLastPage");
-        }else{
-            lastPage.closeLastPage(closePage, closeTo);
+
+
+        }
+        if(mFragDeck.size() == 0){
+            getActivity().finish();
         }
         return parentPage == null ? null : parentPage.getPageName();
     }
