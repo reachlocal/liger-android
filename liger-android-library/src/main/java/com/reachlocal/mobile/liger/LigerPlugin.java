@@ -29,28 +29,28 @@ public class LigerPlugin extends CordovaPlugin {
         try {
             if (action.equalsIgnoreCase("openPage")) {
                 return openPage(args.getString(0), args.optString(1), args.optJSONObject(2), args.optJSONObject(3), callbackContext);
-            }
+            } else
             if (action.equalsIgnoreCase("closePage")) {
                 return closePage(callbackContext, args.optString(0));
-            }
+            } else
             if (action.equalsIgnoreCase("updateParent")) {
                 return updateParent(args.getJSONObject(1), callbackContext);
-            }
+            } else
             if (action.equalsIgnoreCase("openDialog")) {
                 return openDialog(null, args.getString(0), args.optJSONObject(1), args.optJSONObject(2), callbackContext);
-            }
+            } else
             if (action.equalsIgnoreCase("userCanRefresh")) {
                 return userCanRefresh(args.getBoolean(0), callbackContext);
-            }
+            } else
             if (action.equalsIgnoreCase("openDialogWithTitle")) {
                 return openDialog(args.getString(0), args.optString(1), args.optJSONObject(2), args.optJSONObject(3), callbackContext);
-            }
+            } else
             if (action.equalsIgnoreCase("closeDialog")) {
                 return closeDialog(args.getString(0), callbackContext);
-            }
+            } else
             if (action.equalsIgnoreCase("getPageArgs")) {
                 return getPageArguments(callbackContext);
-            }
+            } else
             if (action.equalsIgnoreCase("mToolbarLayout")) {
                 String toolbarSpec = args.isNull(0) ? null : args.getString(0);
                 return toolbar(toolbarSpec, callbackContext);
@@ -201,7 +201,12 @@ public class LigerPlugin extends CordovaPlugin {
                 boolean hasReset = argObj.optBoolean("resetApp") || StringUtils.isEmpty(page);
 
                 if (dialog != null) {
-                    dialog.dismiss();
+                    PageFragment parent = dialog.getContainer();
+                    if(parent != null){
+                        parent.dismiss();
+                    } else {
+                        dialog.dismiss();
+                    }
                 }
                 if (hasReset) {
                     activity.resetApp();
