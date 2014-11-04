@@ -1,4 +1,4 @@
-package com.reachlocal.mobile.liger;
+package com.reachlocal.mobile.liger.listeners;
 
 import com.reachlocal.mobile.liger.ui.PageFragment;
 
