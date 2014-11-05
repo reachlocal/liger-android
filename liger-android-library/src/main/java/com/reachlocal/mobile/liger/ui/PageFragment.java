@@ -83,7 +83,7 @@ public abstract class PageFragment extends DialogFragment {
 
     public void doPageAppear() {}
 
-    public void addFragments(FragmentTransaction ft, int contentViewID){}
+    public abstract void addFragments(FragmentTransaction ft, int contentViewID);
 
     public void doPageClosed() {}
 
