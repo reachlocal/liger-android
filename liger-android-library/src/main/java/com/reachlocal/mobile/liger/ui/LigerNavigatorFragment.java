@@ -376,29 +376,6 @@ public class LigerNavigatorFragment extends PageFragment {
         ft.add(containViewId, this);
     }
 
-//    @Override
-//    protected void fragmentDetached(PageFragment detachedFrag) {
-//        if(mFragDeck.size() > 0) {
-//            PageFragment lastPage = mFragDeck.getLast();
-//            if (lastPage == detachedFrag) {
-//                mFragDeck.removeLast();
-//            }
-//        }
-//        if(mFragDeck.size() == 0 || (mFragDeck.size() == 1 && mFragDeck.getLast().isDetached())){
-//            if(!mContext.isFinishing()) {
-//                FragmentTransaction ft = mContext.getSupportFragmentManager().beginTransaction();
-//                ft.remove(this);
-//                ft.commit();
-//            }
-//            if(mContainer != null){
-//                mContainer.fragmentDetached(this);
-//            }
-//            if(mActivity != null){
-//                mActivity.onFragmentFinished(this);
-//            }
-//        }
-//    }
-
     public static LigerNavigatorFragment build(String pageName, String pageTitle, String pageArgs, String pageOptions) {
         LigerNavigatorFragment navigator = new LigerNavigatorFragment();
         Bundle bundle = new Bundle();
