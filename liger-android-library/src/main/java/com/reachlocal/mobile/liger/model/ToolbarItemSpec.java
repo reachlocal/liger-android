@@ -1,7 +1,9 @@
 package com.reachlocal.mobile.liger.model;
 
 import android.util.Log;
+
 import com.reachlocal.mobile.liger.LIGER;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

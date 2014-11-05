@@ -19,7 +19,9 @@ public class MenuItemSpec {
         return mName;
     }
 
-    public String getMenuIdString() { return mMenuIdString; }
+    public String getMenuIdString() {
+        return mMenuIdString;
+    }
 
     public void setName(String name) {
         mName = name;
