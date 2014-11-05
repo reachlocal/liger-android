@@ -1,6 +1,5 @@
 package com.reachlocal.mobile.liger.ui;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;

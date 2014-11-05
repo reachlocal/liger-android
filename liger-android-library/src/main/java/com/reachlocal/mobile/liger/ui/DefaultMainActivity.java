@@ -22,18 +22,13 @@ import com.reachlocal.mobile.liger.utils.JSUtils;
 
 import com.reachlocal.mobile.liger.widgets.MenuInterface;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.cordova.Config;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CordovaWebView;
 import org.json.JSONObject;
 
-import java.util.Deque;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

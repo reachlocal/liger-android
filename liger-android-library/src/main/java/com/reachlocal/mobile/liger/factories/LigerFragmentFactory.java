@@ -1,8 +1,6 @@
 package com.reachlocal.mobile.liger.factories;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.net.Uri;
 
 import com.reachlocal.mobile.liger.ui.CordovaPageFragment;
@@ -13,8 +11,6 @@ import com.reachlocal.mobile.liger.ui.LigerNavigatorFragment;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.json.JSONObject;
-
-import java.util.List;
 
 /**
  * Created by Mark Wagner on 10/22/14.
