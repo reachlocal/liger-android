@@ -195,6 +195,11 @@ public class LigerDrawerFragment extends PageFragment implements MenuInterface {
         if(page != null) {
             page.doPageAppear();
             FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+            if(mFragDeck.size() > 0){
+                PageFragment previousPage = mFragDeck.getLast();
+                ft.remove(previousPage);
+                mFragDeck.removeLast();
+            }
             page.addFragments(ft, R.id.content_frame );
             ft.commit();
             mFragDeck.addLast(page);
@@ -367,7 +372,7 @@ public class LigerDrawerFragment extends PageFragment implements MenuInterface {
                     if (parentPage != null) {
                         parentPage.setChildArgs(parentUpdateArgs);
                         parentPage.doPageAppear();
-                        ((DefaultMainActivity) getActivity()).setActionBarTitle(parentPage.getPageTitle());
+                        ((DefaultMainActivity) mContext).setActionBarTitle(parentPage.getPageTitle());
                     }
                     ft.commit();
                 }
