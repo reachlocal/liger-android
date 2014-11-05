@@ -1,6 +1,7 @@
 package com.reachlocal.mobile.liger.ui;
 
 import android.app.Dialog;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
@@ -163,7 +164,6 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
             mWebView.handleResume(false, false);
         if (!isHidden()) {
             sendChildArgs();
-            doPageAppear();
         }
     }
 
@@ -353,6 +353,10 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
             mWebView.applyAfterMoveFix();
     }
 
+    public void onPageStarted(WebView view, String url, Bitmap favicon) {
+        updateTitle();
+    }
+
     protected void onPageFinished(WebView webView, String url) {
         if (LIGER.LOGGING) {
             Log.d(LIGER.TAG, "CordovaPageFragment.onPageFinished() " + pageName + ", " + url);
@@ -363,7 +367,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
             actionBarTitle = webTitle;
         }
         if (!isHidden()) {
-            updateTitle();
+            doPageAppear();
         }
         sendChildArgs();
         processJavascriptQueue();
