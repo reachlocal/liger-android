@@ -134,9 +134,6 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
                     menuDrawer.closeDrawers();
                 } else {
                     closePage(null, null);
-                    if(mRootPageFragment.isDetached()){
-                        finish();
-                    }
                 }
 
             }
