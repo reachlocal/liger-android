@@ -1,6 +1,9 @@
 package com.reachlocal.mobile.liger;
 
 import android.util.Log;
+
+import com.reachlocal.mobile.liger.ui.DefaultMainActivity;
+import com.reachlocal.mobile.liger.ui.PageFragment;
 import com.reachlocal.mobile.liger.utils.CordovaUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.cordova.CallbackContext;
@@ -19,7 +22,6 @@ public class LigerPlugin extends CordovaPlugin {
 
     @Override
     public boolean execute(String action, CordovaArgs args, CallbackContext callbackContext) throws JSONException {
-        DefaultMainActivity mainActivity = (DefaultMainActivity) cordova.getActivity();
 
         if (LIGER.LOGGING) {
             Log.d(LIGER.TAG, "LigerPlugin.execute() action:" + action + ", args:" + argsToString(args));
@@ -27,28 +29,28 @@ public class LigerPlugin extends CordovaPlugin {
         try {
             if (action.equalsIgnoreCase("openPage")) {
                 return openPage(args.getString(0), args.optString(1), args.optJSONObject(2), args.optJSONObject(3), callbackContext);
-            }
+            } else
             if (action.equalsIgnoreCase("closePage")) {
                 return closePage(callbackContext, args.optString(0));
-            }
+            } else
             if (action.equalsIgnoreCase("updateParent")) {
                 return updateParent(args.getJSONObject(1), callbackContext);
-            }
+            } else
             if (action.equalsIgnoreCase("openDialog")) {
                 return openDialog(null, args.getString(0), args.optJSONObject(1), args.optJSONObject(2), callbackContext);
-            }
+            } else
             if (action.equalsIgnoreCase("userCanRefresh")) {
                 return userCanRefresh(args.getBoolean(0), callbackContext);
-            }
+            } else
             if (action.equalsIgnoreCase("openDialogWithTitle")) {
                 return openDialog(args.getString(0), args.optString(1), args.optJSONObject(2), args.optJSONObject(3), callbackContext);
-            }
+            } else
             if (action.equalsIgnoreCase("closeDialog")) {
                 return closeDialog(args.getString(0), callbackContext);
-            }
+            } else
             if (action.equalsIgnoreCase("getPageArgs")) {
                 return getPageArguments(callbackContext);
-            }
+            } else
             if (action.equalsIgnoreCase("mToolbarLayout")) {
                 String toolbarSpec = args.isNull(0) ? null : args.getString(0);
                 return toolbar(toolbarSpec, callbackContext);
@@ -89,10 +91,16 @@ public class LigerPlugin extends CordovaPlugin {
      */
     public boolean openPage(final String title, final String link, final JSONObject args, final JSONObject options, CallbackContext callbackContext) {
         final DefaultMainActivity activity = (DefaultMainActivity) cordova.getActivity();
+        final PageFragment webFragment = PageFragment.fromCallbackContext(callbackContext);
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                activity.openPage(link, title, args, options);
+                if(webFragment.getContainer() == null){
+                    activity.openPage(link, title, args, options);
+                }
+                else {
+                    webFragment.getContainer().openPage(link, title, args, options);
+                }
             }
         });
         callbackContext.success();
@@ -101,10 +109,17 @@ public class LigerPlugin extends CordovaPlugin {
 
     public boolean openDialog(final String title, final String pageName, final JSONObject args, final JSONObject options, CallbackContext callbackContext) {
         final DefaultMainActivity activity = (DefaultMainActivity) cordova.getActivity();
+        final PageFragment webFragment = PageFragment.fromCallbackContext(callbackContext);
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                activity.openDialog(pageName, title, args, options);
+                if(webFragment.getContainer() == null){
+                    activity.openDialog(pageName, title, args, options);
+                }
+                else {
+                    webFragment.getContainer().openDialog(pageName, title, args, options);
+                }
+
             }
         });
         callbackContext.success();
@@ -117,7 +132,13 @@ public class LigerPlugin extends CordovaPlugin {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                activity.closePage(closedPage, closeTo);
+                if(closedPage.getContainer() == null){
+                    activity.closePage(closedPage, closeTo);
+                }
+                else {
+                    closedPage.getContainer().closeLastPage(closedPage, closeTo);
+                }
+
             }
         });
         callbackContext.success();
@@ -180,7 +201,12 @@ public class LigerPlugin extends CordovaPlugin {
                 boolean hasReset = argObj.optBoolean("resetApp") || StringUtils.isEmpty(page);
 
                 if (dialog != null) {
-                    dialog.dismiss();
+                    PageFragment parent = dialog.getContainer();
+                    if(parent != null){
+                        parent.dismiss();
+                    } else {
+                        dialog.dismiss();
+                    }
                 }
                 if (hasReset) {
                     activity.resetApp();

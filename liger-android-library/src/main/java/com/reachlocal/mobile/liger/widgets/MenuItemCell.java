@@ -7,9 +7,10 @@ import android.view.LayoutInflater;
 import android.widget.Checkable;
 import android.widget.CheckedTextView;
 import android.widget.LinearLayout;
-import com.reachlocal.mobile.liger.DefaultMainActivity;
+import com.reachlocal.mobile.liger.ui.DefaultMainActivity;
 import com.reachlocal.mobile.liger.R;
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONObject;
 
 public class MenuItemCell extends LinearLayout implements Checkable {
 
@@ -30,6 +31,9 @@ public class MenuItemCell extends LinearLayout implements Checkable {
     private String itemSubtitle;
     private boolean mMajor;
     private boolean mDialog;
+    private JSONObject itemArgs;
+    private JSONObject itemOptions;
+    private String mMenuIdString;
 
     public MenuItemCell(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -53,16 +57,15 @@ public class MenuItemCell extends LinearLayout implements Checkable {
         menuItemTitle = (CheckedTextView) findViewById(R.id.menu_item_title);
         menuItemSubtitle = (CheckedTextView) findViewById(R.id.menu_item_subtitle);
         afterViewsInjected();
-
     }
 
     @Override
     public boolean performClick() {
         DefaultMainActivity webActivity = (DefaultMainActivity) getContext();
         if (!mDialog) {
-            webActivity.openPage(clickAction, itemTitle, null, null);
+            webActivity.openPage(clickAction, itemTitle, itemArgs, itemOptions);
         } else {
-            webActivity.openDialog(clickAction, itemTitle, null, null);
+            webActivity.openDialog(clickAction, itemTitle, itemArgs, itemOptions);
         }
         return true;
     }
@@ -154,6 +157,10 @@ public class MenuItemCell extends LinearLayout implements Checkable {
         return itemSubtitle;
     }
 
+    public void setItemArgs(JSONObject args){ this.itemArgs = args; }
+
+    public void setItemOptions(JSONObject options) { this.itemOptions = options; }
+
     public void setItemSubtitle(String itemSubtitle) {
         this.itemSubtitle = itemSubtitle;
     }
@@ -177,4 +184,8 @@ public class MenuItemCell extends LinearLayout implements Checkable {
     public void setClickAction(String clickAction) {
         this.clickAction = clickAction;
     }
+
+    public void setMenuIdString(String menuIdString) { this.mMenuIdString = menuIdString; }
+
+    public String getMenuIdString() { return mMenuIdString; }
 }

@@ -1,6 +1,8 @@
 package com.reachlocal.mobile.liger;
 
 import android.util.Log;
+
+import com.reachlocal.mobile.liger.ui.DefaultMainActivity;
 import com.reachlocal.mobile.liger.widgets.AlertDialogFragment;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaArgs;

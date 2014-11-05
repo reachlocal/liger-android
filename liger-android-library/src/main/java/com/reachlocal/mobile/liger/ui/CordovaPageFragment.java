@@ -1,12 +1,16 @@
-package com.reachlocal.mobile.liger;
+package com.reachlocal.mobile.liger.ui;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.*;
 import android.webkit.WebView;
+
+import com.reachlocal.mobile.liger.LIGER;
+import com.reachlocal.mobile.liger.listeners.PageLifecycleListener;
+import com.reachlocal.mobile.liger.R;
 import com.reachlocal.mobile.liger.model.ToolbarItemSpec;
 import com.reachlocal.mobile.liger.utils.JsonUtils;
 import com.reachlocal.mobile.liger.widgets.ToolbarLayout;
@@ -20,7 +24,6 @@ import java.util.Set;
 
 public class CordovaPageFragment extends PageFragment implements ToolbarLayout.OnToolbarItemClickListener {
 
-    DefaultMainActivity activity;
     Menu mMenu;
     MenuInflater mMenuInflater;
 
@@ -31,7 +34,6 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     private boolean childArgsSent = false;
 
     // Fragment arguments
-    String pageName;
     String pageArgs;
     String pageOptions;
     boolean isDialog;
@@ -65,7 +67,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
             canRefresh = savedInstanceState.getBoolean("canRefresh");
         }
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "PageFragment.onCreate() " + pageName);
+            Log.d(LIGER.TAG, this.getClass().getSimpleName() + ".onCreate() " + pageName);
         }
 
         setHasOptionsMenu(true);
@@ -82,18 +84,11 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
 
     }
 
-    @Override
-    public void onDestroy() {
-        if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "PageFragment.onDestroy() " + pageName);
-        }
-        super.onDestroy();
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "PageFragment.onCreateView() " + pageName);
+            Log.d(LIGER.TAG, "CordovaPageFragment.onCreateView() " + pageName);
         }
         if (isDialog) {
             return super.onCreateView(inflater, container, savedInstanceState);
@@ -104,6 +99,8 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
 
     protected View createContentView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.page_fragment, container, false);
+        DefaultMainActivity activity = (DefaultMainActivity) mContext;
+
         mWebView = (FixedCordovaWebView) view.findViewById(R.id.web_view);
         mToolbarLayout = (ToolbarLayout) view.findViewById(R.id.toolbar);
 
@@ -149,7 +146,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     public void onDestroyView() {
         super.onDestroyView();
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "PageFragment.onDestroyView() " + pageName);
+            Log.d(LIGER.TAG, "CordovaPageFragment.onDestroyView() " + pageName);
         }
         mWebView.removeAllViews();
         mWebView.handleDestroy();
@@ -158,15 +155,11 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        this.activity = (DefaultMainActivity) activity;
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
-        mWebView.handleResume(false, false);
+        ((DefaultMainActivity) getActivity()).setMenuSelection(pageName);
+        if(mWebView != null)
+            mWebView.handleResume(false, false);
         if (!isHidden()) {
             sendChildArgs();
             updateTitle();
@@ -178,7 +171,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "PageFragment.onHiddenChanged() " + pageName + ", " + hidden);
+            Log.d(LIGER.TAG, "CordovaPageFragment.onHiddenChanged() " + pageName + ", " + hidden);
         }
         if (!hidden) {
             sendChildArgs();
@@ -190,8 +183,14 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         }
     }
 
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        updateTitle();
+    }
 
     public void updateTitle() {
+        DefaultMainActivity activity = (DefaultMainActivity) mContext;
         boolean isResumed = isResumed();
         if (isResumed && !isHidden() && !isDialog) {
             activity.setActionBarTitle(actionBarTitle);
@@ -201,7 +200,8 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     @Override
     public void onPause() {
         super.onPause();
-        mWebView.handlePause(false);
+        if(mWebView != null)
+            mWebView.handlePause(false);
     }
 
     @Override
@@ -217,6 +217,11 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         } else {
             queueJavascript(js);
         }
+    }
+
+    @Override
+    public String closeLastPage(PageFragment closePage, String closeTo) {
+        return null;
     }
 
     private void queueJavascript(String js) {
@@ -242,6 +247,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         if (LIGER.LOGGING) {
             Log.d(LIGER.TAG, "CordovaPageFragment.doSendJavascript() to " + (mWebView == null ? "(null webView)" : mWebView.getUrl()) + ", js:" + js);
         }
+        if(mWebView != null)
             mWebView.sendJavascript(js);
     }
 
@@ -249,6 +255,12 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     public String getPageName() {
         return pageName;
     }
+
+    @Override
+    public String getPageTitle() {
+        return actionBarTitle;
+    }
+
 
     @Override
     public void setToolbar(String toolbarSpec) {
@@ -338,7 +350,8 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         if (isLoaded) {
             sendJavascript("PAGE.onPageAppear();");
         }
-        mWebView.applyAfterMoveFix();
+        if(mWebView != null)
+            mWebView.applyAfterMoveFix();
     }
 
     protected void onPageFinished(WebView webView, String url) {
@@ -365,7 +378,15 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         }
     }
 
+    @Override
+    protected void fragmentDetached(PageFragment detachedFrag) {
+        if(mActivity != null){
+            mActivity.onFragmentFinished(this);
+        }
+    }
+
     private void addJavascriptInterfaces() {
+        DefaultMainActivity activity = (DefaultMainActivity) mContext;
         Map<String, Object> interfaces = activity.getJavascriptInterfaces(this);
         Set<String> keys = interfaces.keySet();
         for (String key : keys) {
@@ -402,7 +423,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     @Override
     public String getPageArgs() {
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "PageFragment.getPageArgs() " + pageName);
+            Log.d(LIGER.TAG, "CordovaPageFragment.getPageArgs() " + pageName);
         }
         return pageArgs;
     }
@@ -436,23 +457,28 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
 
     }
 
+    @Override
+    public void addFragments(FragmentTransaction ft, int contentViewID){
+        ft.add(contentViewID, this);
+    }
+
     public static CordovaPageFragment build(String pageName, String pageTitle, String pageArgs, String pageOptions) {
         CordovaPageFragment newFragment = new CordovaPageFragment();
-        Bundle args = new Bundle();
+        Bundle bundle = new Bundle();
         if (pageName != null) {
-            args.putString("pageName", pageName);
+            bundle.putString("pageName", pageName);
         }
         if (pageTitle != null) {
-            args.putString("pageTitle", pageTitle);
+            bundle.putString("pageTitle", pageTitle);
         }
         if (pageArgs != null) {
-            args.putString("pageArgs", pageArgs);
+            bundle.putString("pageArgs", pageArgs);
         }
         if (pageOptions != null) {
-            args.putString("pageOptions", pageOptions);
+            bundle.putString("pageOptions", pageOptions);
         }
 
-        newFragment.setArguments(args);
+        newFragment.setArguments(bundle);
 
         return newFragment;
     }

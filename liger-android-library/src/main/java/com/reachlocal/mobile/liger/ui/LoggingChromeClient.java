@@ -1,8 +1,10 @@
-package com.reachlocal.mobile.liger;
+package com.reachlocal.mobile.liger.ui;
 
 import android.util.Log;
 import android.webkit.ConsoleMessage;
-import android.webkit.WebChromeClient;
+
+import com.reachlocal.mobile.liger.LIGER;
+
 import org.apache.cordova.CordovaChromeClient;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaWebView;

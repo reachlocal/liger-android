@@ -47,7 +47,7 @@ public class CordovaUtils {
     public static boolean hasReset(String args) {
         boolean hasReset = false;
         if (args != null && args.length() > 0) {
-            JSONObject obj = null;
+            JSONObject obj;
             try {
                 obj = new JSONObject(args);
                 hasReset = obj.optBoolean("resetApp");

@@ -3,13 +3,11 @@ package com.reachlocal.mobile.liger.model;
 import android.content.Context;
 import com.reachlocal.mobile.liger.LIGER;
 import org.apache.commons.io.IOUtils;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 public class AppConfig {
@@ -21,6 +19,9 @@ public class AppConfig {
     private String mAppConfigString;
 
     private String mRootPageName;
+    private String mRootPageTitle = "";
+    private JSONObject mRootPageArgs;
+    private JSONObject mRootPageOptions;
 
     private boolean mNotifications;
 
@@ -61,6 +62,16 @@ public class AppConfig {
         return mRootPageName;
     }
 
+    public String getRootPageTitle() { return mRootPageTitle; }
+
+    public JSONObject getRootPageArgs() {
+        return mRootPageArgs;
+    }
+
+    public JSONObject getRootPageOptions() {
+        return mRootPageOptions;
+    }
+
     public boolean getNotificationsEnabled() {
         return mNotifications;
     }
@@ -69,7 +80,7 @@ public class AppConfig {
         if (sAppConfig != null) {
             return sAppConfig;
         }
-        InputStream is = null;
+        InputStream is;
         try {
             is = context.getAssets().open("app/app.json");
             sAppConfig = parseAppConfig(IOUtils.toString(is));
@@ -85,28 +96,15 @@ public class AppConfig {
         try {
             JSONObject parentObj = new JSONObject(appConfigString);
             appConfig.setAppFormatVersion(parentObj.getLong("appFormatVersion"));
-            JSONArray menuParentArray = null;
 
-            if(appConfig.appFormatVersion >= 5) {
+            if(appConfig.appFormatVersion >= 6) {
                 JSONObject rootPage = parentObj.getJSONObject("rootPage");
-                menuParentArray = rootPage.getJSONArray("args");
-                JSONObject fakeConfig = new JSONObject();
-                fakeConfig.put("menu", menuParentArray);
-                appConfig.mAppConfigString = fakeConfig.toString();
+                appConfig.mRootPageArgs = rootPage.getJSONObject("args");
                 appConfig.mRootPageName = rootPage.getString("page");
+                appConfig.mAppConfigString = appConfig.mRootPageArgs.toString();
                 appConfig.mNotifications = parentObj.optBoolean("notifications");
             } else {
-                appConfig.mAppConfigString = appConfigString;
-                menuParentArray = parentObj.getJSONArray("menu");
-            }
-
-            JSONArray majorMenu = menuParentArray.optJSONArray(0);
-            if (majorMenu != null) {
-                appConfig.setMajorMenuItems(createMenuItems(majorMenu, true));
-            }
-            JSONArray minorMenu = menuParentArray.optJSONArray(1);
-            if (minorMenu != null) {
-                appConfig.setMinorMenuItems(createMenuItems(minorMenu, false));
+                throw new RuntimeException("Not Supported appFormatVersion");
             }
 
         } catch (JSONException e) {
@@ -115,30 +113,4 @@ public class AppConfig {
         return appConfig;
     }
 
-    public static List<MenuItemSpec> createMenuItems(JSONArray menuArray, boolean major) throws JSONException {
-        List<MenuItemSpec> menuList = new ArrayList<MenuItemSpec>();
-        int size = menuArray.length();
-        for (int i = 0; i < size; i++) {
-            menuList.add(MenuItemSpec.createFromJSON(menuArray.getJSONObject(i), major));
-        }
-        return menuList;
-    }
-
-    public List<String> getPageNames() {
-        ArrayList<String> pageNames = new ArrayList<String>();
-        addPageNames(pageNames, mMajorMenuItems);
-        addPageNames(pageNames, mMinorMenuItems);
-        return pageNames;
-    }
-
-    private void addPageNames(List<String> pageNames, List<MenuItemSpec> menuItems) {
-        if (menuItems == null) {
-            return;
-        }
-        for (MenuItemSpec item : menuItems) {
-            if (!item.isDialog()) {
-                pageNames.add(item.getPage());
-            }
-        }
-    }
 }

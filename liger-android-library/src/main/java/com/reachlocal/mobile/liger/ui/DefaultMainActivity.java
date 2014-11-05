@@ -1,4 +1,4 @@
-package com.reachlocal.mobile.liger;
+package com.reachlocal.mobile.liger.ui;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -6,15 +6,22 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.*;
+
+import com.reachlocal.mobile.liger.LIGER;
+import com.reachlocal.mobile.liger.R;
+import com.reachlocal.mobile.liger.factories.LigerFragmentFactory;
 import com.reachlocal.mobile.liger.gcm.GcmRegistrationHelper;
+import com.reachlocal.mobile.liger.listeners.RootPageListener;
 import com.reachlocal.mobile.liger.model.AppConfig;
 import com.reachlocal.mobile.liger.utils.JSUtils;
-import com.reachlocal.mobile.liger.widgets.DefaultMenuFragment;
+
 import com.reachlocal.mobile.liger.widgets.MenuInterface;
+
 import org.apache.cordova.Config;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
@@ -22,45 +29,48 @@ import org.apache.cordova.CordovaWebView;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class DefaultMainActivity extends ActionBarActivity implements CordovaInterface, GcmRegistrationHelper.OnGcmRegisteredListener {
+public class DefaultMainActivity extends ActionBarActivity implements CordovaInterface, GcmRegistrationHelper.OnGcmRegisteredListener, RootPageListener {
 
     public static final String SAVE_CHILD_ARGS = "SAVE_CHILD_ARGS";
 
-    protected PageStackHelper fragStack;
+    public ActionBarDrawerToggle menuToggle;
 
     private String lastChildArgs;
 
     protected CordovaPlugin activityResultCallback;
-    protected DrawerLayout menuDrawer;
+
     protected PageFragment mRootPageFragment;
-    protected ActionBarDrawerToggle menuToggle;
+
+
+    public DrawerLayout menuDrawer;
 
     protected boolean activityResultKeepRunning = false;
     protected boolean keepRunning = false;
     protected final ExecutorService threadPool = Executors.newCachedThreadPool();
 
-    private AppConfig mAppConfig;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.liger_main);
-        mAppConfig = AppConfig.getAppConfig(this);
-        List<String> pageNames = mAppConfig.getPageNames();
+        AppConfig mAppConfig = AppConfig.getAppConfig(this);
 
-        fragStack = createPageStackHelper(R.id.content_frame);
-        fragStack.onCreate(this, savedInstanceState, pageNames.get(0), pageNames);
+        LigerFragmentFactory.mContext = this;
+        mRootPageFragment = LigerFragmentFactory.openPage(mAppConfig.getRootPageName(), mAppConfig.getRootPageTitle(), mAppConfig.getRootPageArgs(), mAppConfig.getRootPageOptions());
 
+        if(mRootPageFragment != null) {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            mRootPageFragment.addFragments(ft, R.id.content_frame);
+            mRootPageFragment.setRootPageListener(this);
+            ft.commit();
+        }
         if (savedInstanceState != null) {
             lastChildArgs = savedInstanceState.getString(SAVE_CHILD_ARGS);
         }
         Config.init(this);
-        setupMenu();
 
         if(mAppConfig.getNotificationsEnabled()) {
             GcmRegistrationHelper gcmHelper = new GcmRegistrationHelper(this, this);
@@ -120,10 +130,13 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
         int keyCode = event.getKeyCode();
         if ((keyCode == KeyEvent.KEYCODE_BACK)) {
             if (event.getAction() == KeyEvent.ACTION_UP) {
-                if (menuDrawer.isDrawerOpen(Gravity.START)) {
+                if (menuDrawer != null && menuDrawer.isDrawerOpen(Gravity.START)) {
                     menuDrawer.closeDrawers();
                 } else {
                     closePage(null, null);
+                    if(mRootPageFragment.isDetached()){
+                        finish();
+                    }
                 }
 
             }
@@ -132,12 +145,8 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
         return super.dispatchKeyEvent(event);
     }
 
-    public void closePage(PageFragment closedPage, String closeTo) {
-        if (fragStack.hasPrevious()) {
-            setMenuSelection(fragStack.closeLastPage(closedPage, closeTo));
-        } else {
-            finish();
-        }
+    public void closePage(PageFragment closePage, String closeTo) {
+        mRootPageFragment.closeLastPage(closePage, closeTo);
     }
 
     @Override
@@ -159,7 +168,7 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         // Sync the toggle state after onRestoreInstanceState has occurred.
-        menuToggle.syncState();
+        //menuToggle.syncState();
     }
 
     @Override
@@ -180,10 +189,7 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (menuToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        return menuToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
 
 
@@ -197,28 +203,12 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
         return this;
     }
 
-    /**
-     * Create the {@link PageStackHelper} which will be used to manage the
-     * page stack and create and/or show pages. Subclasses can extend the functionality by returning
-     * a custom subclass of {@link PageStackHelper}.
-     *
-     * @param contentFrameId
-     * @return a new stack helper
-     */
-    public PageStackHelper createPageStackHelper(int contentFrameId) {
-        return new PageStackHelper(contentFrameId);
-    }
-
-    public PageFragment getCurrentWebFrag() {
-        return fragStack.getCurrentFragment();
-    }
-
     public void sendJavascriptWithArgs(String object, String function, String args) {
-        PageFragment currentWebFrag = fragStack.getCurrentFragment();
-        if (currentWebFrag == null) {
+
+        if (mRootPageFragment == null) {
             Log.w(LIGER.TAG, "Cannot send javascript, no current web fragment!");
         } else {
-            currentWebFrag.sendJavascriptWithArgs(object, function, args);
+            mRootPageFragment.sendJavascriptWithArgs(object, function, args);
         }
     }
 
@@ -237,75 +227,37 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
     }
 
 
-    private void setupMenu() {
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
 
-        menuDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mRootPageFragment = createRootPage();
-        if (mRootPageFragment instanceof MenuInterface) {
-            ((MenuInterface) mRootPageFragment).setMenuItems(mAppConfig.getMajorMenuItems(), mAppConfig.getMinorMenuItems());
-        }
-        getSupportFragmentManager().beginTransaction().add(R.id.drawer_menu, mRootPageFragment).commit();
-
-        menuToggle = new ActionBarDrawerToggle(this, /* host Activity */
-                menuDrawer, /* DrawerLayout object */
-                R.drawable.ic_drawer, /* nav drawer image to replace 'Up' caret */
-                R.string.menu_open_desc, /* "open drawer" description for accessibility */
-                R.string.menu_close_desc /* "close drawer" description for accessibility */
-        ) {
-            public void onDrawerClosed(View view) {
-                //getSupportActionBar().setTitle(getTitle());
-                supportInvalidateOptionsMenu(); // creates call to
-                // onPrepareOptionsMenu()
-            }
-
-            public void onDrawerOpened(View drawerView) {
-                //getSupportActionBar().setTitle(getTitle());
-                supportInvalidateOptionsMenu(); // creates call to
-                // onPrepareOptionsMenu()
-                mRootPageFragment.doPageAppear();
-            }
-        };
-        menuToggle.setDrawerIndicatorEnabled(true);
-
-        menuDrawer.setDrawerListener(menuToggle);
-
-    }
 
     public void openPage(String pageName, String title, JSONObject pageArgs, JSONObject pageOptions) {
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "openPage() pageName:" + pageName + ", args:" + pageArgs+ ", options:" + pageOptions);
+            Log.d(LIGER.TAG, "DefaultMainActivity openPage() pageName:" + pageName + ", args:" + pageArgs+ ", options:" + pageOptions);
         }
         menuDrawer.closeDrawers();
-        fragStack.openPage(pageName, title, pageArgs, pageOptions);
-        setMenuSelection(pageName);
+        mRootPageFragment.openPage(pageName,title,pageArgs,pageOptions);
     }
 
     public void openDialog(String pageName, String title, JSONObject args, JSONObject options) {
         menuDrawer.closeDrawers();
-        fragStack.openDialog(pageName, title, args, options);
+        if (LIGER.LOGGING) {
+            Log.d(LIGER.TAG,
+                    "DefaultMainActivity openDialog() title:" + title + ", pageName:" + pageName + ", args:"
+                            + (args == null ? null : args.toString()) + ", options:"
+                            + (options == null ? null : options.toString()));
+        }
+        mRootPageFragment.openDialog(pageName,title,args,options);
     }
 
-    private void setMenuSelection(String pageName) {
+    public void setMenuSelection(String pageName) {
         if (mRootPageFragment instanceof MenuInterface) {
             ((MenuInterface) mRootPageFragment).setSelectedItem(pageName);
         }
     }
 
-    /**
-     * Creates a page fragment comprised of native components. Override to provide
-     * a different page.
-     *
-     * @return
-     */
-    protected PageFragment createRootPage() {
-        return new DefaultMenuFragment();
-    }
 
     public void resetApp() {
-        fragStack.resetToHome();
-        setMenuSelection(fragStack.getCurrentFragment().getPageName());
+        //TODO fragStack.resetToHome();
+        //setMenuSelection(fragStack.getCurrentFragment().getPageName());
     }
 
     @Override
@@ -318,4 +270,10 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
         mRootPageFragment.sendJavascriptWithArgs("PAGE", "pushNotificationTokenUpdated", args);
     }
 
+    @Override
+    public void onFragmentFinished(PageFragment page) {
+        if(page == mRootPageFragment){
+            finish();
+        }
+    }
 }
