@@ -162,7 +162,6 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
             mWebView.handleResume(false, false);
         if (!isHidden()) {
             sendChildArgs();
-            updateTitle();
             doPageAppear();
         }
     }
@@ -186,7 +185,6 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     @Override
     public void onViewStateRestored(Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        updateTitle();
     }
 
     public void updateTitle() {
