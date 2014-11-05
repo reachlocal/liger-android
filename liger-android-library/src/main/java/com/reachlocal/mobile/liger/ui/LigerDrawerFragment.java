@@ -43,12 +43,11 @@ public class LigerDrawerFragment extends PageFragment implements MenuInterface {
     List<MenuItemSpec> mMinorItems;
     String mSelectedItem;
 
-    //HashMap<String, PageFragment> mFragCache = new HashMap<String, PageFragment>();
+    HashMap<String, PageFragment> mDrawerCache = new HashMap<String, PageFragment>();
 
     private List<MenuItemSpec> mMajorMenuItems;
     private List<MenuItemSpec> mMinorMenuItems;
 
-    private FragmentActivity mContext;
     List<MenuItemCell> mMenuItems = new ArrayList<MenuItemCell>();
 
 
@@ -88,19 +87,11 @@ public class LigerDrawerFragment extends PageFragment implements MenuInterface {
 
             public void onDrawerOpened(View drawerView) {
                 getActivity().supportInvalidateOptionsMenu(); // creates call to
-                doPageAppear();
             }
         };
         ((DefaultMainActivity)mContext).menuToggle.setDrawerIndicatorEnabled(true);
 
         ((DefaultMainActivity)mContext).menuDrawer.setDrawerListener(((DefaultMainActivity)mContext).menuToggle);
-    }
-
-
-    @Override
-    public void onAttach(Activity activity) {
-        mContext=(FragmentActivity) activity;
-        super.onAttach(activity);
     }
 
 
@@ -124,12 +115,14 @@ public class LigerDrawerFragment extends PageFragment implements MenuInterface {
         } else {
             for(int i = 0; i < minorCount; i++) {
                 MenuItemCell cell = insertCell(inflater, mMinorItems.get(i), i + 1);
+                //mDrawerCache.put(cell.getMenuIdString(), cell.
                 cell.setChecked(false);
             }
         }
         int majorCount = mMajorItems == null ? 0 : mMajorItems.size();
         for(int i = 0; i < majorCount; i++) {
             MenuItemCell cell = insertCell(inflater, mMajorItems.get(i), i);
+            //mDrawerCache.put(cell.getMenuIdString(), cell.
             cell.setChecked(i == 0);
         }
     }
@@ -178,6 +171,7 @@ public class LigerDrawerFragment extends PageFragment implements MenuInterface {
         cell.setItemArgs(itemSpec.getArgs());
         cell.setItemOptions(itemSpec.getOptions());
         cell.setMajor(itemSpec.isMajor());
+        cell.setMenuIdString(itemSpec.getMenuIdString());
         cell.updateText();
         mDrawerContentLayout.addView(cell, insertPosition);
         mMenuItems.add(cell);
@@ -250,7 +244,11 @@ public class LigerDrawerFragment extends PageFragment implements MenuInterface {
 
     @Override
     public String getPageArgs() {
-        return mFragDeck.getLast().getPageArgs();
+        if(mFragDeck.size() > 0) {
+            return mFragDeck.getLast().getPageArgs();
+        }else{
+            return null;
+        }
     }
 
     @Override
@@ -272,22 +270,22 @@ public class LigerDrawerFragment extends PageFragment implements MenuInterface {
         List<MenuItemSpec> menuList = new ArrayList<MenuItemSpec>();
         int size = menuArray.length();
         for (int i = 0; i < size; i++) {
-            menuList.add(MenuItemSpec.createFromJSON(menuArray.getJSONObject(i), major));
+            menuList.add(MenuItemSpec.createFromJSON(menuArray.getJSONObject(i), major, i));
         }
         return menuList;
     }
 
     public static LigerDrawerFragment build(String pageName, String pageTitle, String pageArgs, String pageOptions) {
         LigerDrawerFragment newFragment = new LigerDrawerFragment();
-        Bundle args = new Bundle();
+        Bundle bundle = new Bundle();
         if (pageName != null) {
-            args.putString("pageName", pageName);
+            bundle.putString("pageName", pageName);
         }
         if (pageTitle != null) {
-            args.putString("pageTitle", pageTitle);
+            bundle.putString("pageTitle", pageTitle);
         }
         if (pageArgs != null) {
-            args.putString("pageArgs", pageArgs);
+            bundle.putString("pageArgs", pageArgs);
             try {
                 JSONObject childPage = new JSONObject(pageArgs);
 
@@ -309,10 +307,10 @@ public class LigerDrawerFragment extends PageFragment implements MenuInterface {
 
         }
         if (pageOptions != null) {
-            args.putString("pageOptions", pageOptions);
+            bundle.putString("pageOptions", pageOptions);
         }
 
-        newFragment.setArguments(args);
+        newFragment.setArguments(bundle);
 
         return newFragment;
     }
@@ -328,7 +326,29 @@ public class LigerDrawerFragment extends PageFragment implements MenuInterface {
         PageFragment page = LigerFragmentFactory.openPage(firstMenuItem.getPage(), firstMenuItem.getName(), firstMenuItem.getArgs(), firstMenuItem.getOptions());
         if(page != null) {
             mFragDeck.addLast(page);
+            page.mContainer = this;
             page.addFragments(ft, contentViewID);
+        }
+    }
+
+    @Override
+    protected void fragmentDetached(PageFragment detachedFrag) {
+        if(mFragDeck.size() > 0) {
+            PageFragment lastPage = mFragDeck.getLast();
+            if (lastPage == detachedFrag) {
+                mFragDeck.removeLast();
+            }
+        }
+        if(mFragDeck.size() == 0 || (mFragDeck.size() == 1 && mFragDeck.getLast().isDetached())){
+            FragmentTransaction ft = mContext.getSupportFragmentManager().beginTransaction();
+            ft.remove(this);
+            ft.commit();
+            if(mContainer != null){
+                mContainer.fragmentDetached(this);
+            }
+            if(mActivity != null){
+                mActivity.onFragmentFinished(this);
+            }
         }
     }
 
@@ -351,25 +371,29 @@ public class LigerDrawerFragment extends PageFragment implements MenuInterface {
                 }
             }
             if (closePage == null || closePage == lastPage) {
-                FragmentTransaction ft = mContext.getSupportFragmentManager().beginTransaction();
-                ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
-                mFragDeck.removeLast();
-                lastPage.doPageClosed();
-                ft.remove(lastPage);
-                if (parentPage == null) {
-                    if (mFragDeck.size() > 0) {
-                        parentPage = mFragDeck.getLast();
+                if(lastPage instanceof LigerNavigatorFragment){
+                    lastPage.closeLastPage(closePage, closeTo);
+                }else {
+                    FragmentTransaction ft = mContext.getSupportFragmentManager().beginTransaction();
+                    ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
+                    mFragDeck.removeLast();
+                    lastPage.doPageClosed();
+                    ft.remove(lastPage);
+                    if (parentPage == null) {
+                        if (mFragDeck.size() > 0) {
+                            parentPage = mFragDeck.getLast();
+                        }
+                    } else {
+                        popTo(ft, parentPage);
                     }
-                } else {
-                    popTo(ft, parentPage);
+                    String parentUpdateArgs = lastPage.getParentUpdateArgs();
+                    if (parentPage != null) {
+                        parentPage.setChildArgs(parentUpdateArgs);
+                        parentPage.doPageAppear();
+                        ((DefaultMainActivity) getActivity()).setActionBarTitle(parentPage.getPageTitle());
+                    }
+                    ft.commit();
                 }
-                String parentUpdateArgs = lastPage.getParentUpdateArgs();
-                if (parentPage != null) {
-                    parentPage.setChildArgs(parentUpdateArgs);
-                    parentPage.doPageAppear();
-                    ((DefaultMainActivity) getActivity()).setActionBarTitle(parentPage.getPageTitle());
-                }
-                ft.commit();
 
                 logStack("closeLastPage");
             } else {
@@ -378,8 +402,10 @@ public class LigerDrawerFragment extends PageFragment implements MenuInterface {
 
 
         }
-        if(mFragDeck.size() == 0){
-            getActivity().finish();
+        if(mFragDeck.size() == 0 || (mFragDeck.size() == 1 && mFragDeck.getLast().isDetached())){
+            FragmentTransaction ft = mContext.getSupportFragmentManager().beginTransaction();
+            ft.remove(this);
+            ft.commit();
         }
         return parentPage == null ? null : parentPage.getPageName();
     }

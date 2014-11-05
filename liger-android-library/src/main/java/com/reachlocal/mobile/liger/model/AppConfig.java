@@ -98,7 +98,6 @@ public class AppConfig {
         try {
             JSONObject parentObj = new JSONObject(appConfigString);
             appConfig.setAppFormatVersion(parentObj.getLong("appFormatVersion"));
-            JSONArray menuParentArray = null;
 
             if(appConfig.appFormatVersion >= 6) {
                 JSONObject rootPage = parentObj.getJSONObject("rootPage");
@@ -110,52 +109,10 @@ public class AppConfig {
                 throw new RuntimeException("Not Supported appFormatVersion");
             }
 
-            JSONArray majorMenu = null;
-            JSONArray minorMenu = null;
-
-            if(menuParentArray != null) {
-                majorMenu = menuParentArray.optJSONArray(0);
-                minorMenu = menuParentArray.optJSONArray(1);
-            }
-
-            if (majorMenu != null) {
-                appConfig.setMajorMenuItems(createMenuItems(majorMenu, true));
-            }
-
-            if (minorMenu != null) {
-                appConfig.setMinorMenuItems(createMenuItems(minorMenu, false));
-            }
-
         } catch (JSONException e) {
             throw new RuntimeException("Invalid app.json!", e);
         }
         return appConfig;
     }
 
-    public static List<MenuItemSpec> createMenuItems(JSONArray menuArray, boolean major) throws JSONException {
-        List<MenuItemSpec> menuList = new ArrayList<MenuItemSpec>();
-        int size = menuArray.length();
-        for (int i = 0; i < size; i++) {
-            menuList.add(MenuItemSpec.createFromJSON(menuArray.getJSONObject(i), major));
-        }
-        return menuList;
-    }
-
-    public List<String> getPageNames() {
-        ArrayList<String> pageNames = new ArrayList<String>();
-        addPageNames(pageNames, mMajorMenuItems);
-        addPageNames(pageNames, mMinorMenuItems);
-        return pageNames;
-    }
-
-    private void addPageNames(List<String> pageNames, List<MenuItemSpec> menuItems) {
-        if (menuItems == null) {
-            return;
-        }
-        for (MenuItemSpec item : menuItems) {
-            if (!item.isDialog()) {
-                pageNames.add(item.getPage());
-            }
-        }
-    }
 }

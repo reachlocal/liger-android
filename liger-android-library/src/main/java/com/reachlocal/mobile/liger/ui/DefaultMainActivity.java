@@ -16,6 +16,7 @@ import com.reachlocal.mobile.liger.LIGER;
 import com.reachlocal.mobile.liger.R;
 import com.reachlocal.mobile.liger.factories.LigerFragmentFactory;
 import com.reachlocal.mobile.liger.gcm.GcmRegistrationHelper;
+import com.reachlocal.mobile.liger.listeners.RootPageListener;
 import com.reachlocal.mobile.liger.model.AppConfig;
 import com.reachlocal.mobile.liger.utils.JSUtils;
 
@@ -37,7 +38,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class DefaultMainActivity extends ActionBarActivity implements CordovaInterface, GcmRegistrationHelper.OnGcmRegisteredListener {
+public class DefaultMainActivity extends ActionBarActivity implements CordovaInterface, GcmRegistrationHelper.OnGcmRegisteredListener, RootPageListener {
 
     public static final String SAVE_CHILD_ARGS = "SAVE_CHILD_ARGS";
 
@@ -68,6 +69,7 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
         if(mRootPageFragment != null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             mRootPageFragment.addFragments(ft, R.id.content_frame);
+            mRootPageFragment.setRootPageListener(this);
             ft.commit();
         }
         if (savedInstanceState != null) {
@@ -133,10 +135,13 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
         int keyCode = event.getKeyCode();
         if ((keyCode == KeyEvent.KEYCODE_BACK)) {
             if (event.getAction() == KeyEvent.ACTION_UP) {
-                if (menuDrawer.isDrawerOpen(Gravity.START)) {
+                if (menuDrawer != null && menuDrawer.isDrawerOpen(Gravity.START)) {
                     menuDrawer.closeDrawers();
                 } else {
                     closePage(null, null);
+                    if(mRootPageFragment.isDetached()){
+                        finish();
+                    }
                 }
 
             }
@@ -270,4 +275,10 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
         mRootPageFragment.sendJavascriptWithArgs("PAGE", "pushNotificationTokenUpdated", args);
     }
 
+    @Override
+    public void onFragmentFinished(PageFragment page) {
+        if(page == mRootPageFragment){
+            finish();
+        }
+    }
 }

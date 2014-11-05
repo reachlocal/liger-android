@@ -33,6 +33,7 @@ public class MenuItemCell extends LinearLayout implements Checkable {
     private boolean mDialog;
     private JSONObject itemArgs;
     private JSONObject itemOptions;
+    private String mMenuIdString;
 
     public MenuItemCell(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -56,7 +57,6 @@ public class MenuItemCell extends LinearLayout implements Checkable {
         menuItemTitle = (CheckedTextView) findViewById(R.id.menu_item_title);
         menuItemSubtitle = (CheckedTextView) findViewById(R.id.menu_item_subtitle);
         afterViewsInjected();
-
     }
 
     @Override
@@ -184,4 +184,8 @@ public class MenuItemCell extends LinearLayout implements Checkable {
     public void setClickAction(String clickAction) {
         this.clickAction = clickAction;
     }
+
+    public void setMenuIdString(String menuIdString) { this.mMenuIdString = menuIdString; }
+
+    public String getMenuIdString() { return mMenuIdString; }
 }

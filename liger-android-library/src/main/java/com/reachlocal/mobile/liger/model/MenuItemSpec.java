@@ -13,10 +13,13 @@ public class MenuItemSpec {
     private String mAccessibilityLabel;
     private boolean mDialog;
     private boolean mMajor;
+    private String mMenuIdString;
 
     public String getName() {
         return mName;
     }
+
+    public String getMenuIdString() { return mMenuIdString; }
 
     public void setName(String name) {
         mName = name;
@@ -86,7 +89,7 @@ public class MenuItemSpec {
         mMajor = major;
     }
 
-    public static MenuItemSpec createFromJSON(JSONObject jsonObject, boolean major) {
+    public static MenuItemSpec createFromJSON(JSONObject jsonObject, boolean major, int menuId) {
         MenuItemSpec spec = new MenuItemSpec();
         try {
             spec.mName = jsonObject.getString("name");
@@ -98,6 +101,7 @@ public class MenuItemSpec {
             spec.mAccessibilityLabel = jsonObject.optString("accessibilityLabel");
             spec.mDialog = jsonObject.optBoolean("dialog", false);
             spec.mMajor = major;
+            spec.mMenuIdString = jsonObject.getString("name") + (major == true ? "_major_" : "_minor_") + Integer.toString(menuId);
         } catch (JSONException e) {
             throw new RuntimeException("Invalid menu item spec!", e);
         }
