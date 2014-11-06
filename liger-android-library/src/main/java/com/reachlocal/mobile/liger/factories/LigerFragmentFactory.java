@@ -5,11 +5,13 @@ import android.net.Uri;
 
 import com.reachlocal.mobile.liger.ui.CordovaPageFragment;
 import com.reachlocal.mobile.liger.ui.DefaultMainActivity;
+import com.reachlocal.mobile.liger.ui.LigerAppMenuFragment;
 import com.reachlocal.mobile.liger.ui.PageFragment;
 import com.reachlocal.mobile.liger.ui.LigerDrawerFragment;
 import com.reachlocal.mobile.liger.ui.LigerNavigatorFragment;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -84,11 +86,27 @@ public class LigerFragmentFactory {
                 returnFragment = LigerDrawerFragment.build(pageName, title, pageArgs, pageOptions);
             } else if (pageName.equalsIgnoreCase("navigator")) {
                 returnFragment = LigerNavigatorFragment.build(pageName, title, pageArgs, pageOptions);
+            } else if (pageName.equalsIgnoreCase("appMenu")) {
+                returnFragment = LigerAppMenuFragment.build(pageName, title, pageArgs, pageOptions);
             } else {
                 returnFragment = CordovaPageFragment.build(pageName, title, pageArgs, pageOptions);
             }
         }
 
+        return returnFragment;
+    }
+
+    public static PageFragment openPage(JSONObject pageObject) {
+        PageFragment returnFragment = null;
+        try {
+            String name = pageObject.getString("page");
+            String title = pageObject.optString("title");
+            JSONObject args = pageObject.optJSONObject("args");
+            JSONObject options = pageObject.optJSONObject("options");
+            returnFragment = openPage(name, title, args, options);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         return returnFragment;
     }
 }

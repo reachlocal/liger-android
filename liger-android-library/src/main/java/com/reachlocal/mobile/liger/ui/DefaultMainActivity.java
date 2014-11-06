@@ -99,12 +99,6 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-
-    }
-
-    @Override
     protected void onStop() {
         super.onStop();
 
