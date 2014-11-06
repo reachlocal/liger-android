@@ -96,7 +96,7 @@ public class LigerNavigatorFragment extends PageFragment {
         }
         FragmentManager childFragmentManager = getChildFragmentManager();
         FragmentTransaction ft = childFragmentManager.beginTransaction();
-        for(PageFragment page : mFragDeck){
+        for (PageFragment page : mFragDeck) {
             page.doPageAppear();
             page.addFragments(ft, mNavigatorContentFrame.getId());
             page.mContainer = this;
@@ -142,7 +142,6 @@ public class LigerNavigatorFragment extends PageFragment {
     }
 
 
-
     @Override
     public void onResume() {
         super.onResume();
@@ -170,24 +169,24 @@ public class LigerNavigatorFragment extends PageFragment {
     @Override
     public void openPage(String pageName, String title, JSONObject pageArgs, JSONObject pageOptions) {
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "LigerNavigatorFragment openPage() pageName:" + pageName + ", args:" + pageArgs+ ", options:" + pageOptions);
+            Log.d(LIGER.TAG, "LigerNavigatorFragment openPage() pageName:" + pageName + ", args:" + pageArgs + ", options:" + pageOptions);
         }
         PageFragment page = null;
 
-        if(mCached && mFragCache.containsKey(pageName)){
+        if (mCached && mFragCache.containsKey(pageName)) {
             page = mFragCache.get(pageName);
-        }else{
+        } else {
             page = LigerFragmentFactory.openPage(pageName, title, pageArgs, pageOptions);
         }
 
 
-        if(page != null) {
+        if (page != null) {
             page.doPageAppear();
             FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
             page.addFragments(ft, mNavigatorContentFrame.getId());
             ft.commit();
             mFragDeck.addLast(page);
-            if(mCached){
+            if (mCached) {
                 mFragCache.put(pageName, page);
             }
             page.mContainer = this;
@@ -202,8 +201,8 @@ public class LigerNavigatorFragment extends PageFragment {
                             + (args == null ? null : args.toString()) + ", options:"
                             + (options == null ? null : options.toString()));
         }
-        PageFragment dialog =  LigerFragmentFactory.openPage(pageName, title, args, options);
-        if(dialog != null) {
+        PageFragment dialog = LigerFragmentFactory.openPage(pageName, title, args, options);
+        if (dialog != null) {
             mFragDeck.addLast(dialog);
             dialog.show(getActivity().getSupportFragmentManager(), DIALOG_FRAGMENT);
         }
@@ -280,7 +279,7 @@ public class LigerNavigatorFragment extends PageFragment {
     @Override
     public String closeLastPage(PageFragment closePage, String closeTo) {
         PageFragment parentPage = null;
-        if(mFragDeck.size() > 0) {
+        if (mFragDeck.size() > 0) {
             PageFragment lastPage = mFragDeck.getLast();
             if (!StringUtils.isEmpty(closeTo)) {
                 Iterator<PageFragment> it = mFragDeck.descendingIterator();
@@ -292,7 +291,7 @@ public class LigerNavigatorFragment extends PageFragment {
                     }
                 }
             }
-            if(closePage == null || closePage == lastPage) {
+            if (closePage == null || closePage == lastPage) {
                 FragmentManager fm = getFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();
                 ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
@@ -318,14 +317,13 @@ public class LigerNavigatorFragment extends PageFragment {
                 logStack("closeLastPage");
             }
         }
-        if(mFragDeck.size() == 0){
+        if (mFragDeck.size() == 0) {
             FragmentTransaction ft = mContext.getSupportFragmentManager().beginTransaction();
             ft.remove(this);
             ft.commit();
         }
         return parentPage == null ? null : parentPage.getPageName();
     }
-
 
 
     @Override
@@ -335,9 +333,9 @@ public class LigerNavigatorFragment extends PageFragment {
 
     @Override
     public String getPageArgs() {
-        if(mFragDeck.size() > 0) {
+        if (mFragDeck.size() > 0) {
             return mFragDeck.getLast().getPageArgs();
-        }else{
+        } else {
             return null;
         }
     }
@@ -372,7 +370,7 @@ public class LigerNavigatorFragment extends PageFragment {
     }
 
     @Override
-    public void addFragments(FragmentTransaction ft, int containViewId){
+    public void addFragments(FragmentTransaction ft, int containViewId) {
         ft.add(containViewId, this);
     }
 
@@ -390,7 +388,7 @@ public class LigerNavigatorFragment extends PageFragment {
             if (pageOptions != null) {
                 bundle.putString("pageOptions", pageOptions);
                 JSONObject jsonPageOptions = new JSONObject(pageOptions);
-                if(jsonPageOptions.has("cached")){
+                if (jsonPageOptions.has("cached")) {
                     navigator.mCached = jsonPageOptions.getBoolean("cached");
                 }
             }
@@ -400,19 +398,19 @@ public class LigerNavigatorFragment extends PageFragment {
 
                 JSONObject jsonPageArgs = new JSONObject(pageArgs);
 
-                if(jsonPageArgs.has("pages")){
+                if (jsonPageArgs.has("pages")) {
                     //Contains an Array of pages load them onto the stack in order.
                     pages = jsonPageArgs.getJSONArray("pages");
-                }else{
+                } else {
                     // Navigator with one page
                     pages.put(jsonPageArgs);
                 }
             }
-            for(int i=0;i<pages.length();i++) {
+            for (int i = 0; i < pages.length(); i++) {
                 JSONObject page = pages.getJSONObject(i);
                 PageFragment newPage = LigerFragmentFactory.openPage(page.getString("page"), page.getString("title"), page.optJSONObject("args"), page.optJSONObject("options"));
-                if(newPage != null) {
-                    if(navigator.mCached){
+                if (newPage != null) {
+                    if (navigator.mCached) {
                         navigator.mFragCache.put(page.getString("page"), newPage);
                     }
                     navigator.mFragDeck.addLast(newPage);

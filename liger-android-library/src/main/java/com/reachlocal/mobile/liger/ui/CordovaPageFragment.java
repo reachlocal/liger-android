@@ -1,6 +1,7 @@
 package com.reachlocal.mobile.liger.ui;
 
 import android.app.Dialog;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
@@ -14,6 +15,7 @@ import com.reachlocal.mobile.liger.R;
 import com.reachlocal.mobile.liger.model.ToolbarItemSpec;
 import com.reachlocal.mobile.liger.utils.JsonUtils;
 import com.reachlocal.mobile.liger.widgets.ToolbarLayout;
+
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 
@@ -158,12 +160,10 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     public void onResume() {
         super.onResume();
         ((DefaultMainActivity) getActivity()).setMenuSelection(pageName);
-        if(mWebView != null)
+        if (mWebView != null)
             mWebView.handleResume(false, false);
         if (!isHidden()) {
             sendChildArgs();
-            updateTitle();
-            doPageAppear();
         }
     }
 
@@ -186,7 +186,6 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     @Override
     public void onViewStateRestored(Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        updateTitle();
     }
 
     public void updateTitle() {
@@ -200,7 +199,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     @Override
     public void onPause() {
         super.onPause();
-        if(mWebView != null)
+        if (mWebView != null)
             mWebView.handlePause(false);
     }
 
@@ -225,7 +224,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     }
 
     private void queueJavascript(String js) {
-        if(javascriptQueue == null) {
+        if (javascriptQueue == null) {
             javascriptQueue = new ArrayList<String>();
         }
         if (LIGER.LOGGING) {
@@ -235,7 +234,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     }
 
     private void processJavascriptQueue() {
-        if(javascriptQueue != null) {
+        if (javascriptQueue != null) {
             for (String js : javascriptQueue) {
                 doSendJavascript(js);
             }
@@ -247,7 +246,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         if (LIGER.LOGGING) {
             Log.d(LIGER.TAG, "CordovaPageFragment.doSendJavascript() to " + (mWebView == null ? "(null webView)" : mWebView.getUrl()) + ", js:" + js);
         }
-        if(mWebView != null)
+        if (mWebView != null)
             mWebView.sendJavascript(js);
     }
 
@@ -307,7 +306,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
             mMenuInflater.inflate(R.menu.liger_refresh, mMenu);
         }
         String rightButtonName = JsonUtils.getRightButtonName(pageOptions);
-        if(LIGER.LOGGING) {
+        if (LIGER.LOGGING) {
             Log.d(LIGER.TAG, "rightButtonName: " + rightButtonName);
         }
         if (StringUtils.equalsIgnoreCase(rightButtonName, "save")) {
@@ -325,7 +324,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                if(LIGER.LOGGING) {
+                if (LIGER.LOGGING) {
                     Log.d(LIGER.TAG, "Header Button clicked: " + buttonName);
                 }
                 sendJavascriptWithArgs("PAGE", "headerButtonTapped", "\"" + buttonName + "\"");
@@ -350,8 +349,12 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         if (isLoaded) {
             sendJavascript("PAGE.onPageAppear();");
         }
-        if(mWebView != null)
+        if (mWebView != null)
             mWebView.applyAfterMoveFix();
+    }
+
+    public void onPageStarted(WebView view, String url, Bitmap favicon) {
+        updateTitle();
     }
 
     protected void onPageFinished(WebView webView, String url) {
@@ -364,7 +367,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
             actionBarTitle = webTitle;
         }
         if (!isHidden()) {
-            updateTitle();
+            doPageAppear();
         }
         sendChildArgs();
         processJavascriptQueue();
@@ -380,7 +383,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
 
     @Override
     protected void fragmentDetached(PageFragment detachedFrag) {
-        if(mActivity != null){
+        if (mActivity != null) {
             mActivity.onFragmentFinished(this);
         }
     }
@@ -458,7 +461,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     }
 
     @Override
-    public void addFragments(FragmentTransaction ft, int contentViewID){
+    public void addFragments(FragmentTransaction ft, int contentViewID) {
         ft.add(contentViewID, this);
     }
 

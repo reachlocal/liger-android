@@ -3,6 +3,7 @@ package com.reachlocal.mobile.liger.ui;
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.util.Log;
 import android.webkit.WebResourceResponse;
@@ -26,6 +27,17 @@ public class LigerWebClient extends CordovaWebViewClient {
         super(activity, webView);
         mActivity = activity;
         mPageFragment = fragment;
+    }
+
+    @Override
+    public void onPageStarted(final WebView view, final String url, final Bitmap favicon) {
+        mActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mPageFragment.onPageStarted(view, url, favicon);
+            }
+        });
+        super.onPageStarted(view, url, favicon);
     }
 
     @Override

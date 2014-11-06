@@ -2,6 +2,7 @@ package com.reachlocal.mobile.liger.ui;
 
 import android.content.Context;
 import android.util.AttributeSet;
+
 import org.apache.cordova.CordovaWebView;
 
 public class FixedCordovaWebView extends CordovaWebView {

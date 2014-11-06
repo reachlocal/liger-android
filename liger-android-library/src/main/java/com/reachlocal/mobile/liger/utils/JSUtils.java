@@ -14,16 +14,16 @@ public class JSUtils {
         StringBuilder sb = new StringBuilder();
         int argCount = args.length;
 
-        for(int i = 0; i < argCount; i++) {
+        for (int i = 0; i < argCount; i++) {
             String arg = args[i];
-            if(arg == null) {
+            if (arg == null) {
                 sb.append("null");
             } else {
                 sb.append("\"");
                 sb.append(arg);
                 sb.append("\"");
             }
-            if((i+1) < argCount) {
+            if ((i + 1) < argCount) {
                 sb.append(", ");
             }
         }

@@ -67,14 +67,14 @@ public class LigerDrawerFragment extends PageFragment implements MenuInterface {
 
 
     private void setupMenu() {
-        ((ActionBarActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ((ActionBarActivity)getActivity()).getSupportActionBar().setHomeButtonEnabled(true);
+        ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ((ActionBarActivity) getActivity()).getSupportActionBar().setHomeButtonEnabled(true);
 
-        ((DefaultMainActivity)mContext).menuDrawer = (DrawerLayout) mContext.findViewById(R.id.drawer_layout);
+        ((DefaultMainActivity) mContext).menuDrawer = (DrawerLayout) mContext.findViewById(R.id.drawer_layout);
         setMenuItems(getMajorMenuItems(), getMinorMenuItems());
 
-        ((DefaultMainActivity)mContext).menuToggle = new ActionBarDrawerToggle(mContext, /* host Activity */
-                ((DefaultMainActivity)mContext).menuDrawer, /* DrawerLayout object */
+        ((DefaultMainActivity) mContext).menuToggle = new ActionBarDrawerToggle(mContext, /* host Activity */
+                ((DefaultMainActivity) mContext).menuDrawer, /* DrawerLayout object */
                 R.drawable.ic_drawer, /* nav drawer image to replace 'Up' caret */
                 R.string.menu_open_desc, /* "open drawer" description for accessibility */
                 R.string.menu_close_desc /* "close drawer" description for accessibility */
@@ -87,9 +87,9 @@ public class LigerDrawerFragment extends PageFragment implements MenuInterface {
                 getActivity().supportInvalidateOptionsMenu(); // creates call to
             }
         };
-        ((DefaultMainActivity)mContext).menuToggle.setDrawerIndicatorEnabled(true);
+        ((DefaultMainActivity) mContext).menuToggle.setDrawerIndicatorEnabled(true);
 
-        ((DefaultMainActivity)mContext).menuDrawer.setDrawerListener(((DefaultMainActivity)mContext).menuToggle);
+        ((DefaultMainActivity) mContext).menuDrawer.setDrawerListener(((DefaultMainActivity) mContext).menuToggle);
     }
 
 
@@ -97,28 +97,28 @@ public class LigerDrawerFragment extends PageFragment implements MenuInterface {
     public void setMenuItems(List<MenuItemSpec> majorItems, List<MenuItemSpec> minorItems) {
         mMajorItems = majorItems;
         mMinorItems = minorItems;
-        if(mDrawerContentLayout != null) {
+        if (mDrawerContentLayout != null) {
             addMenuItemCells();
         }
     }
 
     private void addMenuItemCells() {
-        if(mDrawerContentLayout.getChildCount() != 1) {
+        if (mDrawerContentLayout.getChildCount() != 1) {
             throw new RuntimeException("Menu Drawer initialized with incorrect number of children!");
         }
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         int minorCount = mMinorItems == null ? 0 : mMinorItems.size();
-        if(minorCount == 0) {
+        if (minorCount == 0) {
             mDrawerContentLayout.removeViewAt(0);
         } else {
-            for(int i = 0; i < minorCount; i++) {
+            for (int i = 0; i < minorCount; i++) {
                 MenuItemCell cell = insertCell(inflater, mMinorItems.get(i), i + 1);
                 //mDrawerCache.put(cell.getMenuIdString(), cell.
                 cell.setChecked(false);
             }
         }
         int majorCount = mMajorItems == null ? 0 : mMajorItems.size();
-        for(int i = 0; i < majorCount; i++) {
+        for (int i = 0; i < majorCount; i++) {
             MenuItemCell cell = insertCell(inflater, mMajorItems.get(i), i);
             //mDrawerCache.put(cell.getMenuIdString(), cell.
             cell.setChecked(i == 0);
@@ -128,7 +128,7 @@ public class LigerDrawerFragment extends PageFragment implements MenuInterface {
     @Override
     public void setSelectedItem(String link) {
         mSelectedItem = link;
-        if(mDrawerContentLayout != null) {
+        if (mDrawerContentLayout != null) {
             updateSelectedItem();
         }
     }
@@ -143,10 +143,10 @@ public class LigerDrawerFragment extends PageFragment implements MenuInterface {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mDrawerContentLayout = (LinearLayout) inflater.inflate(R.layout.drawer_menu, container, false);
-        if(mMajorItems != null || mMinorItems != null) {
+        if (mMajorItems != null || mMinorItems != null) {
             addMenuItemCells();
         }
-        if(mSelectedItem != null) {
+        if (mSelectedItem != null) {
             updateSelectedItem();
         }
         setupMenu();
@@ -179,7 +179,7 @@ public class LigerDrawerFragment extends PageFragment implements MenuInterface {
     @Override
     public void openPage(String pageName, String title, JSONObject pageArgs, JSONObject pageOptions) {
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "LigerDrawerFragment openPage() pageName:" + pageName + ", args:" + pageArgs+ ", options:" + pageOptions);
+            Log.d(LIGER.TAG, "LigerDrawerFragment openPage() pageName:" + pageName + ", args:" + pageArgs + ", options:" + pageOptions);
         }
         PageFragment page = null;
 
@@ -192,10 +192,15 @@ public class LigerDrawerFragment extends PageFragment implements MenuInterface {
 
         page = LigerFragmentFactory.openPage(pageName, title, pageArgs, pageOptions);
 
-        if(page != null) {
+        if (page != null) {
             page.doPageAppear();
             FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-            page.addFragments(ft, R.id.content_frame );
+            if (mFragDeck.size() > 0) {
+                PageFragment previousPage = mFragDeck.getLast();
+                ft.remove(previousPage);
+                mFragDeck.removeLast();
+            }
+            page.addFragments(ft, R.id.content_frame);
             ft.commit();
             mFragDeck.addLast(page);
             //TODO mFragCache.put(pageName, page);
@@ -212,8 +217,8 @@ public class LigerDrawerFragment extends PageFragment implements MenuInterface {
                             + (args == null ? null : args.toString()) + ", options:"
                             + (options == null ? null : options.toString()));
         }
-        PageFragment dialog =  LigerFragmentFactory.openPage(pageName, title, args, options);
-        if(dialog != null) {
+        PageFragment dialog = LigerFragmentFactory.openPage(pageName, title, args, options);
+        if (dialog != null) {
             mFragDeck.addLast(dialog);
             dialog.show(getActivity().getSupportFragmentManager(), DIALOG_FRAGMENT);
         }
@@ -242,9 +247,9 @@ public class LigerDrawerFragment extends PageFragment implements MenuInterface {
 
     @Override
     public String getPageArgs() {
-        if(mFragDeck.size() > 0) {
+        if (mFragDeck.size() > 0) {
             return mFragDeck.getLast().getPageArgs();
-        }else{
+        } else {
             return null;
         }
     }
@@ -287,7 +292,7 @@ public class LigerDrawerFragment extends PageFragment implements MenuInterface {
             try {
                 JSONObject childPage = new JSONObject(pageArgs);
 
-                if (childPage.getString("page").equalsIgnoreCase("appMenu")){
+                if (childPage.getString("page").equalsIgnoreCase("appMenu")) {
                     JSONObject childPageArgs = childPage.getJSONObject("args");
                     JSONArray menuParentArray = childPageArgs.getJSONArray("menu");
                     JSONArray majorMenu = menuParentArray.optJSONArray(0);
@@ -318,11 +323,11 @@ public class LigerDrawerFragment extends PageFragment implements MenuInterface {
     }
 
     @Override
-    public void addFragments(FragmentTransaction ft, int contentViewID){
+    public void addFragments(FragmentTransaction ft, int contentViewID) {
         ft.add(R.id.drawer_menu, this);
         MenuItemSpec firstMenuItem = getMajorMenuItems().get(0);
         PageFragment page = LigerFragmentFactory.openPage(firstMenuItem.getPage(), firstMenuItem.getName(), firstMenuItem.getArgs(), firstMenuItem.getOptions());
-        if(page != null) {
+        if (page != null) {
             mFragDeck.addLast(page);
             page.mContainer = this;
             page.addFragments(ft, contentViewID);
@@ -334,7 +339,7 @@ public class LigerDrawerFragment extends PageFragment implements MenuInterface {
 
         PageFragment parentPage = null;
 
-        if(mFragDeck.size() > 0) {
+        if (mFragDeck.size() > 0) {
             PageFragment lastPage = mFragDeck.getLast();
 
             if (!StringUtils.isEmpty(closeTo)) {
@@ -348,9 +353,9 @@ public class LigerDrawerFragment extends PageFragment implements MenuInterface {
                 }
             }
             if (closePage == null || closePage == lastPage) {
-                if(lastPage instanceof LigerNavigatorFragment){
+                if (lastPage instanceof LigerNavigatorFragment) {
                     lastPage.closeLastPage(closePage, closeTo);
-                }else {
+                } else {
                     FragmentTransaction ft = mContext.getSupportFragmentManager().beginTransaction();
                     ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
                     mFragDeck.removeLast();
@@ -367,7 +372,7 @@ public class LigerDrawerFragment extends PageFragment implements MenuInterface {
                     if (parentPage != null) {
                         parentPage.setChildArgs(parentUpdateArgs);
                         parentPage.doPageAppear();
-                        ((DefaultMainActivity) getActivity()).setActionBarTitle(parentPage.getPageTitle());
+                        ((DefaultMainActivity) mContext).setActionBarTitle(parentPage.getPageTitle());
                     }
                     ft.commit();
                 }
@@ -379,7 +384,7 @@ public class LigerDrawerFragment extends PageFragment implements MenuInterface {
 
 
         }
-        if(mFragDeck.size() == 0 || (mFragDeck.size() == 1 && mFragDeck.getLast().isDetached())){
+        if (mFragDeck.size() == 0 || (mFragDeck.size() == 1 && mFragDeck.getLast().isDetached())) {
             FragmentTransaction ft = mContext.getSupportFragmentManager().beginTransaction();
             ft.remove(this);
             ft.commit();

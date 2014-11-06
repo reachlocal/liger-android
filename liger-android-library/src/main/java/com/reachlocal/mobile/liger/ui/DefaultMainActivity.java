@@ -61,7 +61,7 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
         LigerFragmentFactory.mContext = this;
         mRootPageFragment = LigerFragmentFactory.openPage(mAppConfig.getRootPageName(), mAppConfig.getRootPageTitle(), mAppConfig.getRootPageArgs(), mAppConfig.getRootPageOptions());
 
-        if(mRootPageFragment != null) {
+        if (mRootPageFragment != null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             mRootPageFragment.addFragments(ft, R.id.content_frame);
             mRootPageFragment.setRootPageListener(this);
@@ -72,7 +72,7 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
         }
         Config.init(this);
 
-        if(mAppConfig.getNotificationsEnabled()) {
+        if (mAppConfig.getNotificationsEnabled()) {
             GcmRegistrationHelper gcmHelper = new GcmRegistrationHelper(this, this);
             gcmHelper.registerGcm();
         }
@@ -134,9 +134,6 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
                     menuDrawer.closeDrawers();
                 } else {
                     closePage(null, null);
-                    if(mRootPageFragment.isDetached()){
-                        finish();
-                    }
                 }
 
             }
@@ -227,14 +224,12 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
     }
 
 
-
-
     public void openPage(String pageName, String title, JSONObject pageArgs, JSONObject pageOptions) {
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "DefaultMainActivity openPage() pageName:" + pageName + ", args:" + pageArgs+ ", options:" + pageOptions);
+            Log.d(LIGER.TAG, "DefaultMainActivity openPage() pageName:" + pageName + ", args:" + pageArgs + ", options:" + pageOptions);
         }
         menuDrawer.closeDrawers();
-        mRootPageFragment.openPage(pageName,title,pageArgs,pageOptions);
+        mRootPageFragment.openPage(pageName, title, pageArgs, pageOptions);
     }
 
     public void openDialog(String pageName, String title, JSONObject args, JSONObject options) {
@@ -245,7 +240,7 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
                             + (args == null ? null : args.toString()) + ", options:"
                             + (options == null ? null : options.toString()));
         }
-        mRootPageFragment.openDialog(pageName,title,args,options);
+        mRootPageFragment.openDialog(pageName, title, args, options);
     }
 
     public void setMenuSelection(String pageName) {
@@ -262,17 +257,17 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
 
     @Override
     public void onGcmRegistered(String registrationId, String errorMessage) {
-        if(LIGER.LOGGING) {
+        if (LIGER.LOGGING) {
             Log.d(LIGER.TAG, "Received GCM registration ID:" + registrationId);
         }
-        String  args = JSUtils.stringListToArgString(registrationId, "AndroidPushToken", errorMessage);
+        String args = JSUtils.stringListToArgString(registrationId, "AndroidPushToken", errorMessage);
 
         mRootPageFragment.sendJavascriptWithArgs("PAGE", "pushNotificationTokenUpdated", args);
     }
 
     @Override
     public void onFragmentFinished(PageFragment page) {
-        if(page == mRootPageFragment){
+        if (page == mRootPageFragment) {
             finish();
         }
     }

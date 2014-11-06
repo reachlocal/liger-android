@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+
 import org.apache.commons.lang3.StringUtils;
 
 public class AlertDialogFragment extends DialogFragment {
@@ -26,11 +27,11 @@ public class AlertDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        if(!StringUtils.isEmpty(mTitle)) {
+        if (!StringUtils.isEmpty(mTitle)) {
             builder.setTitle(mTitle);
         }
         builder.setMessage(mMessage);
-        if(mButtonLabel != null) {
+        if (mButtonLabel != null) {
             builder.setPositiveButton(mButtonLabel, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
