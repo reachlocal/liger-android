@@ -45,10 +45,7 @@ public class LigerDrawerFragment extends PageFragment  {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mDrawerContentLayout = (LinearLayout) inflater.inflate(R.layout.drawer_menu, container, false);
-        mDrawer = LigerFragmentFactory.openPage(drawerObject);
-        FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-        mDrawer.addFragments(ft, R.id.drawer_menu );
-        ft.commit();
+
         return mDrawerContentLayout;
     }
 
@@ -202,7 +199,10 @@ public class LigerDrawerFragment extends PageFragment  {
 
     @Override
     public void addFragments(FragmentTransaction ft, int contentViewID) {
-        ft.add(contentViewID, this);
+        //ft.add(R.id.drawer_menu, this);
+        mDrawer = LigerFragmentFactory.openPage(drawerObject);
+        //ft = getChildFragmentManager().beginTransaction();
+        mDrawer.addFragments(ft, R.id.drawer_menu );
 
 //        MenuItemSpec firstMenuItem = getMajorMenuItems().get(0);
 //        PageFragment page = LigerFragmentFactory.openPage(firstMenuItem.getPage(), firstMenuItem.getName(), firstMenuItem.getArgs(), firstMenuItem.getOptions());

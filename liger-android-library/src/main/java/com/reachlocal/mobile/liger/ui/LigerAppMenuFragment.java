@@ -154,7 +154,7 @@ public class LigerAppMenuFragment extends PageFragment implements MenuInterface 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mDrawerContentLayout = (LinearLayout) container;
+        mDrawerContentLayout = (LinearLayout) inflater.inflate(R.layout.drawer_menu, container, false);
         if (mMajorMenuItems != null || mMinorMenuItems != null) {
             addMenuItemCells();
         }
