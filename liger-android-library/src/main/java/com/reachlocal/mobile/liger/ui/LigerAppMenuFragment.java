@@ -53,32 +53,6 @@ public class LigerAppMenuFragment extends PageFragment implements MenuInterface 
         mMinorMenuItems = minorMenuItems;
     }
 
-    private void setupMenu() {
-        ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ((ActionBarActivity) getActivity()).getSupportActionBar().setHomeButtonEnabled(true);
-
-        ((DefaultMainActivity) mContext).menuDrawer = (DrawerLayout) mContext.findViewById(R.id.drawer_layout);
-        //setMenuItems(getMajorMenuItems(), getMinorMenuItems());
-
-        ((DefaultMainActivity) mContext).menuToggle = new ActionBarDrawerToggle(mContext, /* host Activity */
-                ((DefaultMainActivity) mContext).menuDrawer, /* DrawerLayout object */
-                R.drawable.ic_drawer, /* nav drawer image to replace 'Up' caret */
-                R.string.menu_open_desc, /* "open drawer" description for accessibility */
-                R.string.menu_close_desc /* "close drawer" description for accessibility */
-        ) {
-            public void onDrawerClosed(View view) {
-                getActivity().supportInvalidateOptionsMenu(); // creates call to
-            }
-
-            public void onDrawerOpened(View drawerView) {
-                getActivity().supportInvalidateOptionsMenu(); // creates call to
-            }
-        };
-        ((DefaultMainActivity) mContext).menuToggle.setDrawerIndicatorEnabled(true);
-
-        ((DefaultMainActivity) mContext).menuDrawer.setDrawerListener(((DefaultMainActivity) mContext).menuToggle);
-    }
-
     @Override
     public void setMenuItems(List<MenuItemSpec> majorItems, List<MenuItemSpec> minorItems) {
         mMajorMenuItems = majorItems;
@@ -161,7 +135,6 @@ public class LigerAppMenuFragment extends PageFragment implements MenuInterface 
         if (mSelectedItem != null) {
             updateSelectedItem();
         }
-        setupMenu();
         return mDrawerContentLayout;
     }
 

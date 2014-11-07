@@ -2,7 +2,7 @@ package com.reachlocal.mobile.liger.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.FragmentManager;import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 
@@ -10,13 +10,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;import android.widget.LinearLayout;
 
 import com.reachlocal.mobile.liger.LIGER;
 import com.reachlocal.mobile.liger.R;
 import com.reachlocal.mobile.liger.factories.LigerFragmentFactory;
 import com.reachlocal.mobile.liger.model.MenuItemSpec;
-import com.reachlocal.mobile.liger.widgets.MenuInterface;
+import com.reachlocal.mobile.liger.utils.ViewUtil;import com.reachlocal.mobile.liger.widgets.MenuInterface;
 import com.reachlocal.mobile.liger.widgets.MenuItemCell;
 
 import org.apache.commons.lang3.StringUtils;
@@ -42,11 +42,28 @@ public class LigerDrawerFragment extends PageFragment  {
 
     LinearLayout mDrawerContentLayout;
 
+    View mDrawerContentFrame;
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mDrawerContentLayout = (LinearLayout) inflater.inflate(R.layout.drawer_menu, container, false);
+        createContentView(inflater, container, savedInstanceState);
+        if (LIGER.LOGGING) {
+            Log.d(LIGER.TAG, "LigerNavigatorFragment.onCreateView() " + pageName);
+        }
 
-        return mDrawerContentLayout;
+        mDrawer = LigerFragmentFactory.openPage(drawerObject);
+        FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+        mDrawer.addFragments(ft, mDrawerContentFrame.getId());
+        ft.commit();
+        setupMenu();
+        return mDrawerContentFrame;
+    }
+
+    protected View createContentView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        mDrawerContentFrame = inflater.inflate(R.layout.navigator_layout, container, false);
+        mDrawerContentFrame.setId(ViewUtil.generateViewId());
+        return mDrawerContentFrame;
     }
 
     @Override
@@ -54,7 +71,31 @@ public class LigerDrawerFragment extends PageFragment  {
         super.onStart();
     }
 
+    private void setupMenu() {
+        ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ((ActionBarActivity) getActivity()).getSupportActionBar().setHomeButtonEnabled(true);
 
+        ((DefaultMainActivity) mContext).menuDrawer = (DrawerLayout) mContext.findViewById(R.id.drawer_layout);
+        //setMenuItems(getMajorMenuItems(), getMinorMenuItems());
+
+        ((DefaultMainActivity) mContext).menuToggle = new ActionBarDrawerToggle(mContext, /* host Activity */
+                ((DefaultMainActivity) mContext).menuDrawer, /* DrawerLayout object */
+                R.drawable.ic_drawer, /* nav drawer image to replace 'Up' caret */
+                R.string.menu_open_desc, /* "open drawer" description for accessibility */
+                R.string.menu_close_desc /* "close drawer" description for accessibility */
+        ) {
+            public void onDrawerClosed(View view) {
+                getActivity().supportInvalidateOptionsMenu(); // creates call to
+            }
+
+            public void onDrawerOpened(View drawerView) {
+                getActivity().supportInvalidateOptionsMenu(); // creates call to
+            }
+        };
+        ((DefaultMainActivity) mContext).menuToggle.setDrawerIndicatorEnabled(true);
+
+        ((DefaultMainActivity) mContext).menuDrawer.setDrawerListener(((DefaultMainActivity) mContext).menuToggle);
+    }
 
 
     @Override
@@ -166,19 +207,6 @@ public class LigerDrawerFragment extends PageFragment  {
             bundle.putString("pageArgs", pageArgs);
             try {
                 drawerFragment.drawerObject = new JSONObject(pageArgs);
-
-//                if (childPage.getString("page").equalsIgnoreCase("appMenu")) {
-//                    JSONObject childPageArgs = childPage.getJSONObject("args");
-//                    JSONArray menuParentArray = childPageArgs.getJSONArray("menu");
-//                    JSONArray majorMenu = menuParentArray.optJSONArray(0);
-//                    if (majorMenu != null) {
-//                        drawerFragment.setMajorMenuItems(drawerFragment.createMenuItems(majorMenu, true));
-//                    }
-//                    JSONArray minorMenu = menuParentArray.optJSONArray(1);
-//                    if (minorMenu != null) {
-//                        drawerFragment.setMinorMenuItems(drawerFragment.createMenuItems(minorMenu, false));
-//                    }
-//                }
             } catch (JSONException e) {
                 throw new RuntimeException("Invalid app.json!", e);
             }
@@ -199,10 +227,10 @@ public class LigerDrawerFragment extends PageFragment  {
 
     @Override
     public void addFragments(FragmentTransaction ft, int contentViewID) {
-        //ft.add(R.id.drawer_menu, this);
-        mDrawer = LigerFragmentFactory.openPage(drawerObject);
+        ft.add(R.id.drawer_menu, this);
+        //mDrawer = LigerFragmentFactory.openPage(drawerObject);
         //ft = getChildFragmentManager().beginTransaction();
-        mDrawer.addFragments(ft, R.id.drawer_menu );
+        //mDrawer.addFragments(ft, R.id.drawer_menu );
 
 //        MenuItemSpec firstMenuItem = getMajorMenuItems().get(0);
 //        PageFragment page = LigerFragmentFactory.openPage(firstMenuItem.getPage(), firstMenuItem.getName(), firstMenuItem.getArgs(), firstMenuItem.getOptions());
@@ -211,6 +239,7 @@ public class LigerDrawerFragment extends PageFragment  {
 //            page.mContainer = this;
 //            page.addFragments(ft, contentViewID);
 //        }
+
     }
 
     @Override
