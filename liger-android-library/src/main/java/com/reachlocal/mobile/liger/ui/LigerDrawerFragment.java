@@ -2,7 +2,8 @@ package com.reachlocal.mobile.liger.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.FragmentManager;import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 
@@ -10,13 +11,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;import android.widget.LinearLayout;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import com.reachlocal.mobile.liger.LIGER;
 import com.reachlocal.mobile.liger.R;
 import com.reachlocal.mobile.liger.factories.LigerFragmentFactory;
 import com.reachlocal.mobile.liger.model.MenuItemSpec;
-import com.reachlocal.mobile.liger.utils.ViewUtil;import com.reachlocal.mobile.liger.widgets.MenuInterface;
+import com.reachlocal.mobile.liger.utils.ViewUtil;
+import com.reachlocal.mobile.liger.widgets.MenuInterface;
 import com.reachlocal.mobile.liger.widgets.MenuItemCell;
 
 import org.apache.commons.lang3.StringUtils;
@@ -33,7 +36,7 @@ import java.util.List;
  * Created by Mark Wagner on 10/22/14.
  */
 
-public class LigerDrawerFragment extends PageFragment  {
+public class LigerDrawerFragment extends PageFragment {
 
     private JSONObject drawerObject;
     protected PageFragment mDrawer;
@@ -49,7 +52,7 @@ public class LigerDrawerFragment extends PageFragment  {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         createContentView(inflater, container, savedInstanceState);
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "LigerNavigatorFragment.onCreateView() " + pageName);
+            Log.d(LIGER.TAG, "LigerDrawerFragment.onCreateView() " + pageName);
         }
 
         mDrawer = LigerFragmentFactory.openPage(drawerObject);
@@ -190,8 +193,6 @@ public class LigerDrawerFragment extends PageFragment  {
     public void setUserCanRefresh(boolean canRefresh) {
 
     }
-
-
 
 
     public static LigerDrawerFragment build(String pageName, String pageTitle, String pageArgs, String pageOptions) {

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8">
-<title>Second Page</title>
+    <meta charset="utf-8">
+    <title>Second Page</title>
 
     <!-- Sets initial viewport load and disables zooming  -->
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -14,27 +14,35 @@
     <script type="text/javascript" src="js/pages/secondPage.js"></script>
 </head>
 <body>
-    <div id="pages_container"></div>
-    <script>
+<div id="pages_container"></div>
+<script>
         PAGE.initialize("secondPage");
-    </script>
 
-	<h3>Args</h3>
-	<div id="args" style="background-color:#CCC; border:1px solid #999;">
-	</div>
-	<div id="inits">Inits:</div>
-	<div id="pageAppear">onPageAppear:</div>
+</script>
 
-	<h3>Methods</h3>
-    <form style="text-align: center">
-    	<button id="openPage">Open Third Page</button><br />
-    	<br />
-		<button id="closePage">Close Page</button><br />
-		<br />
-		<button id="updateParent">Update Parent</button><br />
-		<br />
-		<button id="openDialog">Open Dialog</button><br />
-		<button id="openDialogWithTitle">Open Dialog With Title</button><br />
-	</form>
+<h3>Args</h3>
+
+<div id="args" style="background-color:#CCC; border:1px solid #999;">
+</div>
+<div id="inits">Inits:</div>
+<div id="pageAppear">onPageAppear:</div>
+
+<h3>Methods</h3>
+
+<form style="text-align: center">
+    <button id="openPage">Open Third Page</button>
+    <br/>
+    <br/>
+    <button id="closePage">Close Page</button>
+    <br/>
+    <br/>
+    <button id="updateParent">Update Parent</button>
+    <br/>
+    <br/>
+    <button id="openDialog">Open Dialog</button>
+    <br/>
+    <button id="openDialogWithTitle">Open Dialog With Title</button>
+    <br/>
+</form>
 </body>
 </html>

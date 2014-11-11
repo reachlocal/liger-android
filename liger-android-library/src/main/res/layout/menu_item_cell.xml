@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.reachlocal.mobile.liger.widgets.MenuItemCell
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.reachlocal.mobile.liger.widgets.MenuItemCell xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/menuItemCell"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:checked="true"
-    />
+    android:checked="true" />

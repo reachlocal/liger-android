@@ -60,7 +60,7 @@ task runTests(dependsOn: "connectedInstrumentTest") << {
 android.applicationVariants.all { variant ->
 
     def demoCopyTaskName = "copy${variant.name.capitalize()}DemoAssets"
-    task "${demoCopyTaskName}" (type: Copy)
+    task "${demoCopyTaskName}"(type: Copy)
     "${demoCopyTaskName}" {
         from project.ext.demoDirectory
         exclude 'vendor/cordova.js'

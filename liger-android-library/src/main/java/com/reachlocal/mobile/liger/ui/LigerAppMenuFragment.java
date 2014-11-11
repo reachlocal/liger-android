@@ -7,7 +7,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;import android.widget.LinearLayout;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.reachlocal.mobile.liger.R;
 import com.reachlocal.mobile.liger.model.MenuItemSpec;
@@ -34,7 +35,6 @@ public class LigerAppMenuFragment extends PageFragment implements MenuInterface 
     List<MenuItemCell> mMenuItems = new ArrayList<MenuItemCell>();
 
     LinearLayout mDrawerContentLayout;
-
 
 
     public List<MenuItemSpec> getMajorMenuItems() {
@@ -219,9 +219,9 @@ public class LigerAppMenuFragment extends PageFragment implements MenuInterface 
                     menu.setMinorMenuItems(menu.createMenuItems(minorMenu, false));
                 }
             } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                e.printStackTrace();
             }
+        }
 
         menu.setArguments(bundle);
 

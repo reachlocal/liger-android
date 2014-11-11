@@ -1,25 +1,25 @@
 <resources>
 
     <declare-styleable name="FontTextView">
-        <attr name="fontPath" format="string"/>
-        <attr name="android:textStyle"/>
+        <attr name="fontPath" format="string" />
+        <attr name="android:textStyle" />
     </declare-styleable>
 
     <!--  -->
     <declare-styleable name="MenuItemCell">
-        <attr name="action" format="string"/>
-        <attr name="iconGlyph" format="string"/>
+        <attr name="action" format="string" />
+        <attr name="iconGlyph" format="string" />
         <attr name="itemType">
-            <enum name="minor" value="0"/>
-            <enum name="major" value="1"/>
+            <enum name="minor" value="0" />
+            <enum name="major" value="1" />
         </attr>
         <attr name="displayType">
-            <enum name="page" value="0"/>
-            <enum name="dialog" value="1"/>
+            <enum name="page" value="0" />
+            <enum name="dialog" value="1" />
         </attr>
-        <attr name="android:text"/>
-        <attr name="subtitle"/>
-        <attr name="android:checked"/>
+        <attr name="android:text" />
+        <attr name="subtitle" />
+        <attr name="android:checked" />
     </declare-styleable>
 
 </resources>
