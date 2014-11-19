@@ -10,7 +10,10 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.*;
+import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.reachlocal.mobile.liger.LIGER;
 import com.reachlocal.mobile.liger.R;
@@ -18,8 +21,6 @@ import com.reachlocal.mobile.liger.factories.LigerFragmentFactory;
 import com.reachlocal.mobile.liger.gcm.GcmRegistrationHelper;
 import com.reachlocal.mobile.liger.listeners.RootPageListener;
 import com.reachlocal.mobile.liger.model.AppConfig;
-import com.reachlocal.mobile.liger.utils.JSUtils;
-
 import com.reachlocal.mobile.liger.widgets.MenuInterface;
 
 import org.apache.cordova.Config;
@@ -221,7 +222,7 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
         }
     }
 
-    public PageFragment getRootPageFragment(){
+    public PageFragment getRootPageFragment() {
         return mRootPageFragment;
     }
 

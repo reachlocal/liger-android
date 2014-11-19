@@ -6,9 +6,9 @@ import android.net.Uri;
 import com.reachlocal.mobile.liger.ui.CordovaPageFragment;
 import com.reachlocal.mobile.liger.ui.DefaultMainActivity;
 import com.reachlocal.mobile.liger.ui.LigerAppMenuFragment;
-import com.reachlocal.mobile.liger.ui.PageFragment;
 import com.reachlocal.mobile.liger.ui.LigerDrawerFragment;
 import com.reachlocal.mobile.liger.ui.LigerNavigatorFragment;
+import com.reachlocal.mobile.liger.ui.PageFragment;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.json.JSONException;

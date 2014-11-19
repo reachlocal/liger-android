@@ -2,37 +2,28 @@ package com.reachlocal.mobile.liger.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.reachlocal.mobile.liger.LIGER;
 import com.reachlocal.mobile.liger.R;
 import com.reachlocal.mobile.liger.factories.LigerFragmentFactory;
 import com.reachlocal.mobile.liger.listeners.PageLifecycleListener;
-import com.reachlocal.mobile.liger.model.MenuItemSpec;
 import com.reachlocal.mobile.liger.utils.ViewUtil;
-import com.reachlocal.mobile.liger.widgets.MenuInterface;
-import com.reachlocal.mobile.liger.widgets.MenuItemCell;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
+
 
 /**
  * Created by Mark Wagner on 10/22/14.
@@ -322,7 +313,7 @@ public class LigerDrawerFragment extends PageFragment implements PageLifecycleLi
 
     @Override
     public void onPageFinished(PageFragment page) {
-        if(mTokenHolder != null){
+        if (mTokenHolder != null) {
             page.pushNotificationTokenUpdated(mTokenHolder.registrationId, mTokenHolder.errorMessage);
         }
     }

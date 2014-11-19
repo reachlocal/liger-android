@@ -8,8 +8,8 @@ import android.widget.Checkable;
 import android.widget.CheckedTextView;
 import android.widget.LinearLayout;
 
-import com.reachlocal.mobile.liger.ui.DefaultMainActivity;
 import com.reachlocal.mobile.liger.R;
+import com.reachlocal.mobile.liger.ui.DefaultMainActivity;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;

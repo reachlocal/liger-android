@@ -1,9 +1,9 @@
 package com.reachlocal.mobile.liger.ui;
 
 import android.app.Activity;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.DialogFragment;
 import android.util.Log;
 
 import com.reachlocal.mobile.liger.LIGER;
@@ -147,7 +147,6 @@ public abstract class PageFragment extends DialogFragment {
     }
 
 
-
     public abstract String closeLastPage(PageFragment closePage, String closeTo);
 
     protected void logStack(String crumb) {
@@ -165,12 +164,12 @@ public abstract class PageFragment extends DialogFragment {
     protected abstract PageFragment getChildPage();
 
     public void closeDialogArguments(String args) {
-        if(getChildPage() != null)
+        if (getChildPage() != null)
             getChildPage().closeDialogArguments(args);
     }
 
     public void pushNotificationTokenUpdated(String registrationId, String errorMessage) {
-        if(getChildPage() != null) {
+        if (getChildPage() != null) {
             getChildPage().pushNotificationTokenUpdated(registrationId, errorMessage);
         } else {
             mTokenHolder = new NotificationToken(registrationId, errorMessage);
@@ -181,7 +180,7 @@ public abstract class PageFragment extends DialogFragment {
         public String registrationId;
         public String errorMessage;
 
-        NotificationToken(String registyrationId, String errorMessage){
+        NotificationToken(String registyrationId, String errorMessage) {
             this.registrationId = registyrationId;
             this.errorMessage = errorMessage;
         }
