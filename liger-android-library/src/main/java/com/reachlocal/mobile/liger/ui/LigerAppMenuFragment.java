@@ -188,6 +188,12 @@ public class LigerAppMenuFragment extends PageFragment implements MenuInterface 
         return null;
     }
 
+    @Override
+    protected PageFragment getChildPage() {
+        //TODO  This should pass to active page displayed
+        return null;
+    }
+
     public static LigerAppMenuFragment build(String pageName, String pageTitle, String pageArgs, String pageOptions) {
         LigerAppMenuFragment menu = new LigerAppMenuFragment();
         Bundle bundle = new Bundle();
