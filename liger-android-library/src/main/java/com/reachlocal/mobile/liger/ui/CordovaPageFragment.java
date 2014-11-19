@@ -13,6 +13,7 @@ import com.reachlocal.mobile.liger.LIGER;
 import com.reachlocal.mobile.liger.listeners.PageLifecycleListener;
 import com.reachlocal.mobile.liger.R;
 import com.reachlocal.mobile.liger.model.ToolbarItemSpec;
+import com.reachlocal.mobile.liger.utils.JSUtils;
 import com.reachlocal.mobile.liger.utils.JsonUtils;
 import com.reachlocal.mobile.liger.widgets.ToolbarLayout;
 
@@ -49,7 +50,6 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
 
     private List<String> javascriptQueue;
 
-    private List<PageLifecycleListener> mLifecycleListeners = new ArrayList<PageLifecycleListener>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -90,7 +90,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "CordovaPageFragment.onCreateView() " + pageName);
+            Log.d(LIGER.TAG, this.getClass().getSimpleName() + ".onCreateView() " + pageName);
         }
         if (isDialog) {
             return super.onCreateView(inflater, container, savedInstanceState);
@@ -148,7 +148,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     public void onDestroyView() {
         super.onDestroyView();
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "CordovaPageFragment.onDestroyView() " + pageName);
+            Log.d(LIGER.TAG, this.getClass().getSimpleName() + ".onDestroyView() " + pageName);
         }
         mWebView.removeAllViews();
         mWebView.handleDestroy();
@@ -171,7 +171,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "CordovaPageFragment.onHiddenChanged() " + pageName + ", " + hidden);
+            Log.d(LIGER.TAG, this.getClass().getSimpleName() + ".onHiddenChanged() " + pageName + ", " + hidden);
         }
         if (!hidden) {
             sendChildArgs();
@@ -203,13 +203,11 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
             mWebView.handlePause(false);
     }
 
-    @Override
     public void sendJavascriptWithArgs(String object, String function, String args) {
         String js = String.format("%1$s.%2$s(%3$s);", object, function, args);
         sendJavascript(js);
     }
 
-    @Override
     public void sendJavascript(String js) {
         if (isLoaded) {
             doSendJavascript(js);
@@ -223,17 +221,34 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         return null;
     }
 
-    private void queueJavascript(String js) {
+    @Override
+    protected PageFragment getChildPage() {
+        throw new RuntimeException("CordovaPageFragment should never get here");
+    }
+
+    @Override
+    public void closeDialogArguments(String args) {
+        sendJavascriptWithArgs("PAGE", "closeDialogArguments", args);
+    }
+
+    @Override
+    public void pushNotificationTokenUpdated(String registrationId, String errorMessage) {
+        String args = JSUtils.stringListToArgString(registrationId, "AndroidPushToken", errorMessage);
+        sendJavascriptWithArgs("PAGE", "pushNotificationTokenUpdated", args);
+    }
+
+
+    public void queueJavascript(String js) {
         if (javascriptQueue == null) {
             javascriptQueue = new ArrayList<String>();
         }
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "CordovaPageFragment.queueJavascript() js:" + js);
+            Log.d(LIGER.TAG, this.getClass().getSimpleName() + ".queueJavascript() js:" + js);
         }
         javascriptQueue.add(js);
     }
 
-    private void processJavascriptQueue() {
+    protected void processJavascriptQueue() {
         if (javascriptQueue != null) {
             for (String js : javascriptQueue) {
                 doSendJavascript(js);
@@ -242,9 +257,9 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         }
     }
 
-    private void doSendJavascript(String js) {
+    protected void doSendJavascript(String js) {
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "CordovaPageFragment.doSendJavascript() to " + (mWebView == null ? "(null webView)" : mWebView.getUrl()) + ", js:" + js);
+            Log.d(LIGER.TAG, this.getClass().getSimpleName() + ".doSendJavascript() to " + (mWebView == null ? "(null webView)" : mWebView.getUrl()) + ", js:" + js);
         }
         if (mWebView != null)
             mWebView.sendJavascript(js);
@@ -359,7 +374,10 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
 
     protected void onPageFinished(WebView webView, String url) {
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "CordovaPageFragment.onPageFinished() " + pageName + ", " + url);
+            Log.d(LIGER.TAG, this.getClass().getSimpleName() + ".onPageFinished() " + pageName + ", " + url);
+        }
+        for (PageLifecycleListener listener : mLifecycleListeners) {
+            listener.onPageFinished(this);
         }
         isLoaded = true;
         String webTitle = webView.getTitle();
@@ -426,7 +444,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     @Override
     public String getPageArgs() {
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "CordovaPageFragment.getPageArgs() " + pageName);
+            Log.d(LIGER.TAG, this.getClass().getSimpleName() + ".getPageArgs() " + pageName);
         }
         return pageArgs;
     }

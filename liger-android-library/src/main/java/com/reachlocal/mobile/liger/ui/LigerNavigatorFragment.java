@@ -51,8 +51,6 @@ public class LigerNavigatorFragment extends PageFragment {
     private String actionBarTitle;
     private boolean canRefresh;
 
-    private List<PageLifecycleListener> mLifecycleListeners = new ArrayList<PageLifecycleListener>();
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,6 +139,9 @@ public class LigerNavigatorFragment extends PageFragment {
 
     }
 
+    private void sendChildArgs() {
+        //TODO  - What does this do?
+    }
 
     @Override
     public void onResume() {
@@ -237,42 +238,10 @@ public class LigerNavigatorFragment extends PageFragment {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int itemId = item.getItemId();
-        if (this.canRefresh && itemId == R.id.liger_action_refresh) {
-            sendJavascript("PAGE.refresh(true);");
-            return true;
-        } else {
-            return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    public void doPageAppear() {
-        if (isLoaded) {
-            sendJavascript("PAGE.onPageAppear();");
-        }
-    }
-
-    @Override
     public void doPageClosed() {
         super.doPageClosed();
         for (PageLifecycleListener listener : mLifecycleListeners) {
             listener.onPageClosed(this);
-        }
-    }
-
-
-    private void sendChildArgs() {
-        if (!StringUtils.isEmpty(childUpdateArgs) && !childArgsSent) {
-            childArgsSent = true;
-            sendJavascriptWithArgs("PAGE", "childUpdates", childUpdateArgs);
-        }
-    }
-
-    private void sendPageArgs() {
-        if (!StringUtils.isEmpty(pageArgs)) {
-            sendJavascriptWithArgs("PAGE", "gotPageArgs", pageArgs);
         }
     }
 
@@ -323,6 +292,11 @@ public class LigerNavigatorFragment extends PageFragment {
             ft.commit();
         }
         return parentPage == null ? null : parentPage.getPageName();
+    }
+
+    @Override
+    protected PageFragment getChildPage() {
+        return mFragDeck.getLast();
     }
 
 

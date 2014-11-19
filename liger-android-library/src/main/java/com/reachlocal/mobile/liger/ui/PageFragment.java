@@ -8,14 +8,17 @@ import android.util.Log;
 
 import com.reachlocal.mobile.liger.LIGER;
 import com.reachlocal.mobile.liger.R;
+import com.reachlocal.mobile.liger.listeners.PageLifecycleListener;
 import com.reachlocal.mobile.liger.listeners.RootPageListener;
 import com.reachlocal.mobile.liger.utils.CordovaUtils;
 
 import org.apache.cordova.CallbackContext;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.List;
 
 public abstract class PageFragment extends DialogFragment {
 
@@ -30,6 +33,10 @@ public abstract class PageFragment extends DialogFragment {
     public static final String DIALOG_FRAGMENT = "ligerDialogFragment";
 
     protected Deque<PageFragment> mFragDeck = new LinkedList<PageFragment>();
+
+    protected List<PageLifecycleListener> mLifecycleListeners = new ArrayList<PageLifecycleListener>();
+
+    protected NotificationToken mTokenHolder;
 
     public static PageFragment fromCallbackContext(CallbackContext cc) {
         return CordovaUtils.fromCallbackContext(cc, R.id.web_view_parent_frag);
@@ -139,11 +146,7 @@ public abstract class PageFragment extends DialogFragment {
         }
     }
 
-    public void sendJavascriptWithArgs(String object, String function, String args) {
-    }
 
-    public void sendJavascript(String js) {
-    }
 
     public abstract String closeLastPage(PageFragment closePage, String closeTo);
 
@@ -157,4 +160,31 @@ public abstract class PageFragment extends DialogFragment {
         }
     }
 
+    // Functions that match javascript
+
+    protected abstract PageFragment getChildPage();
+
+    public void closeDialogArguments(String args) {
+        if(getChildPage() != null)
+            getChildPage().closeDialogArguments(args);
+    }
+
+    public void pushNotificationTokenUpdated(String registrationId, String errorMessage) {
+        if(getChildPage() != null) {
+            getChildPage().pushNotificationTokenUpdated(registrationId, errorMessage);
+        } else {
+            mTokenHolder = new NotificationToken(registrationId, errorMessage);
+        }
+    }
+
+    protected class NotificationToken {
+        public String registrationId;
+        public String errorMessage;
+
+        NotificationToken(String registyrationId, String errorMessage){
+            this.registrationId = registyrationId;
+            this.errorMessage = errorMessage;
+        }
+
+    }
 }

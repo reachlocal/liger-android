@@ -202,7 +202,7 @@ public class LigerPlugin extends CordovaPlugin {
                     activity.resetApp();
                 } else {
                     activity.openPage(page, null, argObj, null);
-                    activity.sendJavascriptWithArgs("PAGE", "closeDialogArguments", args);
+                    activity.getRootPageFragment().closeDialogArguments(args);
                 }
             }
         });
