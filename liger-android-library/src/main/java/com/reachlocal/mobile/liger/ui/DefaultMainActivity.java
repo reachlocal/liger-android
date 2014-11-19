@@ -194,15 +194,6 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
         return this;
     }
 
-    public void sendJavascriptWithArgs(String object, String function, String args) {
-
-        if (mRootPageFragment == null) {
-            Log.w(LIGER.TAG, "Cannot send javascript, no current web fragment!");
-        } else {
-            mRootPageFragment.sendJavascriptWithArgs(object, function, args);
-        }
-    }
-
     @Override
     public Object onMessage(String id, Object data) {
         return null;
@@ -211,6 +202,27 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
     @Override
     public ExecutorService getThreadPool() {
         return threadPool;
+    }
+
+    @Override
+    public void onGcmRegistered(String registrationId, String errorMessage) {
+        if (LIGER.LOGGING) {
+            Log.d(LIGER.TAG, "Received GCM registration ID:" + registrationId);
+        }
+        //String args = JSUtils.stringListToArgString(registrationId, "AndroidPushToken", errorMessage);
+
+        mRootPageFragment.pushNotificationTokenUpdated(registrationId, errorMessage);
+    }
+
+    @Override
+    public void onFragmentFinished(PageFragment page) {
+        if (page == mRootPageFragment) {
+            finish();
+        }
+    }
+
+    public PageFragment getRootPageFragment(){
+        return mRootPageFragment;
     }
 
     public void setActionBarTitle(String title) {
@@ -249,20 +261,5 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
         //setMenuSelection(fragStack.getCurrentFragment().getPageName());
     }
 
-    @Override
-    public void onGcmRegistered(String registrationId, String errorMessage) {
-        if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "Received GCM registration ID:" + registrationId);
-        }
-        String args = JSUtils.stringListToArgString(registrationId, "AndroidPushToken", errorMessage);
 
-        mRootPageFragment.sendJavascriptWithArgs("PAGE", "pushNotificationTokenUpdated", args);
-    }
-
-    @Override
-    public void onFragmentFinished(PageFragment page) {
-        if (page == mRootPageFragment) {
-            finish();
-        }
-    }
 }

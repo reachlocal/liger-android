@@ -17,11 +17,13 @@ import android.widget.LinearLayout;
 import com.reachlocal.mobile.liger.LIGER;
 import com.reachlocal.mobile.liger.R;
 import com.reachlocal.mobile.liger.factories.LigerFragmentFactory;
+import com.reachlocal.mobile.liger.listeners.PageLifecycleListener;
 import com.reachlocal.mobile.liger.model.MenuItemSpec;
 import com.reachlocal.mobile.liger.utils.ViewUtil;
 import com.reachlocal.mobile.liger.widgets.MenuInterface;
 import com.reachlocal.mobile.liger.widgets.MenuItemCell;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,7 +38,7 @@ import java.util.List;
  * Created by Mark Wagner on 10/22/14.
  */
 
-public class LigerDrawerFragment extends PageFragment {
+public class LigerDrawerFragment extends PageFragment implements PageLifecycleListener {
 
     private JSONObject drawerObject;
     protected PageFragment mDrawer;
@@ -60,6 +62,7 @@ public class LigerDrawerFragment extends PageFragment {
         mDrawer.addFragments(ft, mDrawerContentFrame.getId());
         ft.commit();
         setupMenu();
+        mDrawer.mLifecycleListeners.add(this);
         return mDrawerContentFrame;
     }
 
@@ -299,5 +302,28 @@ public class LigerDrawerFragment extends PageFragment {
             ft.commit();
         }
         return parentPage == null ? null : parentPage.getPageName();
+    }
+
+    @Override
+    protected PageFragment getChildPage() {
+        return mDrawer;
+    }
+
+
+    @Override
+    public void onPageClosed(PageFragment page) {
+
+    }
+
+    @Override
+    public void onHiddenChanged(PageFragment page, boolean hidden) {
+
+    }
+
+    @Override
+    public void onPageFinished(PageFragment page) {
+        if(mTokenHolder != null){
+            page.pushNotificationTokenUpdated(mTokenHolder.registrationId, mTokenHolder.errorMessage);
+        }
     }
 }
