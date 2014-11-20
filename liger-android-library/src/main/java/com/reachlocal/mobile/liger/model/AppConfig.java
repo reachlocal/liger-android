@@ -14,6 +14,8 @@ import java.util.List;
 
 public class AppConfig {
 
+    private static int SUPPORTED_APP_FORMAT_VERSION = 6;
+
     private long appFormatVersion;
     private List<MenuItemSpec> mMajorMenuItems;
     private List<MenuItemSpec> mMinorMenuItems;
@@ -101,7 +103,7 @@ public class AppConfig {
             JSONObject parentObj = new JSONObject(appConfigString);
             appConfig.setAppFormatVersion(parentObj.getLong("appFormatVersion"));
 
-            if (appConfig.appFormatVersion >= 6) {
+            if (appConfig.appFormatVersion >= SUPPORTED_APP_FORMAT_VERSION) {
                 JSONObject rootPage = parentObj.getJSONObject("rootPage");
                 appConfig.mRootPageArgs = rootPage.getJSONObject("args");
                 appConfig.mRootPageName = rootPage.getString("page");
