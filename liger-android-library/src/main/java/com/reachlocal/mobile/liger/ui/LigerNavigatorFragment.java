@@ -362,6 +362,8 @@ public class LigerNavigatorFragment extends PageFragment {
                 JSONObject jsonPageOptions = new JSONObject(pageOptions);
                 if (jsonPageOptions.has("cached")) {
                     navigator.mCached = jsonPageOptions.getBoolean("cached");
+                } else {
+                    navigator.mCached = true;
                 }
             }
 
