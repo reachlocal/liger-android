@@ -144,7 +144,7 @@
               "accessibilityLabel": "Menu4",
               "args": {
                 "title": "Native Page",
-                "page": "nativePages",
+                "page": "com.testapp.fragments.nativePages",
                 "accessibilityLabel": "nativePages"
               }
             },
@@ -179,7 +179,7 @@
               "accessibilityLabel": "Menu7",
               "dialog": "true",
               "args": {
-                "page": "nativePages",
+                "page": "com.testapp.fragments.nativePages",
                 "title": "Native Page",
                 "accessibilityLabel": "nativeDialog"
               }

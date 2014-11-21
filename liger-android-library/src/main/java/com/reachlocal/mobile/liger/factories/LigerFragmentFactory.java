@@ -89,7 +89,17 @@ public class LigerFragmentFactory {
             } else if (pageName.equalsIgnoreCase("appMenu")) {
                 returnFragment = LigerAppMenuFragment.build(pageName, title, pageArgs, pageOptions);
             } else {
-                returnFragment = CordovaPageFragment.build(pageName, title, pageArgs, pageOptions);
+                try {
+                    returnFragment = (PageFragment) Class.forName(pageName).newInstance();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+                if (returnFragment == null)
+                    returnFragment = CordovaPageFragment.build(pageName, title, pageArgs, pageOptions);
             }
         }
 
