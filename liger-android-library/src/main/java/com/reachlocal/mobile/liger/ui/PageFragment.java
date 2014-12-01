@@ -127,13 +127,16 @@ public abstract class PageFragment extends DialogFragment {
 
 
     protected void fragmentDetached(PageFragment detachedFrag) {
+        boolean lastRemoved = false;
         if (mFragDeck.size() > 0) {
             PageFragment lastPage = mFragDeck.getLast();
             if (lastPage == detachedFrag) {
-                mFragDeck.removeLast();
+                //mFragDeck.removeLast();
+                lastRemoved = true;
             }
         }
-        if (mFragDeck.size() == 0 || (mFragDeck.size() == 1 && mFragDeck.getLast().isDetached())) {
+
+        if (lastRemoved || (mFragDeck.size() == 1 && mFragDeck.getLast().isDetached())) {
             if (!mContext.isFinishing()) {
                 FragmentTransaction ft = mContext.getSupportFragmentManager().beginTransaction();
                 ft.remove(this);
