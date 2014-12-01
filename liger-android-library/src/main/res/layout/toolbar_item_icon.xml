@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<CheckedTextView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<CheckedTextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/menu_icon_glyph"
     style="@style/toolbarGlyph"
     android:layout_width="0dp"
@@ -12,4 +11,4 @@
     android:text="H"
     android:checked="false"
     android:clickable="false"
-    android:layout_margin="8dp"/>
+    android:layout_margin="8dp" />

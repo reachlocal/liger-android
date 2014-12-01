@@ -7,8 +7,10 @@ import android.view.LayoutInflater;
 import android.widget.Checkable;
 import android.widget.CheckedTextView;
 import android.widget.LinearLayout;
-import com.reachlocal.mobile.liger.ui.DefaultMainActivity;
+
 import com.reachlocal.mobile.liger.R;
+import com.reachlocal.mobile.liger.ui.DefaultMainActivity;
+
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 
@@ -105,7 +107,7 @@ public class MenuItemCell extends LinearLayout implements Checkable {
         if (!isInEditMode()) {
             if (!mMajor) {
                 menuItemTitle.setTextAppearance(getContext(), R.style.menuTextMinor);
-            } else  {
+            } else {
                 menuItemTitle.setTextAppearance(getContext(), R.style.menuTextMajor);
             }
 
@@ -157,9 +159,13 @@ public class MenuItemCell extends LinearLayout implements Checkable {
         return itemSubtitle;
     }
 
-    public void setItemArgs(JSONObject args){ this.itemArgs = args; }
+    public void setItemArgs(JSONObject args) {
+        this.itemArgs = args;
+    }
 
-    public void setItemOptions(JSONObject options) { this.itemOptions = options; }
+    public void setItemOptions(JSONObject options) {
+        this.itemOptions = options;
+    }
 
     public void setItemSubtitle(String itemSubtitle) {
         this.itemSubtitle = itemSubtitle;
@@ -185,7 +191,11 @@ public class MenuItemCell extends LinearLayout implements Checkable {
         this.clickAction = clickAction;
     }
 
-    public void setMenuIdString(String menuIdString) { this.mMenuIdString = menuIdString; }
+    public void setMenuIdString(String menuIdString) {
+        this.mMenuIdString = menuIdString;
+    }
 
-    public String getMenuIdString() { return mMenuIdString; }
+    public String getMenuIdString() {
+        return mMenuIdString;
+    }
 }

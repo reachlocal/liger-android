@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.reachlocal.mobile.liger.ui.DefaultMainActivity;
 import com.reachlocal.mobile.liger.widgets.AlertDialogFragment;
+
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaArgs;
 import org.apache.cordova.CordovaPlugin;
@@ -11,7 +12,7 @@ import org.json.JSONException;
 
 import static com.reachlocal.mobile.liger.utils.CordovaUtils.argsToString;
 
-public class AlertPlugin extends CordovaPlugin{
+public class AlertPlugin extends CordovaPlugin {
     @Override
     public boolean execute(String action, CordovaArgs args, CallbackContext callbackContext) throws JSONException {
         if (LIGER.LOGGING) {
@@ -20,7 +21,7 @@ public class AlertPlugin extends CordovaPlugin{
         if (action.equalsIgnoreCase("openAlert")) {
             return openAlert(args.optString(0), args.optString(1), args.optString(2), callbackContext);
         }
-        if(LIGER.LOGGING) {
+        if (LIGER.LOGGING) {
             Log.w(LIGER.TAG, "Unknown AlertPlugin action: " + action);
         }
         return false;

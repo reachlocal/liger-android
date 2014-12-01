@@ -7,6 +7,7 @@ import android.os.Build;
 import android.util.Log;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
+
 import com.reachlocal.mobile.liger.LIGER;
 
 import java.io.IOException;
@@ -18,7 +19,7 @@ public class CompatUtils {
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static WebResourceResponse icsShouldInterceptRequest(Context context, WebView view, String url) {
-        if(LIGER.LOGGING) {
+        if (LIGER.LOGGING) {
             Log.d(LIGER.TAG, "WebViewClient.shouldInterceptRequest: " + url);
         }
         try {

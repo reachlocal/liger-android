@@ -1,7 +1,9 @@
 package com.reachlocal.mobile.liger.model;
 
 import android.content.Context;
+
 import com.reachlocal.mobile.liger.LIGER;
+
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,6 +13,8 @@ import java.io.InputStream;
 import java.util.List;
 
 public class AppConfig {
+
+    private static int SUPPORTED_APP_FORMAT_VERSION = 6;
 
     private long appFormatVersion;
     private List<MenuItemSpec> mMajorMenuItems;
@@ -62,7 +66,9 @@ public class AppConfig {
         return mRootPageName;
     }
 
-    public String getRootPageTitle() { return mRootPageTitle; }
+    public String getRootPageTitle() {
+        return mRootPageTitle;
+    }
 
     public JSONObject getRootPageArgs() {
         return mRootPageArgs;
@@ -97,7 +103,7 @@ public class AppConfig {
             JSONObject parentObj = new JSONObject(appConfigString);
             appConfig.setAppFormatVersion(parentObj.getLong("appFormatVersion"));
 
-            if(appConfig.appFormatVersion >= 6) {
+            if (appConfig.appFormatVersion >= SUPPORTED_APP_FORMAT_VERSION) {
                 JSONObject rootPage = parentObj.getJSONObject("rootPage");
                 appConfig.mRootPageArgs = rootPage.getJSONObject("args");
                 appConfig.mRootPageName = rootPage.getString("page");

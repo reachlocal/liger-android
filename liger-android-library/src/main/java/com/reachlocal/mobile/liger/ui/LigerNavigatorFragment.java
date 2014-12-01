@@ -3,20 +3,20 @@ package com.reachlocal.mobile.liger.ui;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 
 import com.reachlocal.mobile.liger.LIGER;
-import com.reachlocal.mobile.liger.listeners.PageLifecycleListener;
 import com.reachlocal.mobile.liger.R;
 import com.reachlocal.mobile.liger.factories.LigerFragmentFactory;
+import com.reachlocal.mobile.liger.listeners.PageLifecycleListener;
 import com.reachlocal.mobile.liger.utils.ViewUtil;
 
 import org.apache.commons.lang3.StringUtils;
@@ -24,10 +24,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
+
 
 public class LigerNavigatorFragment extends PageFragment {
 
@@ -50,8 +50,6 @@ public class LigerNavigatorFragment extends PageFragment {
     private String childUpdateArgs;
     private String actionBarTitle;
     private boolean canRefresh;
-
-    private List<PageLifecycleListener> mLifecycleListeners = new ArrayList<PageLifecycleListener>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -79,24 +77,27 @@ public class LigerNavigatorFragment extends PageFragment {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
         outState.putString("parentUpdateArgs", parentUpdateArgs);
         outState.putString("toolbarSpec", toolbarSpec);
         outState.putString("childUpdateArgs", childUpdateArgs);
         outState.putString("actionBarTitle", actionBarTitle);
         outState.putBoolean("canRefresh", canRefresh);
-
+        super.onSaveInstanceState(outState);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        if(container != null)
+            container.removeAllViews();
         createContentView(inflater, container, savedInstanceState);
         if (LIGER.LOGGING) {
             Log.d(LIGER.TAG, "LigerNavigatorFragment.onCreateView() " + pageName);
         }
         FragmentManager childFragmentManager = getChildFragmentManager();
         FragmentTransaction ft = childFragmentManager.beginTransaction();
-        for(PageFragment page : mFragDeck){
+        for (PageFragment page : mFragDeck) {
+            if(page.isAdded())
+                ft.remove(page);
             page.doPageAppear();
             page.addFragments(ft, mNavigatorContentFrame.getId());
             page.mContainer = this;
@@ -106,8 +107,13 @@ public class LigerNavigatorFragment extends PageFragment {
     }
 
     protected View createContentView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        int id = -1;
+        if(mNavigatorContentFrame != null)
+           id = mNavigatorContentFrame.getId();
         mNavigatorContentFrame = inflater.inflate(R.layout.navigator_layout, container, false);
-        mNavigatorContentFrame.setId(ViewUtil.generateViewId());
+        mNavigatorContentFrame.setId(id);
+        if(mNavigatorContentFrame.getId() == -1)
+            mNavigatorContentFrame.setId(ViewUtil.generateViewId());
         return mNavigatorContentFrame;
     }
 
@@ -133,6 +139,21 @@ public class LigerNavigatorFragment extends PageFragment {
     }
 
     @Override
+    public void onDetach(){
+        super.onDetach();
+        try {
+            Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
+            childFragmentManager.setAccessible(true);
+            childFragmentManager.set(this, null);
+
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         if (LIGER.LOGGING) {
@@ -141,7 +162,9 @@ public class LigerNavigatorFragment extends PageFragment {
 
     }
 
-
+    private void sendChildArgs() {
+        //TODO  - What does this do?
+    }
 
     @Override
     public void onResume() {
@@ -170,24 +193,24 @@ public class LigerNavigatorFragment extends PageFragment {
     @Override
     public void openPage(String pageName, String title, JSONObject pageArgs, JSONObject pageOptions) {
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "LigerNavigatorFragment openPage() pageName:" + pageName + ", args:" + pageArgs+ ", options:" + pageOptions);
+            Log.d(LIGER.TAG, "LigerNavigatorFragment openPage() pageName:" + pageName + ", args:" + pageArgs + ", options:" + pageOptions);
         }
         PageFragment page = null;
 
-        if(mCached && mFragCache.containsKey(pageName)){
+        if (mCached && mFragCache.containsKey(pageName)) {
             page = mFragCache.get(pageName);
-        }else{
+        } else {
             page = LigerFragmentFactory.openPage(pageName, title, pageArgs, pageOptions);
         }
 
-
-        if(page != null) {
+        if (page != null) {
             page.doPageAppear();
-            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+            FragmentManager childFragmentManager = getChildFragmentManager();
+            FragmentTransaction ft = childFragmentManager.beginTransaction();
             page.addFragments(ft, mNavigatorContentFrame.getId());
             ft.commit();
             mFragDeck.addLast(page);
-            if(mCached){
+            if (mCached) {
                 mFragCache.put(pageName, page);
             }
             page.mContainer = this;
@@ -202,8 +225,8 @@ public class LigerNavigatorFragment extends PageFragment {
                             + (args == null ? null : args.toString()) + ", options:"
                             + (options == null ? null : options.toString()));
         }
-        PageFragment dialog =  LigerFragmentFactory.openPage(pageName, title, args, options);
-        if(dialog != null) {
+        PageFragment dialog = LigerFragmentFactory.openPage(pageName, title, args, options);
+        if (dialog != null) {
             mFragDeck.addLast(dialog);
             dialog.show(getActivity().getSupportFragmentManager(), DIALOG_FRAGMENT);
         }
@@ -238,24 +261,6 @@ public class LigerNavigatorFragment extends PageFragment {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int itemId = item.getItemId();
-        if (this.canRefresh && itemId == R.id.liger_action_refresh) {
-            sendJavascript("PAGE.refresh(true);");
-            return true;
-        } else {
-            return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    public void doPageAppear() {
-        if (isLoaded) {
-            sendJavascript("PAGE.onPageAppear();");
-        }
-    }
-
-    @Override
     public void doPageClosed() {
         super.doPageClosed();
         for (PageLifecycleListener listener : mLifecycleListeners) {
@@ -263,24 +268,10 @@ public class LigerNavigatorFragment extends PageFragment {
         }
     }
 
-
-    private void sendChildArgs() {
-        if (!StringUtils.isEmpty(childUpdateArgs) && !childArgsSent) {
-            childArgsSent = true;
-            sendJavascriptWithArgs("PAGE", "childUpdates", childUpdateArgs);
-        }
-    }
-
-    private void sendPageArgs() {
-        if (!StringUtils.isEmpty(pageArgs)) {
-            sendJavascriptWithArgs("PAGE", "gotPageArgs", pageArgs);
-        }
-    }
-
     @Override
     public String closeLastPage(PageFragment closePage, String closeTo) {
         PageFragment parentPage = null;
-        if(mFragDeck.size() > 0) {
+        if (mFragDeck.size() > 0) {
             PageFragment lastPage = mFragDeck.getLast();
             if (!StringUtils.isEmpty(closeTo)) {
                 Iterator<PageFragment> it = mFragDeck.descendingIterator();
@@ -292,33 +283,35 @@ public class LigerNavigatorFragment extends PageFragment {
                     }
                 }
             }
-            if(closePage == null || closePage == lastPage) {
-                FragmentManager fm = getFragmentManager();
-                FragmentTransaction ft = fm.beginTransaction();
-                ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
-                mFragDeck.removeLast();
-                lastPage.doPageClosed();
-                ft.remove(lastPage);
-                if (parentPage == null) {
-                    if (mFragDeck.size() > 0) {
-                        parentPage = mFragDeck.getLast();
-                    }
-                } else {
-                    popTo(ft, parentPage);
+            if (closePage == null || closePage == lastPage) {
+                FragmentManager childFragmentManager = getChildFragmentManager();
+                if(childFragmentManager != null) {
+                    FragmentTransaction ft = childFragmentManager.beginTransaction();
+                    ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
+                    mFragDeck.removeLast();
+                    lastPage.doPageClosed();
+                    ft.remove(lastPage);
+                    if (parentPage == null) {
+                        if (mFragDeck.size() > 0) {
+                            parentPage = mFragDeck.getLast();
+                        }
+                    } else {
+                        popTo(ft, parentPage);
 
+                    }
+                    String parentUpdateArgs = lastPage.getParentUpdateArgs();
+                    if (parentPage != null) {
+                        parentPage.setChildArgs(parentUpdateArgs);
+                        parentPage.doPageAppear();
+                        ((DefaultMainActivity) getActivity()).setActionBarTitle(parentPage.getPageTitle());
+                    }
+                    ft.commit();
                 }
-                String parentUpdateArgs = lastPage.getParentUpdateArgs();
-                if (parentPage != null) {
-                    parentPage.setChildArgs(parentUpdateArgs);
-                    parentPage.doPageAppear();
-                    ((DefaultMainActivity) getActivity()).setActionBarTitle(parentPage.getPageTitle());
-                }
-                ft.commit();
 
                 logStack("closeLastPage");
             }
         }
-        if(mFragDeck.size() == 0){
+        if (mFragDeck.size() == 0) {
             FragmentTransaction ft = mContext.getSupportFragmentManager().beginTransaction();
             ft.remove(this);
             ft.commit();
@@ -326,6 +319,10 @@ public class LigerNavigatorFragment extends PageFragment {
         return parentPage == null ? null : parentPage.getPageName();
     }
 
+    @Override
+    protected PageFragment getChildPage() {
+        return mFragDeck.getLast();
+    }
 
 
     @Override
@@ -335,9 +332,9 @@ public class LigerNavigatorFragment extends PageFragment {
 
     @Override
     public String getPageArgs() {
-        if(mFragDeck.size() > 0) {
+        if (mFragDeck.size() > 0) {
             return mFragDeck.getLast().getPageArgs();
-        }else{
+        } else {
             return null;
         }
     }
@@ -372,7 +369,7 @@ public class LigerNavigatorFragment extends PageFragment {
     }
 
     @Override
-    public void addFragments(FragmentTransaction ft, int containViewId){
+    public void addFragments(FragmentTransaction ft, int containViewId) {
         ft.add(containViewId, this);
     }
 
@@ -390,8 +387,10 @@ public class LigerNavigatorFragment extends PageFragment {
             if (pageOptions != null) {
                 bundle.putString("pageOptions", pageOptions);
                 JSONObject jsonPageOptions = new JSONObject(pageOptions);
-                if(jsonPageOptions.has("cached")){
+                if (jsonPageOptions.has("cached")) {
                     navigator.mCached = jsonPageOptions.getBoolean("cached");
+                } else {
+                    navigator.mCached = true;
                 }
             }
 
@@ -400,19 +399,19 @@ public class LigerNavigatorFragment extends PageFragment {
 
                 JSONObject jsonPageArgs = new JSONObject(pageArgs);
 
-                if(jsonPageArgs.has("pages")){
+                if (jsonPageArgs.has("pages")) {
                     //Contains an Array of pages load them onto the stack in order.
                     pages = jsonPageArgs.getJSONArray("pages");
-                }else{
+                } else {
                     // Navigator with one page
                     pages.put(jsonPageArgs);
                 }
             }
-            for(int i=0;i<pages.length();i++) {
+            for (int i = 0; i < pages.length(); i++) {
                 JSONObject page = pages.getJSONObject(i);
                 PageFragment newPage = LigerFragmentFactory.openPage(page.getString("page"), page.getString("title"), page.optJSONObject("args"), page.optJSONObject("options"));
-                if(newPage != null) {
-                    if(navigator.mCached){
+                if (newPage != null) {
+                    if (navigator.mCached) {
                         navigator.mFragCache.put(page.getString("page"), newPage);
                     }
                     navigator.mFragDeck.addLast(newPage);
