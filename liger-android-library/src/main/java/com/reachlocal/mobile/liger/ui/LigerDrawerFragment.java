@@ -100,16 +100,18 @@ public class LigerDrawerFragment extends PageFragment implements PageLifecycleLi
         if (LIGER.LOGGING) {
             Log.d(LIGER.TAG, "LigerDrawerFragment openPage() pageName:" + pageName + ", args:" + pageArgs + ", options:" + pageOptions);
         }
-        PageFragment page = null;
+        PageFragment page;
+        String reuseIdentifier = pageOptions.optString("reuseIdentifier", null);
 
-        //TODO - Frag Cache
-//        if(mFragCache.containsKey(pageName)){
-//            page = mFragCache.get(pageName);
-//        }else{
-//            page = LigerFragmentFactory.openPage(pageName, title, pageArgs, pageOptions);
-//        }
-
-        page = LigerFragmentFactory.openPage(pageName, title, pageArgs, pageOptions);
+        if(reuseIdentifier != null && mDrawerCache.containsKey(reuseIdentifier)){
+            page = mDrawerCache.get(reuseIdentifier);
+        }else{
+            page = LigerFragmentFactory.openPage(pageName, title, pageArgs, pageOptions);
+            Boolean cached = pageOptions.optBoolean("cached", true);
+            if(cached && reuseIdentifier != null){
+                mDrawerCache.put(reuseIdentifier, page);
+            }
+        }
 
         if (page != null) {
             page.doPageAppear();
@@ -223,18 +225,6 @@ public class LigerDrawerFragment extends PageFragment implements PageLifecycleLi
     @Override
     public void addFragments(FragmentTransaction ft, int contentViewID) {
         ft.add(R.id.drawer_menu, this);
-        //mDrawer = LigerFragmentFactory.openPage(drawerObject);
-        //ft = getChildFragmentManager().beginTransaction();
-        //mDrawer.addFragments(ft, R.id.drawer_menu );
-
-//        MenuItemSpec firstMenuItem = getMajorMenuItems().get(0);
-//        PageFragment page = LigerFragmentFactory.openPage(firstMenuItem.getPage(), firstMenuItem.getName(), firstMenuItem.getArgs(), firstMenuItem.getOptions());
-//        if (page != null) {
-//            mFragDeck.addLast(page);
-//            page.mContainer = this;
-//            page.addFragments(ft, contentViewID);
-//        }
-
     }
 
     @Override
