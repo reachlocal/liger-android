@@ -3,6 +3,7 @@ package com.reachlocal.mobile.liger.ui;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -23,6 +24,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -75,17 +77,18 @@ public class LigerNavigatorFragment extends PageFragment {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
         outState.putString("parentUpdateArgs", parentUpdateArgs);
         outState.putString("toolbarSpec", toolbarSpec);
         outState.putString("childUpdateArgs", childUpdateArgs);
         outState.putString("actionBarTitle", actionBarTitle);
         outState.putBoolean("canRefresh", canRefresh);
-
+        super.onSaveInstanceState(outState);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        if(container != null)
+            container.removeAllViews();
         createContentView(inflater, container, savedInstanceState);
         if (LIGER.LOGGING) {
             Log.d(LIGER.TAG, "LigerNavigatorFragment.onCreateView() " + pageName);
@@ -93,6 +96,8 @@ public class LigerNavigatorFragment extends PageFragment {
         FragmentManager childFragmentManager = getChildFragmentManager();
         FragmentTransaction ft = childFragmentManager.beginTransaction();
         for (PageFragment page : mFragDeck) {
+            if(page.isAdded())
+                ft.remove(page);
             page.doPageAppear();
             page.addFragments(ft, mNavigatorContentFrame.getId());
             page.mContainer = this;
@@ -102,8 +107,13 @@ public class LigerNavigatorFragment extends PageFragment {
     }
 
     protected View createContentView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        int id = -1;
+        if(mNavigatorContentFrame != null)
+           id = mNavigatorContentFrame.getId();
         mNavigatorContentFrame = inflater.inflate(R.layout.navigator_layout, container, false);
-        mNavigatorContentFrame.setId(ViewUtil.generateViewId());
+        mNavigatorContentFrame.setId(id);
+        if(mNavigatorContentFrame.getId() == -1)
+            mNavigatorContentFrame.setId(ViewUtil.generateViewId());
         return mNavigatorContentFrame;
     }
 
@@ -128,6 +138,21 @@ public class LigerNavigatorFragment extends PageFragment {
         return dialog;
     }
 
+    @Override
+    public void onDetach(){
+        super.onDetach();
+        try {
+            Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
+            childFragmentManager.setAccessible(true);
+            childFragmentManager.set(this, null);
+
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -178,10 +203,10 @@ public class LigerNavigatorFragment extends PageFragment {
             page = LigerFragmentFactory.openPage(pageName, title, pageArgs, pageOptions);
         }
 
-
         if (page != null) {
             page.doPageAppear();
-            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+            FragmentManager childFragmentManager = getChildFragmentManager();
+            FragmentTransaction ft = childFragmentManager.beginTransaction();
             page.addFragments(ft, mNavigatorContentFrame.getId());
             ft.commit();
             mFragDeck.addLast(page);
@@ -259,27 +284,29 @@ public class LigerNavigatorFragment extends PageFragment {
                 }
             }
             if (closePage == null || closePage == lastPage) {
-                FragmentManager fm = getFragmentManager();
-                FragmentTransaction ft = fm.beginTransaction();
-                ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
-                mFragDeck.removeLast();
-                lastPage.doPageClosed();
-                ft.remove(lastPage);
-                if (parentPage == null) {
-                    if (mFragDeck.size() > 0) {
-                        parentPage = mFragDeck.getLast();
-                    }
-                } else {
-                    popTo(ft, parentPage);
+                FragmentManager childFragmentManager = getChildFragmentManager();
+                if(childFragmentManager != null) {
+                    FragmentTransaction ft = childFragmentManager.beginTransaction();
+                    ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
+                    mFragDeck.removeLast();
+                    lastPage.doPageClosed();
+                    ft.remove(lastPage);
+                    if (parentPage == null) {
+                        if (mFragDeck.size() > 0) {
+                            parentPage = mFragDeck.getLast();
+                        }
+                    } else {
+                        popTo(ft, parentPage);
 
+                    }
+                    String parentUpdateArgs = lastPage.getParentUpdateArgs();
+                    if (parentPage != null) {
+                        parentPage.setChildArgs(parentUpdateArgs);
+                        parentPage.doPageAppear();
+                        ((DefaultMainActivity) getActivity()).setActionBarTitle(parentPage.getPageTitle());
+                    }
+                    ft.commit();
                 }
-                String parentUpdateArgs = lastPage.getParentUpdateArgs();
-                if (parentPage != null) {
-                    parentPage.setChildArgs(parentUpdateArgs);
-                    parentPage.doPageAppear();
-                    ((DefaultMainActivity) getActivity()).setActionBarTitle(parentPage.getPageTitle());
-                }
-                ft.commit();
 
                 logStack("closeLastPage");
             }
