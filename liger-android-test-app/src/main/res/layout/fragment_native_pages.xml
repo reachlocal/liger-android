@@ -3,10 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.testapp.fragments.nativePages"
+    tools:context="com.reachlocal.mobile.liger.testApp.nativePages"
     android:background="#fff8f8f8">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

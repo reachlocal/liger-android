@@ -1,4 +1,4 @@
-package com.testapp.fragments;
+package com.reachlocal.mobile.liger.testApp;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -30,7 +30,7 @@ public class nativePages extends PageFragment {
     };
     View.OnClickListener myhandler2 = new View.OnClickListener() {
         public void onClick(View v) {
-            // it was the 2nd button
+
         }
     };
 
@@ -107,7 +107,7 @@ public class nativePages extends PageFragment {
 
     @Override
     public void addFragments(FragmentTransaction ft, int contentViewID) {
-        ft.add(contentViewID, this);
+        ft.replace(contentViewID, this);
     }
 
     @Override
