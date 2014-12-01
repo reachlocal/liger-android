@@ -99,6 +99,15 @@ public class MenuItemSpec {
             spec.mPage = jsonObject.getString("page");
             spec.mArgs = jsonObject.optJSONObject("args");
             spec.mOptions = jsonObject.optJSONObject("options");
+            String menuLevel = major ? "1" : "2";
+            String reuseIdentifier;
+            if(spec.mOptions != null){
+                reuseIdentifier = spec.mOptions.optString("reuseIdentifier", "menu_" + menuLevel + "_" + Integer.toString(menuId) );
+            } else {
+                spec.mOptions = new JSONObject();
+                reuseIdentifier = "menu_" + menuLevel + "_" + Integer.toString(menuId);
+            }
+            spec.mOptions.put("reuseIdentifier", reuseIdentifier );
             spec.mDetail = jsonObject.optString("detail");
             spec.mAccessibilityLabel = jsonObject.optString("accessibilityLabel");
             spec.mDialog = jsonObject.optBoolean("dialog", false);
