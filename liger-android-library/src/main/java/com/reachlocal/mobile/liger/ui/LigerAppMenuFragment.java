@@ -95,14 +95,12 @@ public class LigerAppMenuFragment extends PageFragment implements MenuInterface 
         } else {
             for (int i = 0; i < minorCount; i++) {
                 MenuItemCell cell = insertCell(inflater, mMinorMenuItems.get(i), i + 1);
-                //mDrawerCache.put(cell.getMenuIdString(), cell.
                 cell.setChecked(false);
             }
         }
         int majorCount = mMajorMenuItems == null ? 0 : mMajorMenuItems.size();
         for (int i = 0; i < majorCount; i++) {
             MenuItemCell cell = insertCell(inflater, mMajorMenuItems.get(i), i);
-            //mDrawerCache.put(cell.getMenuIdString(), cell.
             cell.setChecked(i == 0);
         }
     }
@@ -128,6 +126,8 @@ public class LigerAppMenuFragment extends PageFragment implements MenuInterface 
         mDrawerContentLayout = (LinearLayout) inflater.inflate(R.layout.drawer_menu, container, false);
         if (mMajorMenuItems != null || mMinorMenuItems != null) {
             addMenuItemCells();
+            MenuItemCell firstMenuItem = (MenuItemCell) mDrawerContentLayout.getChildAt(0);
+            firstMenuItem.performClick();
         }
         if (mSelectedItem != null) {
             updateSelectedItem();
