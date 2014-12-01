@@ -3,6 +3,7 @@ package com.reachlocal.mobile.liger.factories;
 import android.content.Intent;
 import android.net.Uri;
 
+import com.reachlocal.mobile.liger.BuildConfig;
 import com.reachlocal.mobile.liger.ui.CordovaPageFragment;
 import com.reachlocal.mobile.liger.ui.DefaultMainActivity;
 import com.reachlocal.mobile.liger.ui.LigerAppMenuFragment;
@@ -90,7 +91,9 @@ public class LigerFragmentFactory {
                 returnFragment = LigerAppMenuFragment.build(pageName, title, pageArgs, pageOptions);
             } else {
                 try {
-                    returnFragment = (PageFragment) Class.forName(pageName).newInstance();
+                    String packageName =  mContext.getApplicationContext().getPackageName();
+                    packageName = packageName.replace(".debug", "").replace(".alpha", "").replace(".beta", "");
+                    returnFragment = (PageFragment) Class.forName(packageName + "." + pageName).newInstance();
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 } catch (InstantiationException e) {
