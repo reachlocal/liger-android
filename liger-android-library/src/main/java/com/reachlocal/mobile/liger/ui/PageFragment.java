@@ -138,9 +138,9 @@ public abstract class PageFragment extends DialogFragment {
 
         if (lastRemoved || (mFragDeck.size() == 1 && mFragDeck.getLast().isDetached())) {
             if (!mContext.isFinishing()) {
-                FragmentTransaction ft = mContext.getSupportFragmentManager().beginTransaction();
-                ft.remove(this);
-                ft.commit();
+//                FragmentTransaction ft = mContext.getSupportFragmentManager().beginTransaction();
+//                ft.remove(this);
+//                ft.commit();
             }
             if (mContainer != null) {
                 mContainer.fragmentDetached(this);

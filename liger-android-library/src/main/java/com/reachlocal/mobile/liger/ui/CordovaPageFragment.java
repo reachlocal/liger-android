@@ -36,7 +36,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
 
     Menu mMenu;
     MenuInflater mMenuInflater;
-
+    View mWebViewHolder;
     FixedCordovaWebView mWebView;
     ToolbarLayout mToolbarLayout;
 
@@ -107,26 +107,32 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     }
 
     protected View createContentView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.page_fragment, container, false);
-        DefaultMainActivity activity = (DefaultMainActivity) mContext;
+        if(mWebViewHolder == null){
+            mWebViewHolder = inflater.inflate(R.layout.page_fragment, container, false);
 
-        mWebView = (FixedCordovaWebView) view.findViewById(R.id.web_view);
-        mToolbarLayout = (ToolbarLayout) view.findViewById(R.id.toolbar);
+            DefaultMainActivity activity = (DefaultMainActivity) mContext;
 
-        mWebView.setTag(R.id.web_view_parent_frag, this);
-        mWebView.setWebChromeClient(new LoggingChromeClient(activity, mWebView));
-        mWebView.setWebViewClient(activity.createLigerWebClient(this, mWebView));
-        addJavascriptInterfaces();
-        mToolbarLayout.setOnToolbarItemClickListener(this);
-        setToolbar(toolbarSpec);
+            mWebView = (FixedCordovaWebView) mWebViewHolder.findViewById(R.id.web_view);
+            mToolbarLayout = (ToolbarLayout) mWebViewHolder.findViewById(R.id.toolbar);
 
-        if (pageName.startsWith("http://") || pageName.startsWith("https://")) {
-            mWebView.loadUrl(pageName);
-        } else {
-            String url = String.format("file:///android_asset/%1$s/%2$s.html", activity.getAssetBaseDirectory(), pageName);
-            mWebView.loadUrl(url);
+            mWebView.setTag(R.id.web_view_parent_frag, this);
+            mWebView.setWebChromeClient(new LoggingChromeClient(activity, mWebView));
+            mWebView.setWebViewClient(activity.createLigerWebClient(this, mWebView));
+            addJavascriptInterfaces();
+            mToolbarLayout.setOnToolbarItemClickListener(this);
+            setToolbar(toolbarSpec);
+
+            if (pageName.startsWith("http://") || pageName.startsWith("https://")) {
+                mWebView.loadUrl(pageName);
+            } else {
+                String url = String.format("file:///android_asset/%1$s/%2$s.html", activity.getAssetBaseDirectory(), pageName);
+                mWebView.loadUrl(url);
+            }
+        }else{
+            View child = mWebViewHolder.findViewById(R.id.web_fragment_container);
+            ((ViewGroup) child.getParent()).removeView(child);
         }
-        return view;
+        return mWebViewHolder;
     }
 
     @Override
@@ -157,10 +163,6 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         if (LIGER.LOGGING) {
             Log.d(LIGER.TAG, this.getClass().getSimpleName() + ".onDestroyView() " + pageName);
         }
-        mWebView.removeAllViews();
-        mWebView.handleDestroy();
-        mWebView = null;
-        mToolbarLayout = null;
     }
 
     @Override

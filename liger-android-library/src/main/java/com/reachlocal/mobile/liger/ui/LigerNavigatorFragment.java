@@ -96,10 +96,12 @@ public class LigerNavigatorFragment extends PageFragment {
         FragmentManager childFragmentManager = getChildFragmentManager();
         FragmentTransaction ft = childFragmentManager.beginTransaction();
         for (PageFragment page : mFragDeck) {
-            if(page.isAdded())
-                ft.remove(page);
+            if(page.isAdded()) {
+                //ft.remove(page);
+            }else{
+                page.addFragments(ft, mNavigatorContentFrame.getId());
+            }
             page.doPageAppear();
-            page.addFragments(ft, mNavigatorContentFrame.getId());
             page.mContainer = this;
         }
         ft.commit();
@@ -197,11 +199,11 @@ public class LigerNavigatorFragment extends PageFragment {
         }
         PageFragment page = null;
 
-        if (mCached && mFragCache.containsKey(pageName)) {
-            page = mFragCache.get(pageName);
-        } else {
+//        if (mCached && mFragCache.containsKey(pageName)) {
+//            page = mFragCache.get(pageName);
+//        } else {
             page = LigerFragmentFactory.openPage(pageName, title, pageArgs, pageOptions);
-        }
+//        }
 
         if (page != null) {
             page.doPageAppear();
@@ -227,7 +229,7 @@ public class LigerNavigatorFragment extends PageFragment {
         }
         PageFragment dialog = LigerFragmentFactory.openPage(pageName, title, args, options);
         if (dialog != null) {
-            mFragDeck.addLast(dialog);
+            //mFragDeck.addLast(dialog);
             dialog.show(getActivity().getSupportFragmentManager(), DIALOG_FRAGMENT);
         }
     }
