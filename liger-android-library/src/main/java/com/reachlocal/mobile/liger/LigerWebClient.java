@@ -19,6 +19,7 @@ public class LigerWebClient extends CordovaWebViewClient {
 
     public LigerWebClient(CordovaPageFragment fragment, DefaultMainActivity activity, CordovaWebView webView) {
         super(activity, webView);
+        webView.setWebContentsDebuggingEnabled(true);
         mActivity = activity;
         mPageFragment = fragment;
     }
