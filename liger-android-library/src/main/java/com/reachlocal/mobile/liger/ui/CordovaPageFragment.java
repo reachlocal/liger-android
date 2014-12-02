@@ -132,6 +132,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
             View child = mWebViewHolder.findViewById(R.id.web_fragment_container);
             ((ViewGroup) child.getParent()).removeView(child);
         }
+        updateTitle();
         return mWebViewHolder;
     }
 
@@ -200,9 +201,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     public void updateTitle() {
         DefaultMainActivity activity = (DefaultMainActivity) mContext;
         boolean isResumed = isResumed();
-        if (isResumed && !isHidden() && !isDialog) {
-            activity.setActionBarTitle(actionBarTitle);
-        }
+        activity.setActionBarTitle(actionBarTitle);
     }
 
     @Override
