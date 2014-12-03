@@ -118,10 +118,17 @@ public class LigerDrawerFragment extends PageFragment implements PageLifecycleLi
             FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
             if (mFragDeck.size() > 0) {
                 PageFragment previousPage = mFragDeck.getLast();
-                ft.remove(previousPage);
+                if(previousPage == page)
+                    return;
+                //ft.remove(previousPage);
+                ft.detach(previousPage);
                 mFragDeck.removeLast();
             }
-            page.addFragments(ft, R.id.content_frame);
+            if(page.isDetached()) {
+                ft.attach(page);
+            }else{
+                page.addFragments(ft, R.id.content_frame);
+            }
             ft.commit();
             mFragDeck.addLast(page);
             //TODO mFragCache.put(pageName, page);
