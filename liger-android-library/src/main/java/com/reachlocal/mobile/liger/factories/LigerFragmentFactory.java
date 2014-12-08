@@ -1,5 +1,7 @@
 package com.reachlocal.mobile.liger.factories;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
@@ -24,7 +26,7 @@ public class LigerFragmentFactory {
 
     private DefaultMainActivity mDefaultMainActivity;
 
-    public static DefaultMainActivity mContext = null;
+    public static Context mContext = null;
 
     // Intents to support: browser, email, message (SMS), image, twitter, facebook, sina weibo, tencent weibo
     private final static String[] SUPPORTED_INTENTS = {"email", "browser", "message", "image", "twitter", "facebook", "sinaweibo", "tencentweibo"};
@@ -51,7 +53,7 @@ public class LigerFragmentFactory {
                 intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("image/*");
                 if (intent.resolveActivity(mContext.getPackageManager()) != null) {
-                    mContext.startActivityForResult(intent, REQUEST_IMAGE_GET);
+                    ((Activity) mContext).startActivityForResult(intent, REQUEST_IMAGE_GET);
                 }
             } else if (pageName.equalsIgnoreCase("twitter")) {
                 intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com"));
@@ -94,6 +96,8 @@ public class LigerFragmentFactory {
                     String packageName =  mContext.getApplicationContext().getPackageName();
                     packageName = packageName.replace(".debug", "").replace(".alpha", "").replace(".beta", "");
                     returnFragment = (PageFragment) Class.forName(packageName + "." + pageName).newInstance();
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 } catch (InstantiationException e) {
