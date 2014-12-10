@@ -212,7 +212,7 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
         }
         //String args = JSUtils.stringListToArgString(registrationId, "AndroidPushToken", errorMessage);
 
-        mRootPageFragment.pushNotificationTokenUpdated(registrationId, errorMessage);
+        //mRootPageFragment.pushNotificationTokenUpdated(registrationId, errorMessage);
     }
 
     @Override

@@ -308,8 +308,8 @@ public class LigerDrawerFragment extends PageFragment implements PageLifecycleLi
 
     @Override
     public void onPageFinished(PageFragment page) {
-        if (mTokenHolder != null) {
-            page.pushNotificationTokenUpdated(mTokenHolder.registrationId, mTokenHolder.errorMessage);
-        }
+//        if (mTokenHolder != null) {
+//            page.pushNotificationTokenUpdated(mTokenHolder.registrationId, mTokenHolder.errorMessage);
+//        }
     }
 }
