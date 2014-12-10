@@ -95,11 +95,11 @@ public class LigerFragmentFactory {
                     packageName = packageName.replace(".debug", "").replace(".alpha", "").replace(".beta", "");
                     returnFragment = (PageFragment) Class.forName(packageName + "." + pageName).newInstance();
                 } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 } catch (InstantiationException e) {
-                    e.printStackTrace();
+                   // e.printStackTrace();
                 } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
                 if (returnFragment == null)
                     returnFragment = CordovaPageFragment.build(pageName, title, pageArgs, pageOptions);

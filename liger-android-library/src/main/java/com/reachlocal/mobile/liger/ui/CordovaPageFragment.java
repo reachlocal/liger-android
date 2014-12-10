@@ -25,6 +25,8 @@ import com.reachlocal.mobile.liger.utils.JsonUtils;
 import com.reachlocal.mobile.liger.widgets.ToolbarLayout;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.cordova.ConfigXmlParser;
+import org.apache.cordova.CordovaInterface;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -111,13 +113,19 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
             mWebViewHolder = inflater.inflate(R.layout.page_fragment, container, false);
 
             DefaultMainActivity activity = (DefaultMainActivity) mContext;
+            ConfigXmlParser parser = new ConfigXmlParser();
+            parser.parse(activity);
+
+            CordovaInterface cordova = (CordovaInterface) activity;
 
             mWebView = (FixedCordovaWebView) mWebViewHolder.findViewById(R.id.web_view);
             mToolbarLayout = (ToolbarLayout) mWebViewHolder.findViewById(R.id.toolbar);
 
             mWebView.setTag(R.id.web_view_parent_frag, this);
-            mWebView.setWebChromeClient(new LoggingChromeClient(activity, mWebView));
-            mWebView.setWebViewClient(activity.createLigerWebClient(this, mWebView));
+
+            mWebView.init(cordova, activity.createLigerWebClient(this, mWebView), new LoggingChromeClient(activity, mWebView), parser.getPluginEntries(), parser.getInternalWhitelist(), parser.getExternalWhitelist(),
+                    parser.getPreferences() );
+
             addJavascriptInterfaces();
             mToolbarLayout.setOnToolbarItemClickListener(this);
             setToolbar(toolbarSpec);
