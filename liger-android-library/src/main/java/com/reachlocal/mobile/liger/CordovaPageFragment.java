@@ -116,11 +116,8 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         mWebView = (FixedCordovaWebView) view.findViewById(R.id.web_view);
         mToolbarLayout = (ToolbarLayout) view.findViewById(R.id.toolbar);
 
-        mWebView.setTag(R.id.web_view_parent_frag, this);
-
         mWebView.init(cordova, activity.createLigerWebClient(this, mWebView), new LoggingChromeClient(activity, mWebView), parser.getPluginEntries(), parser.getInternalWhitelist(), parser.getExternalWhitelist(),
                 parser.getPreferences() );
-
 
         mWebView.setTag(R.id.web_view_parent_frag, this);
         mWebView.setWebChromeClient(new LoggingChromeClient(activity, mWebView));
