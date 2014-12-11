@@ -275,7 +275,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
 
     protected void doSendJavascript(String js) {
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, this.getClass().getSimpleName() + ".doSendJavascript() to " + (mWebView == null ? "(null webView)" : mWebView.getUrl()) + ", js:" + js);
+            //Log.d(LIGER.TAG, this.getClass().getSimpleName() + ".doSendJavascript() to " + (mWebView == null ? "(null webView)" : mWebView.getUrl()) + ", js:" + js);
         }
         if (mWebView != null)
             mWebView.sendJavascript(js);
