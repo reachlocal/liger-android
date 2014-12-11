@@ -19,7 +19,7 @@ dependencies {
     compile "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     compile "com.google.android.gms:play-services:4.3.+"
 
-    compile files("./libs/cordova-3.4.0.jar")
+    compile files("./libs/cordova-3.6.4.jar")
 
     compile "org.apache.commons:commons-lang3:${rootProject.ext.commonsLangVersion}"
     compile "org.apache.commons:commons-io:${rootProject.ext.commonsIoVersion}"
