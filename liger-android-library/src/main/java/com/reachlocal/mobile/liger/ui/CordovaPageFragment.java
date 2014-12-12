@@ -249,7 +249,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
 
     @Override
     public void pushNotificationTokenUpdated(String registrationId, String errorMessage) {
-        String args = JSUtils.stringListToArgString(registrationId, "AndroidPushToken", errorMessage);
+        String args = JSUtils.stringListToArgString(registrationId, "android", errorMessage);
         sendJavascriptWithArgs("PAGE", "pushNotificationTokenUpdated", args);
     }
 
