@@ -7,6 +7,9 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
@@ -108,11 +111,15 @@ public class LigerGcmIntentService extends IntentService {
         appIntent.putExtra("cloudIntent", cloudIntent);
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, appIntent, 0);
+        Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.icon_android_notificaiton)
                         .setContentTitle("Reach Push")
+                        .setLights(Color.YELLOW, 1, 2)
+                        .setAutoCancel(true)
+                        .setSound(defaultSound)
                         .setStyle(new NotificationCompat.BigTextStyle()
                                 .bigText(msg))
                         .setContentText(msg);
