@@ -3,7 +3,6 @@ package com.reachlocal.mobile.liger.ui;
 import android.app.Dialog;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -36,6 +35,11 @@ import java.util.Set;
 
 public class CordovaPageFragment extends PageFragment implements ToolbarLayout.OnToolbarItemClickListener {
 
+    private static final int REFRESH = Menu.FIRST;
+    private static final int SAVE = Menu.FIRST + 1;
+    private static final int SEARCH = Menu.FIRST + 2;
+
+
     Menu mMenu;
     MenuInflater mMenuInflater;
     View mWebViewHolder;
@@ -55,7 +59,6 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     private String toolbarSpec;
     private String childUpdateArgs;
     private String actionBarTitle;
-    private boolean canRefresh;
 
     private List<String> javascriptQueue;
 
@@ -75,7 +78,6 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
             toolbarSpec = savedInstanceState.getString("toolbarSpec");
             childUpdateArgs = savedInstanceState.getString("childUpdateArgs");
             actionBarTitle = savedInstanceState.getString("actionBarTitle");
-            canRefresh = savedInstanceState.getBoolean("canRefresh");
         }
         if (LIGER.LOGGING) {
             Log.d(LIGER.TAG, this.getClass().getSimpleName() + ".onCreate() " + pageName);
@@ -91,8 +93,6 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         outState.putString("toolbarSpec", toolbarSpec);
         outState.putString("childUpdateArgs", childUpdateArgs);
         outState.putString("actionBarTitle", actionBarTitle);
-        outState.putBoolean("canRefresh", canRefresh);
-
     }
 
 
@@ -305,7 +305,6 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
                 mToolbarLayout.setVisibility(View.GONE);
                 return;
             }
-
             mToolbarLayout.setVisibility(View.VISIBLE);
             mToolbarLayout.setToolbarSpecs(specList);
         }
@@ -319,49 +318,60 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
         mMenu = menu;
         mMenuInflater = inflater;
-        // Added !menu.hasVisibleItems() to ensure refresh is not added twice
-        if (canRefresh && isVisible() && !menu.hasVisibleItems()) {
-            mMenuInflater.inflate(R.menu.liger_refresh, mMenu);
-        }
+
+        mMenuInflater.inflate(R.menu.liger_blank, mMenu);
         String rightButtonName = JsonUtils.getRightButtonName(pageOptions);
-        if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "rightButtonName: " + rightButtonName);
-        }
-        if (StringUtils.equalsIgnoreCase(rightButtonName, "save")) {
-            mMenuInflater.inflate(R.menu.liger_save, mMenu);
-            addHeaderButtonListener(menu, R.id.liger_action_save, rightButtonName);
-        }
-        if (StringUtils.equalsIgnoreCase(rightButtonName, "search")) {
-            mMenuInflater.inflate(R.menu.liger_search, mMenu);
-            addHeaderButtonListener(menu, R.id.liger_action_search, rightButtonName);
+        if(rightButtonName != null) {
+            if (LIGER.LOGGING) {
+                Log.e(LIGER.TAG, "rightButtonName: " + rightButtonName);
+            }
+            if (StringUtils.equalsIgnoreCase(rightButtonName, "refresh")) {
+                menu.add(0, REFRESH, Menu.NONE, "Refresh")
+                        .setIcon(R.drawable.ic_action_refresh)
+                        .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+                addHeaderButtonListener(menu, REFRESH, rightButtonName);
+            } else if (StringUtils.equalsIgnoreCase(rightButtonName, "save")) {
+                menu.add(0, SAVE, Menu.NONE, "Save")
+                        .setIcon(R.drawable.ic_action_save)
+                        .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+                addHeaderButtonListener(menu, SAVE, rightButtonName);
+            } else if (StringUtils.equalsIgnoreCase(rightButtonName, "search")) {
+                menu.add(0, SEARCH, Menu.NONE, "Search")
+                        .setIcon(R.drawable.ic_action_search)
+                        .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+                addHeaderButtonListener(menu, SEARCH, rightButtonName);
+            } else {
+                menu.add(0, SEARCH, Menu.NONE, rightButtonName)
+                        .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+                addHeaderButtonListener(menu, SEARCH, rightButtonName);
+            }
         }
     }
 
     private void addHeaderButtonListener(Menu menu, int id, final String buttonName) {
         MenuItem item = menu.findItem(id);
-        item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                if (LIGER.LOGGING) {
-                    Log.d(LIGER.TAG, "Header Button clicked: " + buttonName);
+        if(item != null) {
+            item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    if (LIGER.LOGGING) {
+                        Log.e(LIGER.TAG, "Header Button clicked: " + buttonName);
+                    }
+                    sendJavascriptWithArgs("PAGE", "headerButtonTapped", "\"" + buttonName + "\"");
+                    return true;
                 }
-                sendJavascriptWithArgs("PAGE", "headerButtonTapped", "\"" + buttonName + "\"");
-                return true;
-            }
-        });
+            });
+        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int itemId = item.getItemId();
-        if (this.canRefresh && itemId == R.id.liger_action_refresh) {
-            sendJavascript("PAGE.refresh(true);");
-            return true;
-        } else {
-            return super.onOptionsItemSelected(item);
-        }
+        sendJavascript("console.log('onOptionsItemSelected: " + item.getTitle().toString().toLowerCase() + " ');");
+        sendJavascript("PAGE.headerButtonTapped('" + item.getTitle().toString().toLowerCase() + "');");
+        return true;
     }
 
     @Override
