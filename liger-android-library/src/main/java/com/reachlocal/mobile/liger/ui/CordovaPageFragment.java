@@ -317,17 +317,6 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     }
 
     @Override
-    public void setUserCanRefresh(boolean canRefresh) {
-        if (this.canRefresh != canRefresh) {
-            this.canRefresh = canRefresh;
-            DefaultMainActivity activity = (DefaultMainActivity) getActivity();
-            if (activity != null) {
-                ActivityCompat.invalidateOptionsMenu(activity);
-            }
-        }
-    }
-
-    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         mMenu = menu;

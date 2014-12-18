@@ -52,8 +52,6 @@ public class LigerPlugin extends CordovaPlugin {
                 return updateParent(args.getJSONObject(1), callbackContext);
             } else if (action.equalsIgnoreCase("openDialog")) {
                 return openDialog(null, args.getString(0), args.optJSONObject(1), args.optJSONObject(2), callbackContext);
-            } else if (action.equalsIgnoreCase("userCanRefresh")) {
-                return userCanRefresh(args.getBoolean(0), callbackContext);
             } else if (action.equalsIgnoreCase("openDialogWithTitle")) {
                 return openDialog(args.getString(0), args.optString(1), args.optJSONObject(2), args.optJSONObject(3), callbackContext);
             } else if (action.equalsIgnoreCase("closeDialog")) {
@@ -89,35 +87,9 @@ public class LigerPlugin extends CordovaPlugin {
     }
     public boolean displayNotification(String userUri, String message, String appName){
         final DefaultMainActivity activity = (DefaultMainActivity) cordova.getActivity();
-//        NotificationCompat.Builder mBuilder =
-//                new NotificationCompat.Builder(activity)
-//                        .setSmallIcon(R.drawable.icon_android_notificaiton)
-//                        .setContentTitle("Reach Push")
-//                        .setContentText("This Notification was launched locally!");
-//        // Creates an explicit intent for an Activity in your app
-//        Intent resultIntent = new Intent(activity, DefaultMainActivity.class);
-//
-//        // The stack builder object will contain an artificial back stack for the
-//        // started Activity.
-//        // This ensures that navigating backward from the Activity leads out of
-//        // your application to the Home screen.
-//        TaskStackBuilder stackBuilder = TaskStackBuilder.create(activity);
-//        // Adds the back stack for the Intent (but not the Intent itself)
-//        //stackBuilder.addParentStack(DefaultMainActivity.class);
-//        // Adds the Intent that starts the Activity to the top of the stack
-//        stackBuilder.addNextIntent(resultIntent);
-//        PendingIntent resultPendingIntent =
-//                stackBuilder.getPendingIntent(
-//                        0,
-//                        PendingIntent.FLAG_UPDATE_CURRENT
-//                );
-//        mBuilder.setContentIntent(resultPendingIntent);
-//        NotificationManager mNotificationManager =
-//                (NotificationManager) activity.getSystemService(activity.NOTIFICATION_SERVICE);
-//        // mId allows you to update the notification later on.
-//        int mId = 1;
-//        mNotificationManager.notify(mId, mBuilder.build());
 
+        //TODO - This is a temporary testing method testing the sending and receiving of GCM messages
+        // Remove this later
 
         GcmRegistrationHelper gcmHelper = new GcmRegistrationHelper(activity);
 
@@ -140,21 +112,6 @@ public class LigerPlugin extends CordovaPlugin {
 
         Log.e(LIGER.TAG, msg);
 
-        return true;
-    }
-
-    private boolean userCanRefresh(final boolean canRefresh, CallbackContext callbackContext) {
-        final DefaultMainActivity activity = (DefaultMainActivity) cordova.getActivity();
-        final PageFragment webFragment = PageFragment.fromCallbackContext(callbackContext);
-        if (webFragment != null) {
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    webFragment.setUserCanRefresh(canRefresh);
-                }
-            });
-        }
-        callbackContext.success();
         return true;
     }
 
