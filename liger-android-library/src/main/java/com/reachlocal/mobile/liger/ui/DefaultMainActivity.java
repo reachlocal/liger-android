@@ -93,10 +93,11 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        CordovaPlugin callback = this.activityResultCallback;
-        if (callback != null) {
-            callback.onActivityResult(requestCode, resultCode, intent);
-        }
+        mRootPageFragment.onActivityResult(requestCode,resultCode,intent);
+//        CordovaPlugin callback = this.activityResultCallback;
+//        if (callback != null) {
+//            callback.onActivityResult(requestCode, resultCode, intent);
+//        }
     }
 
     @Override

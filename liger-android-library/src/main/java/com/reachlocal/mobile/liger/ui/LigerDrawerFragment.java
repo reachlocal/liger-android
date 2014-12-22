@@ -1,5 +1,6 @@
 package com.reachlocal.mobile.liger.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentTransaction;
@@ -94,6 +95,11 @@ public class LigerDrawerFragment extends PageFragment implements PageLifecycleLi
         ((DefaultMainActivity) mContext).menuDrawer.setDrawerListener(((DefaultMainActivity) mContext).menuToggle);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mDrawer.onActivityResult(requestCode, resultCode, data);
+    }
 
     @Override
     public void openPage(String pageName, String title, JSONObject pageArgs, JSONObject pageOptions) {

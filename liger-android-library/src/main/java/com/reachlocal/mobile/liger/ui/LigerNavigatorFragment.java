@@ -1,6 +1,7 @@
 package com.reachlocal.mobile.liger.ui;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -162,6 +163,12 @@ public class LigerNavigatorFragment extends PageFragment {
             Log.d(LIGER.TAG, "LigerNavigatorFragment.onDestroyView() " + pageName);
         }
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mFragDeck.getLast().onActivityResult(requestCode, resultCode, data);
     }
 
     private void sendChildArgs() {
