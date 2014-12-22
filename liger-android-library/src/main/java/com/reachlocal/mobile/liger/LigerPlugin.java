@@ -1,15 +1,8 @@
 package com.reachlocal.mobile.liger;
 
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
+
 import android.util.Log;
 
-import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.reachlocal.mobile.liger.gcm.GcmRegistrationHelper;
 import com.reachlocal.mobile.liger.ui.DefaultMainActivity;
 import com.reachlocal.mobile.liger.ui.PageFragment;
@@ -21,9 +14,6 @@ import org.apache.cordova.CordovaArgs;
 import org.apache.cordova.CordovaPlugin;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.IOException;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.reachlocal.mobile.liger.utils.CordovaUtils.argsToString;
 
@@ -42,10 +32,6 @@ public class LigerPlugin extends CordovaPlugin {
         try {
             if (action.equalsIgnoreCase("openPage")) {
                 return openPage(args.getString(0), args.optString(1), args.optJSONObject(2), args.optJSONObject(3), callbackContext);
-            } else if (action.equalsIgnoreCase("displayNotification")) {
-                return displayNotification(args.getString(0), args.optString(1), args.getString(2));
-            } else if (action.equalsIgnoreCase("getPushToken")) {
-                return getPushToken(callbackContext);
             } else if (action.equalsIgnoreCase("closePage")) {
                 return closePage(callbackContext, args.optString(0));
             } else if (action.equalsIgnoreCase("updateParent")) {
@@ -71,48 +57,6 @@ public class LigerPlugin extends CordovaPlugin {
             callbackContext.error(e.getMessage());
         }
         return false;
-    }
-
-    public boolean getPushToken(CallbackContext callbackContext){
-        final DefaultMainActivity activity = (DefaultMainActivity) cordova.getActivity();
-        final PageFragment webFragment = PageFragment.fromCallbackContext(callbackContext);
-
-        GcmRegistrationHelper gcmHelper = new GcmRegistrationHelper(activity);
-
-        String regID = gcmHelper.getRegistrationId(activity);
-
-        webFragment.pushNotificationTokenUpdated(regID, "");
-
-        return true;
-    }
-    public boolean displayNotification(String userUri, String message, String appName){
-        final DefaultMainActivity activity = (DefaultMainActivity) cordova.getActivity();
-
-        //TODO - This is a temporary testing method testing the sending and receiving of GCM messages
-        // Remove this later
-
-        GcmRegistrationHelper gcmHelper = new GcmRegistrationHelper(activity);
-
-        final String regID = gcmHelper.getRegistrationId(activity);
-
-        String msg = "";
-        GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(activity);
-        AtomicInteger msgId = new AtomicInteger();
-        try {
-            Bundle data = new Bundle();
-            data.putString("my_message", message);
-            data.putString("my_action",
-                    "com.google.android.gcm.demo.app.ECHO_NOW");
-            String id = Integer.toString(msgId.incrementAndGet());
-            gcm.send(regID + "@gcm.googleapis.com", id, data);
-            msg = "Sent message";
-        } catch (IOException ex) {
-            msg = "Error :" + ex.getMessage();
-        }
-
-        Log.e(LIGER.TAG, msg);
-
-        return true;
     }
 
     /**
