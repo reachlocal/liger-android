@@ -30,17 +30,17 @@ var FIRSTPAGE = {
 		$("#openPage, #refreshPage, #toolbarPage, #openDialog, #openDialogWithTitle").unbind();
         
         $("#openPage").click(function(){
-			PAGE.openPage('Second Page', 'secondPage', {'test1': 'test2'}, {});
+			PAGE.openPage('Second Page', 'secondPage', {'test1': 'test2'}, {"right":{"button":"save"}});
 			return false;
         });
 
 		$("#refreshPage").click(function(){
-			PAGE.openPage('Refresh Page', 'refreshPage', {});
+			PAGE.openPage('Refresh Page', 'refreshPage', {}, {"right":{"button":"refresh"}});
 			return false;
 		});
 
 		$("#toolbarPage").click(function(){
-			PAGE.openPage('Toolbar Page', 'toolbarPage', {}, {'toolbar': 'true'});
+			PAGE.openPage('Toolbar Page', 'toolbarPage', {}, {'toolbar': 'true', "left":{"button":"cancel"}, "right":{"button":"done"}});
 			return false;
 		});
 

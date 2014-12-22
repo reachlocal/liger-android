@@ -1,12 +1,14 @@
 package com.reachlocal.mobile.liger.gcm;
 
 
-import android.app.Activity;
 import android.app.IntentService;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
@@ -15,6 +17,7 @@ import android.util.Log;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.reachlocal.mobile.liger.LIGER;
 import com.reachlocal.mobile.liger.R;
+import com.reachlocal.mobile.liger.ui.DefaultMainActivity;
 
 public class LigerGcmIntentService extends IntentService {
     public static final int NOTIFICATION_ID = 1;
@@ -32,7 +35,9 @@ public class LigerGcmIntentService extends IntentService {
         // The getMessageType() intent parameter must be the intent you received
         // in your BroadcastReceiver.
         String messageType = gcm.getMessageType(intent);
-
+        if (LIGER.LOGGING) {
+            Log.d(LIGER.TAG, "LigerGcmIntentService onHandleIntent");
+        }
         if (!extras.isEmpty()) {  // has effect of unparcelling Bundle
             /*
              * Filter messages based on message type. Since it is likely that GCM
@@ -52,17 +57,17 @@ public class LigerGcmIntentService extends IntentService {
                     MESSAGE_TYPE_MESSAGE.equals(messageType)) {
                 // This loop represents the service doing some work.
                 for (int i = 0; i < 5; i++) {
-                    Log.i(LIGER.TAG, "Working... " + (i + 1)
+                    Log.d(LIGER.TAG, "Working... " + (i + 1)
                             + "/5 @ " + SystemClock.elapsedRealtime());
                     try {
                         Thread.sleep(5000);
                     } catch (InterruptedException e) {
                     }
                 }
-                Log.i(LIGER.TAG, "Completed work @ " + SystemClock.elapsedRealtime());
+                Log.d(LIGER.TAG, "Completed work @ " + SystemClock.elapsedRealtime());
                 // Post notification of received message.
                 sendNotification("Received: " + extras.toString(), intent);
-                Log.i(LIGER.TAG, "Received: " + extras.toString());
+                Log.d(LIGER.TAG, "Received: " + extras.toString());
             }
         }
         // Release the wake lock provided by the WakefulBroadcastReceiver.
@@ -77,9 +82,10 @@ public class LigerGcmIntentService extends IntentService {
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
         String activityName = getString(R.string.liger_main_activity_class);
-        Class<? extends Activity> activityClass = null;
+        Class<? extends DefaultMainActivity> activityClass = null;
+
         try {
-            activityClass = (Class<? extends Activity>) Class.forName(activityName);
+            activityClass = (Class<? extends DefaultMainActivity>) Class.forName(activityName);
         } catch (ClassNotFoundException e) {
             Log.e(LIGER.TAG, "Failed to find class for main activity named " + activityName, e);
         } catch (ClassCastException e) {
@@ -91,10 +97,15 @@ public class LigerGcmIntentService extends IntentService {
         appIntent.putExtra("cloudIntent", cloudIntent);
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, appIntent, 0);
+        Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
-                        .setContentTitle("GCM Notification")
+                        .setSmallIcon(R.drawable.icon_android_notificaiton)
+                        .setContentTitle("Reach Push")
+                        .setLights(Color.YELLOW, 1, 2)
+                        .setAutoCancel(true)
+                        .setSound(defaultSound)
                         .setStyle(new NotificationCompat.BigTextStyle()
                                 .bigText(msg))
                         .setContentText(msg);

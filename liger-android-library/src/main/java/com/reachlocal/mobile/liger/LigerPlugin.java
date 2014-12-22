@@ -1,7 +1,9 @@
 package com.reachlocal.mobile.liger;
 
+
 import android.util.Log;
 
+import com.reachlocal.mobile.liger.gcm.GcmRegistrationHelper;
 import com.reachlocal.mobile.liger.ui.DefaultMainActivity;
 import com.reachlocal.mobile.liger.ui.PageFragment;
 import com.reachlocal.mobile.liger.utils.CordovaUtils;
@@ -36,8 +38,6 @@ public class LigerPlugin extends CordovaPlugin {
                 return updateParent(args.getJSONObject(1), callbackContext);
             } else if (action.equalsIgnoreCase("openDialog")) {
                 return openDialog(null, args.getString(0), args.optJSONObject(1), args.optJSONObject(2), callbackContext);
-            } else if (action.equalsIgnoreCase("userCanRefresh")) {
-                return userCanRefresh(args.getBoolean(0), callbackContext);
             } else if (action.equalsIgnoreCase("openDialogWithTitle")) {
                 return openDialog(args.getString(0), args.optString(1), args.optJSONObject(2), args.optJSONObject(3), callbackContext);
             } else if (action.equalsIgnoreCase("closeDialog")) {
@@ -57,21 +57,6 @@ public class LigerPlugin extends CordovaPlugin {
             callbackContext.error(e.getMessage());
         }
         return false;
-    }
-
-    private boolean userCanRefresh(final boolean canRefresh, CallbackContext callbackContext) {
-        final DefaultMainActivity activity = (DefaultMainActivity) cordova.getActivity();
-        final PageFragment webFragment = PageFragment.fromCallbackContext(callbackContext);
-        if (webFragment != null) {
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    webFragment.setUserCanRefresh(canRefresh);
-                }
-            });
-        }
-        callbackContext.success();
-        return true;
     }
 
     /**

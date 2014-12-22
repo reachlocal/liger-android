@@ -192,12 +192,6 @@ public class LigerDrawerFragment extends PageFragment implements PageLifecycleLi
         mFragDeck.getLast().setParentUpdateArgs(parentUpdateArgs);
     }
 
-    @Override
-    public void setUserCanRefresh(boolean canRefresh) {
-
-    }
-
-
     public static LigerDrawerFragment build(String pageName, String pageTitle, String pageArgs, String pageOptions) {
         LigerDrawerFragment drawerFragment = new LigerDrawerFragment();
         Bundle bundle = new Bundle();

@@ -101,11 +101,6 @@ public class nativePages extends PageFragment {
     }
 
     @Override
-    public void setUserCanRefresh(boolean canRefresh) {
-
-    }
-
-    @Override
     public void addFragments(FragmentTransaction ft, int contentViewID) {
         ft.replace(contentViewID, this);
     }

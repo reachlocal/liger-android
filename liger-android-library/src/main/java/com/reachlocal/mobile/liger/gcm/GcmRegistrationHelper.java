@@ -38,6 +38,11 @@ public class GcmRegistrationHelper {
         mListener = listener;
     }
 
+    public GcmRegistrationHelper(Activity activity) {
+        mActivity = activity;
+        mAppContext = activity.getApplicationContext();
+    }
+
     public void registerGcm() {
         // Check device for Play Services APK. If check succeeds, proceed with
         //  GCM registration.
@@ -83,7 +88,7 @@ public class GcmRegistrationHelper {
      * @return registration ID, or empty string if there is no existing
      * registration ID.
      */
-    private String getRegistrationId(Context context) {
+    public String getRegistrationId(Context context) {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         String registrationId = prefs.getString(PROPERTY_REG_ID, "");
         if (StringUtils.isEmpty(registrationId)) {

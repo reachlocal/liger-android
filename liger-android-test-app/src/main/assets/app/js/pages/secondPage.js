@@ -16,7 +16,10 @@ PAGE.onPageAppear = function(){
 }
 
 PAGE.headerButtonTapped = function(button){
-	// Callback for added menu bar button
+    console.log("Received Button: " + button);
+	if(button === "save"){
+	    $('#args').append(" " + button + " Pressed");
+	}
 }
 
 var SECONDPAGE = {
@@ -34,7 +37,7 @@ var SECONDPAGE = {
 		$("#openPage, #closePage, #updateParent, #openDialog, #openDialogWithTitle").unbind();
 
 		$("#openPage").click(function(){
-            PAGE.openPage('Third Page', 'thirdPage', {'test1': 'test2'}, {});
+            PAGE.openPage('Third Page', 'thirdPage', {'test1': 'test2'}, {"right":{"button":"add"}});
 			return false;
         });
 
