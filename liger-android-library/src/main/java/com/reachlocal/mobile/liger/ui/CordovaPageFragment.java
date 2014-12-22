@@ -274,9 +274,6 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     }
 
     protected void doSendJavascript(String js) {
-        if (LIGER.LOGGING) {
-            //Log.d(LIGER.TAG, this.getClass().getSimpleName() + ".doSendJavascript() to " + (mWebView == null ? "(null webView)" : mWebView.getUrl()) + ", js:" + js);
-        }
         if (mWebView != null)
             mWebView.sendJavascript(js);
     }
@@ -326,7 +323,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         String rightButtonName = JsonUtils.getRightButtonName(pageOptions);
         if(rightButtonName != null) {
             if (LIGER.LOGGING) {
-                Log.e(LIGER.TAG, "rightButtonName: " + rightButtonName);
+                Log.d(LIGER.TAG, "rightButtonName: " + rightButtonName);
             }
             if (StringUtils.equalsIgnoreCase(rightButtonName, "refresh")) {
                 menu.add(0, REFRESH, Menu.NONE, "Refresh")
@@ -358,7 +355,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
                     if (LIGER.LOGGING) {
-                        Log.e(LIGER.TAG, "Header Button clicked: " + buttonName);
+                        Log.d(LIGER.TAG, "Header Button clicked: " + buttonName);
                     }
                     sendJavascriptWithArgs("PAGE", "headerButtonTapped", "\"" + buttonName + "\"");
                     return true;

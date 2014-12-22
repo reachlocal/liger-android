@@ -1,7 +1,6 @@
 package com.reachlocal.mobile.liger.gcm;
 
 
-import android.app.Activity;
 import android.app.IntentService;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -36,7 +35,9 @@ public class LigerGcmIntentService extends IntentService {
         // The getMessageType() intent parameter must be the intent you received
         // in your BroadcastReceiver.
         String messageType = gcm.getMessageType(intent);
-        Log.e(LIGER.TAG, "LigerGcmIntentService onHandleIntent");
+        if (LIGER.LOGGING) {
+            Log.d(LIGER.TAG, "LigerGcmIntentService onHandleIntent");
+        }
         if (!extras.isEmpty()) {  // has effect of unparcelling Bundle
             /*
              * Filter messages based on message type. Since it is likely that GCM
@@ -56,31 +57,17 @@ public class LigerGcmIntentService extends IntentService {
                     MESSAGE_TYPE_MESSAGE.equals(messageType)) {
                 // This loop represents the service doing some work.
                 for (int i = 0; i < 5; i++) {
-                    Log.e(LIGER.TAG, "Working... " + (i + 1)
+                    Log.d(LIGER.TAG, "Working... " + (i + 1)
                             + "/5 @ " + SystemClock.elapsedRealtime());
                     try {
                         Thread.sleep(5000);
                     } catch (InterruptedException e) {
                     }
                 }
-                Log.e(LIGER.TAG, "Completed work @ " + SystemClock.elapsedRealtime());
+                Log.d(LIGER.TAG, "Completed work @ " + SystemClock.elapsedRealtime());
                 // Post notification of received message.
                 sendNotification("Received: " + extras.toString(), intent);
-                Log.e(LIGER.TAG, "Received: " + extras.toString());
-            }else if ("send_event".equals(messageType)) {
-                // This loop represents the service doing some work.
-                for (int i = 0; i < 5; i++) {
-                    Log.e(LIGER.TAG, "Working... " + (i + 1)
-                            + "/5 @ " + SystemClock.elapsedRealtime());
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException e) {
-                    }
-                }
-                Log.e(LIGER.TAG, "Completed work @ " + SystemClock.elapsedRealtime());
-                // Post notification of received message.
-                sendNotification("Received: " + extras.toString(), intent);
-                Log.e(LIGER.TAG, "Received: " + extras.toString());
+                Log.d(LIGER.TAG, "Received: " + extras.toString());
             }
         }
         // Release the wake lock provided by the WakefulBroadcastReceiver.
@@ -96,17 +83,16 @@ public class LigerGcmIntentService extends IntentService {
 
         String activityName = getString(R.string.liger_main_activity_class);
         Class<? extends DefaultMainActivity> activityClass = null;
-        activityClass = DefaultMainActivity.class;
 
-//        try {
-//            activityClass = (Class<? extends DefaultMainActivity>) Class.forName(activityName);
-//        } catch (ClassNotFoundException e) {
-//            Log.e(LIGER.TAG, "Failed to find class for main activity named " + activityName, e);
-//        } catch (ClassCastException e) {
-//            Log.e(LIGER.TAG, "Main activity class named " + activityName + " is not an Activity!", e);
-//        }
+        try {
+            activityClass = (Class<? extends DefaultMainActivity>) Class.forName(activityName);
+        } catch (ClassNotFoundException e) {
+            Log.e(LIGER.TAG, "Failed to find class for main activity named " + activityName, e);
+        } catch (ClassCastException e) {
+            Log.e(LIGER.TAG, "Main activity class named " + activityName + " is not an Activity!", e);
+        }
 
-        Intent appIntent = new Intent(this, DefaultMainActivity.class);
+        Intent appIntent = new Intent(this, activityClass);
         appIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         appIntent.putExtra("cloudIntent", cloudIntent);
 
