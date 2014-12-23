@@ -102,7 +102,7 @@ public class LigerGcmIntentService extends IntentService {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.icon_android_notificaiton)
-                        .setContentTitle("Reach Push")
+                        .setContentTitle(this.getString(this.getApplicationInfo().labelRes))
                         .setLights(Color.YELLOW, 1, 2)
                         .setAutoCancel(true)
                         .setSound(defaultSound)
