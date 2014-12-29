@@ -93,6 +93,8 @@ public abstract class PageFragment extends DialogFragment {
 
     public abstract void setParentUpdateArgs(String parentUpdateArgs);
 
+    public abstract void sendJavascript(String js);
+
     public void doPageAppear() {
     }
 

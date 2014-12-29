@@ -339,6 +339,11 @@ public class LigerNavigatorFragment extends PageFragment {
         mFragDeck.getLast().setParentUpdateArgs(parentUpdateArgs);
     }
 
+    @Override
+    public void sendJavascript(String js) {
+        mFragDeck.getLast().sendJavascript(js);
+    }
+
     private class DialogKeyListener implements View.OnKeyListener {
         @Override
         public boolean onKey(View view, int i, KeyEvent keyEvent) {

@@ -101,6 +101,11 @@ public class nativePages extends PageFragment {
     }
 
     @Override
+    public void sendJavascript(String js) {
+
+    }
+
+    @Override
     public void addFragments(FragmentTransaction ft, int contentViewID) {
         ft.replace(contentViewID, this);
     }
