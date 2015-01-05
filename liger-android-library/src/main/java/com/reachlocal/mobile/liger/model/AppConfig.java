@@ -97,6 +97,10 @@ public class AppConfig {
         return sAppConfig;
     }
 
+    public static void setAppConfig(AppConfig appConfig) {
+        sAppConfig = appConfig;
+    }
+
     public static AppConfig parseAppConfig(String appConfigString) {
         AppConfig appConfig = new AppConfig();
         try {
