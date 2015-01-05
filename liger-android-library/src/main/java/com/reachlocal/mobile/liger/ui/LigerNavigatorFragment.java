@@ -341,7 +341,9 @@ public class LigerNavigatorFragment extends PageFragment {
 
     @Override
     public void sendJavascript(String js) {
-        mFragDeck.getLast().sendJavascript(js);
+        PageFragment lastPage = mFragDeck.getLast();
+
+        lastPage.sendJavascript(js);
     }
 
     private class DialogKeyListener implements View.OnKeyListener {

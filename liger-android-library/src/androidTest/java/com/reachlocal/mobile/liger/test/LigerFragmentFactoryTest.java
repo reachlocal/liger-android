@@ -12,9 +12,7 @@ import com.reachlocal.mobile.liger.ui.PageFragment;
 
 import org.json.JSONObject;
 
-/**
- * <a href="http://d.android.com/tools/testing/testing_android.html">Testing Fundamentals</a>
- */
+
 public class LigerFragmentFactoryTest extends InstrumentationTestCase {
 
     public void testFragmentFactoryReturnOfNavigatorFragment() throws Exception {

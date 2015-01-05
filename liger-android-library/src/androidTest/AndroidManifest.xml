@@ -1,0 +1,22 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.reachlocal.mobile.liger.test"
+    android:versionCode="1"
+    android:versionName="1.0">
+    <application>
+        <activity android:name=".TestDefaultMainActivity"
+            android:label="TestActivity"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+
+            </intent-filter>
+        </activity>
+
+        <uses-library android:name="android.test.runner" />
+    </application>
+    <uses-sdk android:minSdkVersion="8" />
+    <!-- This line below! -->
+    <instrumentation android:targetPackage="com.reachlocal.mobile.liger.test"
+        android:name="android.test.InstrumentationTestRunner" />
+</manifest>
