@@ -2,7 +2,7 @@ package com.reachlocal.mobile.liger.ui;
 
 import android.app.Dialog;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
+
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -27,6 +27,7 @@ import org.json.JSONObject;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 
 public class LigerNavigatorFragment extends PageFragment {
@@ -341,9 +342,10 @@ public class LigerNavigatorFragment extends PageFragment {
 
     @Override
     public void sendJavascript(String js) {
-        PageFragment lastPage = mFragDeck.getLast();
-
-        lastPage.sendJavascript(js);
+        if (mFragDeck.size() > 0) {
+            PageFragment lastPage = mFragDeck.getLast();
+            lastPage.sendJavascript(js);
+        }
     }
 
     private class DialogKeyListener implements View.OnKeyListener {
