@@ -169,6 +169,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        mWebView.handleDestroy();
         if (LIGER.LOGGING) {
             Log.d(LIGER.TAG, this.getClass().getSimpleName() + ".onDestroyView() " + pageName);
         }
