@@ -1,10 +1,10 @@
 package com.reachlocal.mobile.liger.test;
 
-import android.test.InstrumentationTestCase;
+import android.content.Intent;
+import android.test.ActivityUnitTestCase;
 
 import com.reachlocal.mobile.liger.factories.LigerFragmentFactory;
 import com.reachlocal.mobile.liger.ui.CordovaPageFragment;
-import com.reachlocal.mobile.liger.ui.DefaultMainActivity;
 import com.reachlocal.mobile.liger.ui.LigerAppMenuFragment;
 import com.reachlocal.mobile.liger.ui.LigerDrawerFragment;
 import com.reachlocal.mobile.liger.ui.LigerNavigatorFragment;
@@ -13,7 +13,12 @@ import com.reachlocal.mobile.liger.ui.PageFragment;
 import org.json.JSONObject;
 
 
-public class LigerFragmentFactoryTest extends InstrumentationTestCase {
+public class LigerFragmentFactoryTest extends ActivityUnitTestCase<TestDefaultMainActivity> {
+
+
+    public LigerFragmentFactoryTest(Class<TestDefaultMainActivity> activityClass) {
+        super(activityClass);
+    }
 
     public void testFragmentFactoryReturnOfNavigatorFragment() throws Exception {
         String pageName = "navigator";
@@ -61,11 +66,15 @@ public class LigerFragmentFactoryTest extends InstrumentationTestCase {
 
     public void testFragmentFactoryLaunchingIntents(){
         String[] SUPPORTED_INTENTS = {"email", "browser", "message", "image", "twitter", "facebook", "sinaweibo", "tencentweibo"};
-        LigerFragmentFactory.mContext = getInstrumentation().getContext();
 
         for (String intent : SUPPORTED_INTENTS) {
             PageFragment shouldBeNull = LigerFragmentFactory.openPage(intent,"Some Intent", null, null);
             assertNull(shouldBeNull);
+
+            Intent launchIntent = getStartedActivityIntent();
+            assertNotNull("Intent was null", launchIntent);
+            assertTrue(isFinishCalled());
+
         }
     }
 

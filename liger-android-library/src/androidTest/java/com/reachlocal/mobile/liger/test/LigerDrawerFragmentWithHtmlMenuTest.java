@@ -4,13 +4,14 @@ import android.test.ActivityInstrumentationTestCase2;
 import android.view.KeyEvent;
 
 import com.reachlocal.mobile.liger.model.AppConfig;
+import com.reachlocal.mobile.liger.ui.LigerDrawerFragment;
 import com.reachlocal.mobile.liger.ui.LigerNavigatorFragment;
 
 
-public class LigerNavigatorFragmentTest extends ActivityInstrumentationTestCase2<com.reachlocal.mobile.liger.test.TestDefaultMainActivity> {
+public class LigerDrawerFragmentWithHtmlMenuTest extends ActivityInstrumentationTestCase2<TestDefaultMainActivity> {
     TestDefaultMainActivity myTestActivity;
 
-    public LigerNavigatorFragmentTest() {
+    public LigerDrawerFragmentWithHtmlMenuTest() {
         super(TestDefaultMainActivity.class);
 
     }
@@ -20,7 +21,7 @@ public class LigerNavigatorFragmentTest extends ActivityInstrumentationTestCase2
         AppConfig testConfig = AppConfig.parseAppConfig("{\n" +
                 "  \"appFormatVersion\": 6,\n" +
                 "  \"rootPage\": {\n" +
-                "    \"page\": \"navigator\",\n" +
+                "    \"page\": \"drawer\",\n" +
                 "    \"accessibilityLabel\": \"Menu1\",\n" +
                 "    \"args\": {\n" +
                 "                \"title\": \"First Page\",\n" +
@@ -37,18 +38,12 @@ public class LigerNavigatorFragmentTest extends ActivityInstrumentationTestCase2
         AppConfig.setAppConfig(testConfig);
         super.setUp();
         myTestActivity = getActivity();
-
     }
 
     public void testPreConditions() {
         assertNotNull(myTestActivity);
         assertNotNull(myTestActivity.getRootPageFragment());
-        assertTrue(myTestActivity.getRootPageFragment() instanceof LigerNavigatorFragment);
-    }
-
-    public void testBackButtonPressed() {
-        myTestActivity.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_BACK));
-        assertTrue(!myTestActivity.getRootPageFragment().isAdded());
+        assertTrue(myTestActivity.getRootPageFragment() instanceof LigerDrawerFragment);
     }
 
 }

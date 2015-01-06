@@ -3,7 +3,6 @@ package com.reachlocal.mobile.liger;
 
 import android.util.Log;
 
-import com.reachlocal.mobile.liger.gcm.GcmRegistrationHelper;
 import com.reachlocal.mobile.liger.ui.DefaultMainActivity;
 import com.reachlocal.mobile.liger.ui.PageFragment;
 import com.reachlocal.mobile.liger.utils.CordovaUtils;
