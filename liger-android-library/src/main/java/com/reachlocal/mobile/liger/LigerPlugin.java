@@ -3,7 +3,6 @@ package com.reachlocal.mobile.liger;
 
 import android.util.Log;
 
-import com.reachlocal.mobile.liger.gcm.GcmRegistrationHelper;
 import com.reachlocal.mobile.liger.ui.DefaultMainActivity;
 import com.reachlocal.mobile.liger.ui.PageFragment;
 import com.reachlocal.mobile.liger.utils.CordovaUtils;
@@ -12,17 +11,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaArgs;
 import org.apache.cordova.CordovaPlugin;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 
 import static com.reachlocal.mobile.liger.utils.CordovaUtils.argsToString;
@@ -67,109 +58,6 @@ public class LigerPlugin extends CordovaPlugin {
             callbackContext.error(e.getMessage());
         }
         return false;
-    }
-
-    public boolean getPushToken(CallbackContext callbackContext){
-        final DefaultMainActivity activity = (DefaultMainActivity) cordova.getActivity();
-        final PageFragment webFragment = PageFragment.fromCallbackContext(callbackContext);
-
-        GcmRegistrationHelper gcmHelper = new GcmRegistrationHelper(activity);
-
-        String regID = gcmHelper.getRegistrationId(activity);
-
-        webFragment.pushNotificationTokenUpdated(regID, "");
-
-        return true;
-    }
-    public boolean displayNotification(String userUri, String message, String appName){
-        final DefaultMainActivity activity = (DefaultMainActivity) cordova.getActivity();
-
-
-        //TODO - This is a temporary testing method testing the sending and receiving of GCM messages
-        // Remove this later
-
-
-        GcmRegistrationHelper gcmHelper = new GcmRegistrationHelper(activity);
-
-
-        final String regID = gcmHelper.getRegistrationId(activity);
-
-        String msg = "";
-
-        try{
-
-            String apiKey = activity.getString(R.string.liger_gcm_sender_id);
-
-            // 1. URL
-            URL url = new URL("https://android.googleapis.com/gcm/send");
-
-            // 2. Open connection
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-            // 3. Specify POST method
-            conn.setRequestMethod("POST");
-
-            // 4. Set the headers
-            conn.setRequestProperty("Content-Type", "application/json");
-            conn.setRequestProperty("Authorization", "key=AIzaSyBzR3Osnbv5uWEbCOl7BFjkGm_Bg7GGGWg");
-
-            conn.setDoOutput(true);
-
-            // 5. Add JSON data into POST request body
-
-            //`5.1 Use Jackson object mapper to convert Contnet object into JSON
-            JSONObject content = new JSONObject();
-            JSONArray regIds = new JSONArray();
-            regIds.put(regID);
-            JSONObject data = new JSONObject();
-            data.put("message", message);
-            data.put("userURI", userUri);
-
-            content.put("registration_ids", regIds);
-            content.put("data", data);
-            // 5.2 Get connection output stream
-            DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
-
-            // 5.3 Copy Content "JSON" into
-           // wr.writeBytes(URLEncoder.encode(content.toString(), "UTF-8"));
-            wr.writeBytes(content.toString());
-            // 5.4 Send the request
-            wr.flush();
-
-            // 5.5 close
-            wr.close();
-
-            // 6. Get the response
-            int responseCode = conn.getResponseCode();
-            Log.e(LIGER.TAG, "\nSending 'POST' request to URL : " + url);
-            Log.e(LIGER.TAG, "Response Code : " + responseCode);
-
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(conn.getInputStream()));
-            String inputLine;
-            StringBuffer response = new StringBuffer();
-
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-            in.close();
-
-            // 7. Print result
-            Log.e(LIGER.TAG, response.toString());
-            msg = "Sent message";
-        } catch (MalformedURLException ex) {
-            msg = "MalformedURLException Error :" + ex.getMessage();
-        } catch (IOException ex) {
-            msg = "IOException Error :" + ex.getMessage();
-            ex.printStackTrace();
-        } catch (JSONException ex) {
-            msg = "Error :" + ex.getMessage();
-        }
-
-
-        Log.e(LIGER.TAG, msg);
-
-        return true;
     }
 
     /**
