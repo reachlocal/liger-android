@@ -1,7 +1,6 @@
 package com.reachlocal.mobile.liger.gcm;
 
 
-import android.app.Activity;
 import android.app.IntentService;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -23,11 +22,12 @@ import com.reachlocal.mobile.liger.ui.DefaultMainActivity;
 public class LigerGcmIntentService extends IntentService {
     public static final int NOTIFICATION_ID = 1;
     private NotificationManager mNotificationManager;
-    NotificationCompat.Builder builder;
 
     public LigerGcmIntentService() {
         super("LigerGcmIntentService");
     }
+
+
 
     @Override
     protected void onHandleIntent(Intent intent) {
@@ -59,27 +59,13 @@ public class LigerGcmIntentService extends IntentService {
                     Log.e(LIGER.TAG, "Working... " + (i + 1)
                             + "/5 @ " + SystemClock.elapsedRealtime());
                     try {
-                        Thread.sleep(5000);
+                        Thread.sleep(1000);
                     } catch (InterruptedException e) {
                     }
                 }
                 Log.e(LIGER.TAG, "Completed work @ " + SystemClock.elapsedRealtime());
                 // Post notification of received message.
-                sendNotification("Received: " + extras.toString(), intent);
-                Log.e(LIGER.TAG, "Received: " + extras.toString());
-            }else if ("send_event".equals(messageType)) {
-                // This loop represents the service doing some work.
-                for (int i = 0; i < 5; i++) {
-                    Log.e(LIGER.TAG, "Working... " + (i + 1)
-                            + "/5 @ " + SystemClock.elapsedRealtime());
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException e) {
-                    }
-                }
-                Log.e(LIGER.TAG, "Completed work @ " + SystemClock.elapsedRealtime());
-                // Post notification of received message.
-                sendNotification("Received: " + extras.toString(), intent);
+                sendNotification(extras.getString("message"), intent);
                 Log.e(LIGER.TAG, "Received: " + extras.toString());
             }
         }
@@ -116,8 +102,8 @@ public class LigerGcmIntentService extends IntentService {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.icon_android_notificaiton)
-                        .setContentTitle("Reach Push")
-                        .setLights(Color.YELLOW, 1, 2)
+                        .setContentTitle(this.getString(this.getApplicationInfo().labelRes))
+                        .setLights(Color.parseColor("#f16724"), 1, 2)
                         .setAutoCancel(true)
                         .setSound(defaultSound)
                         .setStyle(new NotificationCompat.BigTextStyle()
