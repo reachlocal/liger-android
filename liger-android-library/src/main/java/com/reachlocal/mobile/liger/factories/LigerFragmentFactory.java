@@ -10,6 +10,7 @@ import com.reachlocal.mobile.liger.ui.DefaultMainActivity;
 import com.reachlocal.mobile.liger.ui.LigerAppMenuFragment;
 import com.reachlocal.mobile.liger.ui.LigerDrawerFragment;
 import com.reachlocal.mobile.liger.ui.LigerNavigatorFragment;
+import com.reachlocal.mobile.liger.ui.LigerTabsFragment;
 import com.reachlocal.mobile.liger.ui.PageFragment;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -90,6 +91,8 @@ public class LigerFragmentFactory {
                 returnFragment = LigerNavigatorFragment.build(pageName, title, pageArgs, pageOptions);
             } else if (pageName.equalsIgnoreCase("appMenu")) {
                 returnFragment = LigerAppMenuFragment.build(pageName, title, pageArgs, pageOptions);
+            } else if (pageName.equalsIgnoreCase("tab")) {
+                returnFragment = LigerTabsFragment.build(pageName, title, pageArgs, pageOptions);
             } else {
                 try {
                     String packageName =  mContext.getApplicationContext().getPackageName();
