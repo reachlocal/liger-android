@@ -1,5 +1,6 @@
 package com.reachlocal.mobile.liger;
 
+
 import android.util.Log;
 
 import com.reachlocal.mobile.liger.gcm.GcmRegistrationHelper;
@@ -23,6 +24,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+
 import static com.reachlocal.mobile.liger.utils.CordovaUtils.argsToString;
 
 public class LigerPlugin extends CordovaPlugin {
@@ -40,10 +42,6 @@ public class LigerPlugin extends CordovaPlugin {
         try {
             if (action.equalsIgnoreCase("openPage")) {
                 return openPage(args.getString(0), args.optString(1), args.optJSONObject(2), args.optJSONObject(3), callbackContext);
-            } else if (action.equalsIgnoreCase("displayNotification")) {
-                return displayNotification(args.getString(0), args.optString(1), args.getString(2));
-            } else if (action.equalsIgnoreCase("getPushToken")) {
-                return getPushToken(callbackContext);
             } else if (action.equalsIgnoreCase("closePage")) {
                 return closePage(callbackContext, args.optString(0));
             } else if (action.equalsIgnoreCase("updateParent")) {

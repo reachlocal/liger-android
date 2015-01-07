@@ -38,7 +38,7 @@ public class CordovaUtils {
         try {
             result = new JSONObject(argString);
         } catch (JSONException e) {
-            Log.w(LIGER.TAG, "Failed to parse arguments: " + argString, e);
+            Log.e(LIGER.TAG, "Failed to parse arguments: " + argString, e);
         }
         if (result == null) {
             result = new JSONObject();
