@@ -1,15 +1,13 @@
 package com.reachlocal.mobile.liger.ui;
 
 import android.os.Bundle;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 
 import com.reachlocal.mobile.liger.LIGER;
 import com.reachlocal.mobile.liger.R;
@@ -21,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.Iterator;
 
 
@@ -28,32 +27,53 @@ import java.util.Iterator;
  * Created by Mark Wagner on 10/22/14.
  */
 
-public class LigerTabsFragment extends PageFragment implements PageLifecycleListener {
+public class LigerTabContainerFragment extends PageFragment implements PageLifecycleListener {
 
     private JSONObject tabsObject;
+    protected PageFragment mTabs;
+    protected PageFragment mTabContent;
+
+    HashMap<String, PageFragment> mTabCache = new HashMap<String, PageFragment>();
 
     View mTabsContainer;
-
+    FrameLayout mTabsHolder;
+    FrameLayout mTabsContent;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         createContentView(inflater, container, savedInstanceState);
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "LigerTabsFragment.onCreateView() " + pageName);
+            Log.d(LIGER.TAG, "LigerDrawerFragment.onCreateView() " + pageName);
         }
 
-//        mDrawer = LigerFragmentFactory.openPage(drawerObject);
-//        FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-//        mDrawer.addFragments(ft, mDrawerContentFrame.getId());
-//        ft.commit();
-//        setupMenu();
-//        mDrawer.mLifecycleListeners.add(this);
+        mTabs = LigerFragmentFactory.openPage(tabsObject);
+        FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+        mTabs.addFragments(ft, mTabsHolder.getId());
+        ft.commit();
+
+        mTabs.mLifecycleListeners.add(this);
         return mTabsContainer;
     }
 
     protected View createContentView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mTabsContainer = inflater.inflate(R.layout.tab_layout, container, false);
-        mTabsContainer.setId(ViewUtil.generateViewId());
+        mTabsContainer = inflater.inflate(R.layout.tab_layout, container, false);        
+        if(mTabsContainer.getId() == -1)
+            mTabsContainer.setId(ViewUtil.generateViewId());
+
+        mTabsHolder = new FrameLayout(inflater.getContext());
+        if(mTabsHolder.getId() == -1)
+            mTabsHolder.setId(ViewUtil.generateViewId());
+        
+        mTabsContent = new FrameLayout(inflater.getContext());
+        if(mTabsContent.getId() == -1)
+            mTabsContent.setId(ViewUtil.generateViewId());
+
+        RelativeLayout.LayoutParams tabsParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, 200);
+        RelativeLayout.LayoutParams containerParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.FILL_PARENT);
+        containerParams.addRule(RelativeLayout.BELOW, mTabsHolder.getId());
+        ((RelativeLayout) mTabsContainer).addView(mTabsHolder, tabsParams);
+        ((RelativeLayout) mTabsContainer).addView(mTabsContent, containerParams);
+        
         return mTabsContainer;
     }
 
@@ -62,39 +82,51 @@ public class LigerTabsFragment extends PageFragment implements PageLifecycleList
         super.onStart();
     }
 
-    private void setupMenu() {
-        ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ((ActionBarActivity) getActivity()).getSupportActionBar().setHomeButtonEnabled(true);
-
-        ((DefaultMainActivity) mContext).menuDrawer = (DrawerLayout) mContext.findViewById(R.id.drawer_layout);
-        //setMenuItems(getMajorMenuItems(), getMinorMenuItems());
-
-        ((DefaultMainActivity) mContext).menuToggle = new ActionBarDrawerToggle(mContext, /* host Activity */
-                ((DefaultMainActivity) mContext).menuDrawer, /* DrawerLayout object */
-                R.drawable.ic_drawer, /* nav drawer image to replace 'Up' caret */
-                R.string.menu_open_desc, /* "open drawer" description for accessibility */
-                R.string.menu_close_desc /* "close drawer" description for accessibility */
-        ) {
-            public void onDrawerClosed(View view) {
-                getActivity().supportInvalidateOptionsMenu(); // creates call to
-            }
-
-            public void onDrawerOpened(View drawerView) {
-                getActivity().supportInvalidateOptionsMenu(); // creates call to
-            }
-        };
-        ((DefaultMainActivity) mContext).menuToggle.setDrawerIndicatorEnabled(true);
-
-        ((DefaultMainActivity) mContext).menuDrawer.setDrawerListener(((DefaultMainActivity) mContext).menuToggle);
+    @Override
+    public boolean hasContentFrame() {
+        return true;
     }
-
 
     @Override
     public void openPage(String pageName, String title, JSONObject pageArgs, JSONObject pageOptions) {
         if (LIGER.LOGGING) {
             Log.d(LIGER.TAG, "LigerDrawerFragment openPage() pageName:" + pageName + ", args:" + pageArgs + ", options:" + pageOptions);
         }
+        PageFragment page;
+        String reuseIdentifier = pageOptions.optString("reuseIdentifier", null);
 
+        if(reuseIdentifier != null && mTabCache.containsKey(reuseIdentifier)){
+            page = mTabCache.get(reuseIdentifier);
+        }else{
+            page = LigerFragmentFactory.openPage(pageName, title, pageArgs, pageOptions);
+            Boolean cached = pageOptions.optBoolean("cached", true);
+            if(cached && reuseIdentifier != null){
+                mTabCache.put(reuseIdentifier, page);
+            }
+        }
+
+        if (page != null) {
+            page.doPageAppear();
+            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+            if (mFragDeck.size() > 0) {
+                PageFragment previousPage = mFragDeck.getLast();
+                if(previousPage == page)
+                    return;
+                //ft.remove(previousPage);
+                ft.detach(previousPage);
+                mFragDeck.removeLast();
+            }
+            if(page.isDetached()) {
+                ft.attach(page);
+            }else{
+                page.addFragments(ft, mTabsContent.getId());
+            }
+            ft.commit();
+            mFragDeck.addLast(page);
+            //TODO mFragCache.put(pageName, page);
+
+            page.mContainer = this;
+        }
     }
 
     @Override
@@ -105,7 +137,11 @@ public class LigerTabsFragment extends PageFragment implements PageLifecycleList
                             + (args == null ? null : args.toString()) + ", options:"
                             + (options == null ? null : options.toString()));
         }
-
+        PageFragment dialog = LigerFragmentFactory.openPage(pageName, title, args, options);
+        if (dialog != null) {
+            mFragDeck.addLast(dialog);
+            dialog.show(getActivity().getSupportFragmentManager(), DIALOG_FRAGMENT);
+        }
     }
 
 
@@ -156,8 +192,8 @@ public class LigerTabsFragment extends PageFragment implements PageLifecycleList
         }
     }
 
-    public static LigerTabsFragment build(String pageName, String pageTitle, String pageArgs, String pageOptions) {
-        LigerTabsFragment tabsFragment = new LigerTabsFragment();
+    public static LigerTabContainerFragment build(String pageName, String pageTitle, String pageArgs, String pageOptions) {
+        LigerTabContainerFragment tabsFragment = new LigerTabContainerFragment();
         Bundle bundle = new Bundle();
         if (pageName != null) {
             bundle.putString("pageName", pageName);
@@ -183,7 +219,7 @@ public class LigerTabsFragment extends PageFragment implements PageLifecycleList
         return tabsFragment;
     }
 
-    public static LigerTabsFragment build(String pageName, String pageTitle, JSONObject pageArgs, JSONObject pageOptions) {
+    public static LigerTabContainerFragment build(String pageName, String pageTitle, JSONObject pageArgs, JSONObject pageOptions) {
         return build(pageName, pageTitle, pageArgs == null ? null : pageArgs.toString(), pageOptions == null ? null : pageOptions.toString());
     }
 
@@ -252,8 +288,7 @@ public class LigerTabsFragment extends PageFragment implements PageLifecycleList
 
     @Override
     protected PageFragment getChildPage() {
-        //TODO  - this should return the current tab fragment
-        return this;
+        return mTabs;
     }
 
 

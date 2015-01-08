@@ -1,46 +1,46 @@
 PAGE.tabsPage = function(){
-    TABSPAGE.initialize();
-    return true;
-}
+     TABSPAGE.initialize();
+     return true;
+ }
 
-PAGE.closeDialogArguments = function(args){
-	$('#args').append(JSON.stringify(args));
-}
+ PAGE.closeDialogArguments = function(args){
+     $('#args').append(JSON.stringify(args));
+ }
 
-PAGE.childUpdates = function(args){
-	$('#args').append(JSON.stringify(args));
-}
+ PAGE.childUpdates = function(args){
+     $('#args').append(JSON.stringify(args));
+ }
 
-PAGE.onPageAppear = function(){
-	$('#pageAppear').append('*');
-}
+ PAGE.onPageAppear = function(){
+     $('#pageAppear').append('*');
+ }
 
-var TABSPAGE = {
-	
-	initialize: function(){
-		var me = this;
+ var TABSPAGE = {
 
-        me.addBindings();
+     initialize: function(){
+         var me = this;
 
-	},
+         me.addBindings();
+         PAGE.openPage('First Page', 'firstPage', {'test1': 'test2'}, {"right":{"button":"save"}});
+     },
 
-	addBindings: function(){
-		$("#firstPage, #secondPage, #thirdPage").unbind();
-        
-        $("#firstPage").click(function(){
-			PAGE.openPage('First Page', 'firstPage', {'test1': 'test2'}, {"right":{"button":"save"}});
-			return false;
-        });
+     addBindings: function(){
+         $("#firstPage, #secondPage, #thirdPage").unbind();
 
-        $("#secondPage").click(function(){
-			PAGE.openPage('Second Page', 'secondPage', {'test1': 'test2'}, {"right":{"button":"save"}});
-			return false;
-        });
-        
-        $("#thirdPage").click(function(){
-            PAGE.openPage('Third Page', 'thirdPage', {'test1': 'test2'}, {"right":{"button":"save"}});
-            return false;
-        });
-		
-	}
-}
+         $("#firstPage").click(function(){
+             PAGE.openPage('First Page', 'firstPage', {'test1': 'test2'}, {"right":{"button":"save"}});
+             return false;
+         });
+
+         $("#secondPage").click(function(){
+             PAGE.openPage('Second Page', 'secondPage', {'test1': 'test2'}, {"right":{"button":"save"}});
+             return false;
+         });
+
+         $("#thirdPage").click(function(){
+             PAGE.openPage('Third Page', 'thirdPage', {'test1': 'test2'}, {"right":{"button":"save"}});
+             return false;
+         });
+
+     }
+ }

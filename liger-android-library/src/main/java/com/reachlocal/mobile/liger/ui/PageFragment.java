@@ -102,6 +102,10 @@ public abstract class PageFragment extends DialogFragment {
 
     public void doPageClosed() {
     }
+    
+    public boolean hasContentFrame() {
+        return false;
+    }
 
     @Override
     public void onAttach(Activity activity) {

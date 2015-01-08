@@ -101,6 +101,17 @@ public class LigerDrawerFragment extends PageFragment implements PageLifecycleLi
             Log.d(LIGER.TAG, "LigerDrawerFragment openPage() pageName:" + pageName + ", args:" + pageArgs + ", options:" + pageOptions);
         }
         PageFragment page;
+        
+        if(mFragDeck.size() > 0){
+            page = mFragDeck.getLast();  
+            if(page.hasContentFrame()){
+                page.openPage(pageName, title, pageArgs, pageOptions);
+                return;
+            }
+        }
+        
+        
+
         String reuseIdentifier = pageOptions.optString("reuseIdentifier", null);
 
         if(reuseIdentifier != null && mDrawerCache.containsKey(reuseIdentifier)){
@@ -303,6 +314,11 @@ public class LigerDrawerFragment extends PageFragment implements PageLifecycleLi
     @Override
     public void onPageClosed(PageFragment page) {
 
+    }
+
+    @Override
+    public boolean hasContentFrame() {
+        return true;
     }
 
     @Override
