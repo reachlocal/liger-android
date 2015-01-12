@@ -1,6 +1,7 @@
 package com.reachlocal.mobile.liger.ui;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -123,7 +124,7 @@ public class LigerTabContainerFragment extends PageFragment implements PageLifec
             }
             ft.commit();
             mFragDeck.addLast(page);
-            //TODO mFragCache.put(pageName, page);
+            mTabCache.put(pageName, page);
 
             page.mContainer = this;
         }
@@ -232,10 +233,8 @@ public class LigerTabContainerFragment extends PageFragment implements PageLifec
     public String closeLastPage(PageFragment closePage, String closeTo) {
 
         PageFragment parentPage = null;
-
         if (mFragDeck.size() > 0) {
             PageFragment lastPage = mFragDeck.getLast();
-
             if (!StringUtils.isEmpty(closeTo)) {
                 Iterator<PageFragment> it = mFragDeck.descendingIterator();
                 while (it.hasNext()) {
@@ -247,10 +246,9 @@ public class LigerTabContainerFragment extends PageFragment implements PageLifec
                 }
             }
             if (closePage == null || closePage == lastPage) {
-                if (lastPage instanceof LigerNavigatorFragment) {
-                    lastPage.closeLastPage(closePage, closeTo);
-                } else {
-                    FragmentTransaction ft = mContext.getSupportFragmentManager().beginTransaction();
+                FragmentManager childFragmentManager = getChildFragmentManager();
+                if(childFragmentManager != null) {
+                    FragmentTransaction ft = childFragmentManager.beginTransaction();
                     ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
                     mFragDeck.removeLast();
                     lastPage.doPageClosed();
@@ -261,24 +259,21 @@ public class LigerTabContainerFragment extends PageFragment implements PageLifec
                         }
                     } else {
                         popTo(ft, parentPage);
+
                     }
                     String parentUpdateArgs = lastPage.getParentUpdateArgs();
                     if (parentPage != null) {
                         parentPage.setChildArgs(parentUpdateArgs);
                         parentPage.doPageAppear();
-                        ((DefaultMainActivity) mContext).setActionBarTitle(parentPage.getPageTitle());
+                        ((DefaultMainActivity) getActivity()).setActionBarTitle(parentPage.getPageTitle());
                     }
                     ft.commit();
                 }
 
                 logStack("closeLastPage");
-            } else {
-                lastPage.closeLastPage(closePage, closeTo);
             }
-
-
         }
-        if (mFragDeck.size() == 0 || (mFragDeck.size() == 1 && mFragDeck.getLast().isDetached())) {
+        if (mFragDeck.size() == 0) {
             FragmentTransaction ft = mContext.getSupportFragmentManager().beginTransaction();
             ft.remove(this);
             ft.commit();

@@ -28,17 +28,52 @@ PAGE.tabsPage = function(){
          $("#firstPage, #secondPage, #thirdPage").unbind();
 
          $("#firstPage").click(function(){
-             PAGE.openPage('First Page', 'firstPage', {'test1': 'test2'}, {"right":{"button":"save"}});
+             PAGE.openPage('Navigator', 'navigator',{
+                                                                    "pages": [
+                                                                      {
+                                                                        "title": "First Page",
+                                                                        "page": "firstPage",
+                                                                        "accessibilityLabel": "firstPage",
+                                                                        "args": {
+                                                                          "hello": "world"
+                                                                        }
+                                                                      },
+                                                                      {
+                                                                        "title": "Second Page",
+                                                                        "page": "secondPage",
+                                                                        "accessibilityLabel": "secondPage",
+                                                                        "args": {
+                                                                          "hello": "world"
+                                                                        }
+                                                                      },
+                                                                      {
+                                                                        "title": "Third Page",
+                                                                        "page": "thirdPage",
+                                                                        "accessibilityLabel": "thirdPage",
+                                                                        "args": {
+                                                                          "hello": "world"
+                                                                        }
+                                                                      }
+                                                                    ]
+                                                                  }, {"right":{"button":"save"}});
              return false;
          });
 
          $("#secondPage").click(function(){
-             PAGE.openPage('Second Page', 'secondPage', {'test1': 'test2'}, {"right":{"button":"save"}});
+             PAGE.openPage('System', 'navigator', {
+                                                                  "title": "System Pages",
+                                                                  "page": "system",
+                                                                  "accessibilityLabel": "system"
+                                                                }, {});
              return false;
          });
 
          $("#thirdPage").click(function(){
-             PAGE.openPage('Third Page', 'thirdPage', {'test1': 'test2'}, {"right":{"button":"save"}});
+             PAGE.openPage('Native Page', 'navigator', {
+                                                                       "page": "nativePages",
+                                                                       "title": "Native Page",
+                                                                       "accessibilityLabel": "nativeDialog"
+                                                                     }, {"right":{"button":"save"}});
              return false;
          });
 

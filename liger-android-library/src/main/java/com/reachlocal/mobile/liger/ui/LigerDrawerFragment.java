@@ -109,8 +109,6 @@ public class LigerDrawerFragment extends PageFragment implements PageLifecycleLi
                 return;
             }
         }
-        
-        
 
         String reuseIdentifier = pageOptions.optString("reuseIdentifier", null);
 
@@ -254,7 +252,7 @@ public class LigerDrawerFragment extends PageFragment implements PageLifecycleLi
 
         if (mFragDeck.size() > 0) {
             PageFragment lastPage = mFragDeck.getLast();
-
+            
             if (!StringUtils.isEmpty(closeTo)) {
                 Iterator<PageFragment> it = mFragDeck.descendingIterator();
                 while (it.hasNext()) {
@@ -266,7 +264,7 @@ public class LigerDrawerFragment extends PageFragment implements PageLifecycleLi
                 }
             }
             if (closePage == null || closePage == lastPage) {
-                if (lastPage instanceof LigerNavigatorFragment) {
+                if (lastPage instanceof LigerNavigatorFragment || lastPage.hasContentFrame()) {
                     lastPage.closeLastPage(closePage, closeTo);
                 } else {
                     FragmentTransaction ft = mContext.getSupportFragmentManager().beginTransaction();
@@ -294,8 +292,6 @@ public class LigerDrawerFragment extends PageFragment implements PageLifecycleLi
             } else {
                 lastPage.closeLastPage(closePage, closeTo);
             }
-
-
         }
         if (mFragDeck.size() == 0 || (mFragDeck.size() == 1 && mFragDeck.getLast().isDetached())) {
             FragmentTransaction ft = mContext.getSupportFragmentManager().beginTransaction();
