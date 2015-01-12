@@ -63,7 +63,7 @@
             },
             {
               "name": "Html Tab Test",
-              "page": "tab",
+              "page": "tabcontainer",
               "accessibilityLabel": "Menu3",
               "args" : {
                 "page": "tabsPage",

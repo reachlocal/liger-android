@@ -91,7 +91,7 @@ public class LigerFragmentFactory {
                 returnFragment = LigerNavigatorFragment.build(pageName, title, pageArgs, pageOptions);
             } else if (pageName.equalsIgnoreCase("appMenu")) {
                 returnFragment = LigerAppMenuFragment.build(pageName, title, pageArgs, pageOptions);
-            } else if (pageName.equalsIgnoreCase("tab")) {
+            } else if (pageName.equalsIgnoreCase("tabcontainer")) {
                 returnFragment = LigerTabContainerFragment.build(pageName, title, pageArgs, pageOptions);
             } else {
                 try {
