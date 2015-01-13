@@ -41,7 +41,6 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
     public ActionBarDrawerToggle menuToggle;
 
     private String lastChildArgs;
-
     protected CordovaPlugin activityResultCallback;
 
     protected PageFragment mRootPageFragment;
@@ -56,12 +55,20 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.liger_main);
+
         AppConfig mAppConfig = AppConfig.getAppConfig(this);
 
+
+        
         LigerFragmentFactory.mContext = this;
         mRootPageFragment = LigerFragmentFactory.openPage(mAppConfig.getRootPageName(), mAppConfig.getRootPageTitle(), mAppConfig.getRootPageArgs(), mAppConfig.getRootPageOptions());
-
+        
+        if( mRootPageFragment instanceof LigerDrawerFragment ){
+            setContentView(R.layout.liger_main_drawer);
+        } else {
+            setContentView(R.layout.liger_main_frame);
+        }       
+        
         if (mRootPageFragment != null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             mRootPageFragment.addFragments(ft, R.id.content_frame);
@@ -235,12 +242,16 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
         if (LIGER.LOGGING) {
             Log.d(LIGER.TAG, "DefaultMainActivity openPage() pageName:" + pageName + ", args:" + pageArgs + ", options:" + pageOptions);
         }
-        menuDrawer.closeDrawers();
+        if(menuDrawer != null){
+            menuDrawer.closeDrawers();
+        }
         mRootPageFragment.openPage(pageName, title, pageArgs, pageOptions);
     }
 
     public void openDialog(String pageName, String title, JSONObject args, JSONObject options) {
-        menuDrawer.closeDrawers();
+        if(menuDrawer != null){
+            menuDrawer.closeDrawers();
+        }
         if (LIGER.LOGGING) {
             Log.d(LIGER.TAG,
                     "DefaultMainActivity openDialog() title:" + title + ", pageName:" + pageName + ", args:"
