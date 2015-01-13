@@ -6,8 +6,8 @@ import android.test.ActivityUnitTestCase;
 import com.reachlocal.mobile.liger.factories.LigerFragmentFactory;
 import com.reachlocal.mobile.liger.ui.CordovaPageFragment;
 import com.reachlocal.mobile.liger.ui.LigerAppMenuFragment;
-import com.reachlocal.mobile.liger.ui.LigerDrawerFragment;
-import com.reachlocal.mobile.liger.ui.LigerNavigatorFragment;
+import com.reachlocal.mobile.liger.ui.DrawerFragment;
+import com.reachlocal.mobile.liger.ui.NavigatorFragment;
 import com.reachlocal.mobile.liger.ui.PageFragment;
 
 import org.json.JSONObject;
@@ -28,7 +28,7 @@ public class LigerFragmentFactoryTest extends ActivityUnitTestCase<TestDefaultMa
 
         PageFragment navigatorFragment = LigerFragmentFactory.openPage(pageName,title,pageArgs,pageOptions);
 
-        assertTrue(navigatorFragment instanceof LigerNavigatorFragment);
+        assertTrue(navigatorFragment instanceof NavigatorFragment);
     }
 
     public void testFragmentFactoryReturnOfDrawerFragment() throws Exception {
@@ -39,7 +39,7 @@ public class LigerFragmentFactoryTest extends ActivityUnitTestCase<TestDefaultMa
 
         PageFragment drawerFragment = LigerFragmentFactory.openPage(pageName,title,pageArgs,pageOptions);
 
-        assertTrue(drawerFragment instanceof LigerDrawerFragment);
+        assertTrue(drawerFragment instanceof DrawerFragment);
     }
 
     public void testFragmentFactoryReturnOfAppMenuFragment() throws Exception {

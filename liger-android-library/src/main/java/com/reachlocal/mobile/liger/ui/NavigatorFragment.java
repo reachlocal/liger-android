@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 
-public class LigerNavigatorFragment extends PageFragment {
+public class NavigatorFragment extends PageFragment {
 
     View mNavigatorContentFrame;
 
@@ -90,7 +90,7 @@ public class LigerNavigatorFragment extends PageFragment {
             container.removeAllViews();
         createContentView(inflater, container, savedInstanceState);
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "LigerNavigatorFragment.onCreateView() " + pageName);
+            Log.d(LIGER.TAG, "NavigatorFragment.onCreateView() " + pageName);
         }
         FragmentManager childFragmentManager = getChildFragmentManager();
         FragmentTransaction ft = childFragmentManager.beginTransaction();
@@ -158,7 +158,7 @@ public class LigerNavigatorFragment extends PageFragment {
     public void onDestroyView() {
         super.onDestroyView();
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "LigerNavigatorFragment.onDestroyView() " + pageName);
+            Log.d(LIGER.TAG, "NavigatorFragment.onDestroyView() " + pageName);
         }
 
     }
@@ -180,7 +180,7 @@ public class LigerNavigatorFragment extends PageFragment {
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "LigerNavigatorFragment.onHiddenChanged() " + pageName + ", " + hidden);
+            Log.d(LIGER.TAG, "NavigatorFragment.onHiddenChanged() " + pageName + ", " + hidden);
         }
         if (!hidden) {
             sendChildArgs();
@@ -194,7 +194,7 @@ public class LigerNavigatorFragment extends PageFragment {
     @Override
     public void openPage(String pageName, String title, JSONObject pageArgs, JSONObject pageOptions) {
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "LigerNavigatorFragment openPage() pageName:" + pageName + ", args:" + pageArgs + ", options:" + pageOptions);
+            Log.d(LIGER.TAG, "NavigatorFragment openPage() pageName:" + pageName + ", args:" + pageArgs + ", options:" + pageOptions);
         }
         PageFragment page = null;
 
@@ -222,7 +222,7 @@ public class LigerNavigatorFragment extends PageFragment {
     public void openDialog(String pageName, String title, JSONObject args, JSONObject options) {
         if (LIGER.LOGGING) {
             Log.d(LIGER.TAG,
-                    "LigerNavigatorFragment openDialog() title:" + title + ", pageName:" + pageName + ", args:"
+                    "NavigatorFragment openDialog() title:" + title + ", pageName:" + pageName + ", args:"
                             + (args == null ? null : args.toString()) + ", options:"
                             + (options == null ? null : options.toString()));
         }
@@ -370,8 +370,8 @@ public class LigerNavigatorFragment extends PageFragment {
         ft.add(containViewId, this);
     }
 
-    public static LigerNavigatorFragment build(String pageName, String pageTitle, String pageArgs, String pageOptions) {
-        LigerNavigatorFragment navigator = new LigerNavigatorFragment();
+    public static NavigatorFragment build(String pageName, String pageTitle, String pageArgs, String pageOptions) {
+        NavigatorFragment navigator = new NavigatorFragment();
         Bundle bundle = new Bundle();
         JSONArray pages = new JSONArray();
         if (pageName != null) {
@@ -425,7 +425,7 @@ public class LigerNavigatorFragment extends PageFragment {
         return navigator;
     }
 
-    public static LigerNavigatorFragment build(String pageName, String pageTitle, JSONObject pageArgs, JSONObject pageOptions) {
+    public static NavigatorFragment build(String pageName, String pageTitle, JSONObject pageArgs, JSONObject pageOptions) {
         return build(pageName, pageTitle, pageArgs == null ? null : pageArgs.toString(), pageOptions == null ? null : pageOptions.toString());
     }
 

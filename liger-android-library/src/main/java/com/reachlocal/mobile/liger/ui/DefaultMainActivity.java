@@ -63,7 +63,7 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
         LigerFragmentFactory.mContext = this;
         mRootPageFragment = LigerFragmentFactory.openPage(mAppConfig.getRootPageName(), mAppConfig.getRootPageTitle(), mAppConfig.getRootPageArgs(), mAppConfig.getRootPageOptions());
         
-        if( mRootPageFragment instanceof LigerDrawerFragment ){
+        if( mRootPageFragment instanceof DrawerFragment){
             setContentView(R.layout.liger_main_drawer);
         } else {
             setContentView(R.layout.liger_main_frame);

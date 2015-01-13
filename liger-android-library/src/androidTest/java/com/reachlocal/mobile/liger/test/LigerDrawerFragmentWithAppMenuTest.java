@@ -1,10 +1,9 @@
 package com.reachlocal.mobile.liger.test;
 
 import android.test.ActivityInstrumentationTestCase2;
-import android.view.KeyEvent;
 
 import com.reachlocal.mobile.liger.model.AppConfig;
-import com.reachlocal.mobile.liger.ui.LigerDrawerFragment;
+import com.reachlocal.mobile.liger.ui.DrawerFragment;
 
 
 public class LigerDrawerFragmentWithAppMenuTest extends ActivityInstrumentationTestCase2<TestDefaultMainActivity> {
@@ -65,7 +64,7 @@ public class LigerDrawerFragmentWithAppMenuTest extends ActivityInstrumentationT
     public void testPreConditions() {
         assertNotNull(myTestActivity);
         assertNotNull(myTestActivity.getRootPageFragment());
-        assertTrue(myTestActivity.getRootPageFragment() instanceof LigerDrawerFragment);
+        assertTrue(myTestActivity.getRootPageFragment() instanceof DrawerFragment);
     }
 
 }
