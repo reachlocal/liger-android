@@ -137,9 +137,8 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
                 } else {
                     closePage(null, null);
                 }
-
+                return true;
             }
-            return true;
         }
         return super.dispatchKeyEvent(event);
     }
