@@ -10,7 +10,6 @@ import android.widget.Button;
 
 import com.reachlocal.mobile.liger.LIGER;
 import com.reachlocal.mobile.liger.factories.LigerFragmentFactory;
-import com.reachlocal.mobile.liger.testApp.R;
 import com.reachlocal.mobile.liger.ui.PageFragment;
 
 import org.json.JSONObject;
@@ -97,6 +96,11 @@ public class nativePages extends PageFragment {
 
     @Override
     public void setParentUpdateArgs(String parentUpdateArgs) {
+
+    }
+
+    @Override
+    public void sendJavascript(String js) {
 
     }
 

@@ -169,6 +169,9 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        //TODO - Leaving this commented out until I can determine best way to deal with the cordova
+        // receiver.
+        //mWebView.handleDestroy();
         if (LIGER.LOGGING) {
             Log.d(LIGER.TAG, this.getClass().getSimpleName() + ".onDestroyView() " + pageName);
         }

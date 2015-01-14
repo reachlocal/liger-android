@@ -171,6 +171,11 @@ public class LigerAppMenuFragment extends PageFragment implements MenuInterface 
     }
 
     @Override
+    public void sendJavascript(String js) {
+        getChildPage().sendJavascript(js);
+    }
+
+    @Override
     public void addFragments(FragmentTransaction ft, int contentViewID) {
         ft.add(contentViewID, this);
     }
