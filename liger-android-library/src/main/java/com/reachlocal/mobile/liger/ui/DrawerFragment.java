@@ -29,7 +29,7 @@ import java.util.Iterator;
  * Created by Mark Wagner on 10/22/14.
  */
 
-public class LigerDrawerFragment extends PageFragment implements PageLifecycleListener {
+public class DrawerFragment extends PageFragment implements PageLifecycleListener {
 
     private JSONObject drawerObject;
     protected PageFragment mDrawer;
@@ -45,7 +45,7 @@ public class LigerDrawerFragment extends PageFragment implements PageLifecycleLi
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         createContentView(inflater, container, savedInstanceState);
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "LigerDrawerFragment.onCreateView() " + pageName);
+            Log.d(LIGER.TAG, "DrawerFragment.onCreateView() " + pageName);
         }
 
         mDrawer = LigerFragmentFactory.openPage(drawerObject);
@@ -98,9 +98,18 @@ public class LigerDrawerFragment extends PageFragment implements PageLifecycleLi
     @Override
     public void openPage(String pageName, String title, JSONObject pageArgs, JSONObject pageOptions) {
         if (LIGER.LOGGING) {
-            Log.d(LIGER.TAG, "LigerDrawerFragment openPage() pageName:" + pageName + ", args:" + pageArgs + ", options:" + pageOptions);
+            Log.d(LIGER.TAG, "DrawerFragment openPage() pageName:" + pageName + ", args:" + pageArgs + ", options:" + pageOptions);
         }
         PageFragment page;
+        
+        if(mFragDeck.size() > 0){
+            page = mFragDeck.getLast();  
+            if(page.hasContentFrame()){
+                page.openPage(pageName, title, pageArgs, pageOptions);
+                return;
+            }
+        }
+
         String reuseIdentifier = pageOptions.optString("reuseIdentifier", null);
 
         if(reuseIdentifier != null && mDrawerCache.containsKey(reuseIdentifier)){
@@ -141,7 +150,7 @@ public class LigerDrawerFragment extends PageFragment implements PageLifecycleLi
     public void openDialog(String pageName, String title, JSONObject args, JSONObject options) {
         if (LIGER.LOGGING) {
             Log.d(LIGER.TAG,
-                    "LigerDrawerFragment openDialog() title:" + title + ", pageName:" + pageName + ", args:"
+                    "DrawerFragment openDialog() title:" + title + ", pageName:" + pageName + ", args:"
                             + (args == null ? null : args.toString()) + ", options:"
                             + (options == null ? null : options.toString()));
         }
@@ -192,8 +201,16 @@ public class LigerDrawerFragment extends PageFragment implements PageLifecycleLi
         mFragDeck.getLast().setParentUpdateArgs(parentUpdateArgs);
     }
 
-    public static LigerDrawerFragment build(String pageName, String pageTitle, String pageArgs, String pageOptions) {
-        LigerDrawerFragment drawerFragment = new LigerDrawerFragment();
+    @Override
+    public void sendJavascript(String js) {
+        if (mFragDeck.size() > 0) {
+            PageFragment lastPage = mFragDeck.getLast();
+            lastPage.sendJavascript(js);
+        }
+    }
+
+    public static DrawerFragment build(String pageName, String pageTitle, String pageArgs, String pageOptions) {
+        DrawerFragment drawerFragment = new DrawerFragment();
         Bundle bundle = new Bundle();
         if (pageName != null) {
             bundle.putString("pageName", pageName);
@@ -219,7 +236,7 @@ public class LigerDrawerFragment extends PageFragment implements PageLifecycleLi
         return drawerFragment;
     }
 
-    public static LigerDrawerFragment build(String pageName, String pageTitle, JSONObject pageArgs, JSONObject pageOptions) {
+    public static DrawerFragment build(String pageName, String pageTitle, JSONObject pageArgs, JSONObject pageOptions) {
         return build(pageName, pageTitle, pageArgs == null ? null : pageArgs.toString(), pageOptions == null ? null : pageOptions.toString());
     }
 
@@ -235,7 +252,7 @@ public class LigerDrawerFragment extends PageFragment implements PageLifecycleLi
 
         if (mFragDeck.size() > 0) {
             PageFragment lastPage = mFragDeck.getLast();
-
+            
             if (!StringUtils.isEmpty(closeTo)) {
                 Iterator<PageFragment> it = mFragDeck.descendingIterator();
                 while (it.hasNext()) {
@@ -247,7 +264,7 @@ public class LigerDrawerFragment extends PageFragment implements PageLifecycleLi
                 }
             }
             if (closePage == null || closePage == lastPage) {
-                if (lastPage instanceof LigerNavigatorFragment) {
+                if (lastPage instanceof NavigatorFragment || lastPage.hasContentFrame()) {
                     lastPage.closeLastPage(closePage, closeTo);
                 } else {
                     FragmentTransaction ft = mContext.getSupportFragmentManager().beginTransaction();
@@ -275,8 +292,6 @@ public class LigerDrawerFragment extends PageFragment implements PageLifecycleLi
             } else {
                 lastPage.closeLastPage(closePage, closeTo);
             }
-
-
         }
         if (mFragDeck.size() == 0 || (mFragDeck.size() == 1 && mFragDeck.getLast().isDetached())) {
             FragmentTransaction ft = mContext.getSupportFragmentManager().beginTransaction();
@@ -295,6 +310,11 @@ public class LigerDrawerFragment extends PageFragment implements PageLifecycleLi
     @Override
     public void onPageClosed(PageFragment page) {
 
+    }
+
+    @Override
+    public boolean hasContentFrame() {
+        return true;
     }
 
     @Override

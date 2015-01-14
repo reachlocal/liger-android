@@ -62,9 +62,19 @@
               }
             },
             {
-              "name": "Tab Test",
-              "page": "tab",
+              "name": "Html Tab Test",
+              "page": "tabcontainer",
               "accessibilityLabel": "Menu3",
+              "args" : {
+                "page": "tabsPage",
+                "accessibilityLabel": "tabs",
+                "args": {}
+              }
+            },
+            {
+              "name": "Native Tab Test",
+              "page": "tab",
+              "accessibilityLabel": "Menu4",
               "args": {
                 "pages": [
                   {
@@ -102,7 +112,7 @@
                     "options": {
                       "icon": "/assets/icons/Liger-1.png"
                     }
-                  },
+                  },           
                   {
                     "title": "Navigator Two",
                     "page": "navigator",
@@ -144,7 +154,7 @@
             {
               "name": "Native Pages",
               "page": "navigator",
-              "accessibilityLabel": "Menu4",
+              "accessibilityLabel": "Menu5",
               "args": {
                 "title": "Native Page",
                 "page": "nativePages",
@@ -154,7 +164,7 @@
             {
               "name": "System",
               "page": "navigator",
-              "accessibilityLabel": "Menu5",
+              "accessibilityLabel": "Menu6",
               "args": {
                 "title": "System Pages",
                 "page": "system",
@@ -167,7 +177,7 @@
               "name": "Dialog tests",
               "detail": "static detail",
               "page": "navigator",
-              "accessibilityLabel": "Menu6",
+              "accessibilityLabel": "Menu7",
               "dialog": "true",
               "args": {
                 "page": "dialog",
@@ -179,7 +189,7 @@
               "name": "Native Pages",
               "detail": "static detail",
               "page": "navigator",
-              "accessibilityLabel": "Menu7",
+              "accessibilityLabel": "Menu8",
               "dialog": "true",
               "args": {
                 "page": "nativePages",

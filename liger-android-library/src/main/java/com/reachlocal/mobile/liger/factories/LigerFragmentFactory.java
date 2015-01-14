@@ -5,12 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
-import com.reachlocal.mobile.liger.BuildConfig;
 import com.reachlocal.mobile.liger.ui.CordovaPageFragment;
 import com.reachlocal.mobile.liger.ui.DefaultMainActivity;
+import com.reachlocal.mobile.liger.ui.DrawerFragment;
 import com.reachlocal.mobile.liger.ui.LigerAppMenuFragment;
-import com.reachlocal.mobile.liger.ui.LigerDrawerFragment;
-import com.reachlocal.mobile.liger.ui.LigerNavigatorFragment;
+import com.reachlocal.mobile.liger.ui.NavigatorFragment;
+import com.reachlocal.mobile.liger.ui.TabContainerFragment;
 import com.reachlocal.mobile.liger.ui.PageFragment;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -86,11 +86,13 @@ public class LigerFragmentFactory {
         } else {
 
             if (pageName.equalsIgnoreCase("drawer")) {
-                returnFragment = LigerDrawerFragment.build(pageName, title, pageArgs, pageOptions);
+                returnFragment = DrawerFragment.build(pageName, title, pageArgs, pageOptions);
             } else if (pageName.equalsIgnoreCase("navigator")) {
-                returnFragment = LigerNavigatorFragment.build(pageName, title, pageArgs, pageOptions);
+                returnFragment = NavigatorFragment.build(pageName, title, pageArgs, pageOptions);
             } else if (pageName.equalsIgnoreCase("appMenu")) {
                 returnFragment = LigerAppMenuFragment.build(pageName, title, pageArgs, pageOptions);
+            } else if (pageName.equalsIgnoreCase("tabcontainer")) {
+                returnFragment = TabContainerFragment.build(pageName, title, pageArgs, pageOptions);
             } else {
                 try {
                     String packageName =  mContext.getApplicationContext().getPackageName();

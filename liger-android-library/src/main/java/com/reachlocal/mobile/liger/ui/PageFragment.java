@@ -93,12 +93,18 @@ public abstract class PageFragment extends DialogFragment {
 
     public abstract void setParentUpdateArgs(String parentUpdateArgs);
 
+    public abstract void sendJavascript(String js);
+
     public void doPageAppear() {
     }
 
     public abstract void addFragments(FragmentTransaction ft, int contentViewID);
 
     public void doPageClosed() {
+    }
+    
+    public boolean hasContentFrame() {
+        return false;
     }
 
     @Override
