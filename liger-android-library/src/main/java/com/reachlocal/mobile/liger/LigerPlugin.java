@@ -14,8 +14,6 @@ import org.apache.cordova.CordovaPlugin;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
-
 import static com.reachlocal.mobile.liger.utils.CordovaUtils.argsToString;
 
 public class LigerPlugin extends CordovaPlugin {

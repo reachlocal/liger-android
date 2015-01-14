@@ -77,7 +77,7 @@ public class LigerGcmIntentService extends IntentService {
         mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        String activityName = getString(R.string.liger_main_activity_class);
+        String activityName = getResources().getString(R.string.liger_main_activity_class);
         Class<? extends DefaultMainActivity> activityClass = null;
 
         try {
@@ -89,10 +89,12 @@ public class LigerGcmIntentService extends IntentService {
         }
 
         Intent appIntent = new Intent(this, activityClass);
+        appIntent.putExtras(cloudIntent.getExtras());
         appIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         appIntent.putExtra("cloudIntent", cloudIntent);
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, appIntent, 0);
+        
         Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
         NotificationCompat.Builder mBuilder =
