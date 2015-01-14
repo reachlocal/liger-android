@@ -32,7 +32,7 @@ public class TabContainerFragment extends PageFragment implements PageLifecycleL
 
     private JSONObject tabsObject;
     protected PageFragment mTabs;
-    protected PageFragment mTabContent;
+    protected PageFragment mCurrentTab;
 
     HashMap<String, PageFragment> mTabCache = new HashMap<String, PageFragment>();
 
@@ -69,7 +69,9 @@ public class TabContainerFragment extends PageFragment implements PageLifecycleL
         if(mTabsContent.getId() == -1)
             mTabsContent.setId(ViewUtil.generateViewId());
 
-        RelativeLayout.LayoutParams tabsParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, 200);
+        int dp = (int) getResources().getDimension(R.dimen.tab_height);
+                
+        RelativeLayout.LayoutParams tabsParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, dp);
         RelativeLayout.LayoutParams containerParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.FILL_PARENT);
         containerParams.addRule(RelativeLayout.BELOW, mTabsHolder.getId());
         ((RelativeLayout) mTabsContainer).addView(mTabsHolder, tabsParams);
@@ -107,25 +109,22 @@ public class TabContainerFragment extends PageFragment implements PageLifecycleL
         }
 
         if (page != null) {
-            page.doPageAppear();
             FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-            if (mFragDeck.size() > 0) {
-                PageFragment previousPage = mFragDeck.getLast();
-                if(previousPage == page)
-                    return;
-                ft.detach(previousPage);
-                mFragDeck.removeLast();
+
+            if(mCurrentTab != null){
+                ft.detach(mCurrentTab);
             }
-            if(page.isDetached()) {
+
+            page.doPageAppear();
+            
+            if(page.isDetached() || page == mCurrentTab) {
                 ft.attach(page);
             }else{
                 page.addFragments(ft, mTabsContent.getId());
             }
             ft.commit();
-            mFragDeck.addLast(page);
-            mTabCache.put(pageName, page);
-
-            page.mContainer = this;
+            mCurrentTab = page;
+            mCurrentTab.mContainer = this;
         }
     }
 
@@ -161,13 +160,13 @@ public class TabContainerFragment extends PageFragment implements PageLifecycleL
 
     @Override
     public void setChildArgs(String childUpdateArgs) {
-        mFragDeck.getLast().setChildArgs(childUpdateArgs);
+        mCurrentTab.setChildArgs(childUpdateArgs);
     }
 
     @Override
     public String getPageArgs() {
-        if (mFragDeck.size() > 0) {
-            return mFragDeck.getLast().getPageArgs();
+        if (mCurrentTab != null) {
+            return mCurrentTab.getPageArgs();
         } else {
             return null;
         }
@@ -175,19 +174,18 @@ public class TabContainerFragment extends PageFragment implements PageLifecycleL
 
     @Override
     public String getParentUpdateArgs() {
-        return mFragDeck.getLast().getParentUpdateArgs();
+        return mCurrentTab.getParentUpdateArgs();
     }
 
     @Override
     public void setParentUpdateArgs(String parentUpdateArgs) {
-        mFragDeck.getLast().setParentUpdateArgs(parentUpdateArgs);
+        mCurrentTab.setParentUpdateArgs(parentUpdateArgs);
     }
 
     @Override
     public void sendJavascript(String js) {
-        if (mFragDeck.size() > 0) {
-            PageFragment lastPage = mFragDeck.getLast();
-            lastPage.sendJavascript(js);
+        if (mCurrentTab != null) {
+            mCurrentTab.sendJavascript(js);
         }
     }
 
@@ -229,54 +227,8 @@ public class TabContainerFragment extends PageFragment implements PageLifecycleL
 
     @Override
     public String closeLastPage(PageFragment closePage, String closeTo) {
-
-        PageFragment parentPage = null;
-        if (mFragDeck.size() > 0) {
-            PageFragment lastPage = mFragDeck.getLast();
-            if (!StringUtils.isEmpty(closeTo)) {
-                Iterator<PageFragment> it = mFragDeck.descendingIterator();
-                while (it.hasNext()) {
-                    PageFragment candidate = it.next();
-                    if (StringUtils.equals(closeTo, candidate.getPageName())) {
-                        parentPage = candidate;
-                        break;
-                    }
-                }
-            }
-            if (closePage == null || closePage == lastPage) {
-                FragmentManager childFragmentManager = getChildFragmentManager();
-                if(childFragmentManager != null) {
-                    FragmentTransaction ft = childFragmentManager.beginTransaction();
-                    ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
-                    mFragDeck.removeLast();
-                    lastPage.doPageClosed();
-                    ft.remove(lastPage);
-                    if (parentPage == null) {
-                        if (mFragDeck.size() > 0) {
-                            parentPage = mFragDeck.getLast();
-                        }
-                    } else {
-                        popTo(ft, parentPage);
-
-                    }
-                    String parentUpdateArgs = lastPage.getParentUpdateArgs();
-                    if (parentPage != null) {
-                        parentPage.setChildArgs(parentUpdateArgs);
-                        parentPage.doPageAppear();
-                        ((DefaultMainActivity) getActivity()).setActionBarTitle(parentPage.getPageTitle());
-                    }
-                    ft.commit();
-                }
-
-                logStack("closeLastPage");
-            }
-        }
-        if (mFragDeck.size() == 0) {
-            FragmentTransaction ft = mContext.getSupportFragmentManager().beginTransaction();
-            ft.remove(this);
-            ft.commit();
-        }
-        return parentPage == null ? null : parentPage.getPageName();
+        mCurrentTab.closeLastPage(closePage, closeTo);
+        return null;
     }
 
     @Override
