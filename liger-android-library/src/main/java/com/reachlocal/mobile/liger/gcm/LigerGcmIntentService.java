@@ -1,7 +1,6 @@
 package com.reachlocal.mobile.liger.gcm;
 
 
-import android.app.Activity;
 import android.app.IntentService;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -23,11 +22,12 @@ import com.reachlocal.mobile.liger.ui.DefaultMainActivity;
 public class LigerGcmIntentService extends IntentService {
     public static final int NOTIFICATION_ID = 1;
     private NotificationManager mNotificationManager;
-    NotificationCompat.Builder builder;
 
     public LigerGcmIntentService() {
         super("LigerGcmIntentService");
     }
+
+
 
     @Override
     protected void onHandleIntent(Intent intent) {
@@ -36,7 +36,9 @@ public class LigerGcmIntentService extends IntentService {
         // The getMessageType() intent parameter must be the intent you received
         // in your BroadcastReceiver.
         String messageType = gcm.getMessageType(intent);
-        Log.e(LIGER.TAG, "LigerGcmIntentService onHandleIntent");
+        if (LIGER.LOGGING) {
+            Log.d(LIGER.TAG, "LigerGcmIntentService onHandleIntent");
+        }
         if (!extras.isEmpty()) {  // has effect of unparcelling Bundle
             /*
              * Filter messages based on message type. Since it is likely that GCM
@@ -61,6 +63,7 @@ public class LigerGcmIntentService extends IntentService {
                 // Post notification of received message.
                 sendNotification("Received: " + extras.toString(), intent);
                 Log.e(LIGER.TAG, "Received: " + extras.toString());
+
             }
         }
         // Release the wake lock provided by the WakefulBroadcastReceiver.
@@ -76,17 +79,16 @@ public class LigerGcmIntentService extends IntentService {
 
         String activityName = getString(R.string.liger_main_activity_class);
         Class<? extends DefaultMainActivity> activityClass = null;
-        activityClass = DefaultMainActivity.class;
 
-//        try {
-//            activityClass = (Class<? extends DefaultMainActivity>) Class.forName(activityName);
-//        } catch (ClassNotFoundException e) {
-//            Log.e(LIGER.TAG, "Failed to find class for main activity named " + activityName, e);
-//        } catch (ClassCastException e) {
-//            Log.e(LIGER.TAG, "Main activity class named " + activityName + " is not an Activity!", e);
-//        }
+        try {
+            activityClass = (Class<? extends DefaultMainActivity>) Class.forName(activityName);
+        } catch (ClassNotFoundException e) {
+            Log.e(LIGER.TAG, "Failed to find class for main activity named " + activityName, e);
+        } catch (ClassCastException e) {
+            Log.e(LIGER.TAG, "Main activity class named " + activityName + " is not an Activity!", e);
+        }
 
-        Intent appIntent = new Intent(this, DefaultMainActivity.class);
+        Intent appIntent = new Intent(this, activityClass);
         appIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         appIntent.putExtra("cloudIntent", cloudIntent);
 
@@ -96,7 +98,7 @@ public class LigerGcmIntentService extends IntentService {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.icon_android_notificaiton)
-                        .setContentTitle("Reach Push")
+                        .setContentTitle(this.getString(this.getApplicationInfo().labelRes))
                         .setLights(Color.YELLOW, 1, 2)
                         .setAutoCancel(true)
                         .setSound(defaultSound)

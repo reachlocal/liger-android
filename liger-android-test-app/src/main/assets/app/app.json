@@ -19,6 +19,9 @@
                 "accessibilityLabel": "firstPage",
                 "args": {
                   "hello": "world"
+                },
+                "options": {
+                    "right":{"button":"search"}
                 }
               }
             },

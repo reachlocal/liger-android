@@ -96,6 +96,7 @@ public class LigerFragmentFactory {
                     String packageName =  mContext.getApplicationContext().getPackageName();
                     packageName = packageName.replace(".debug", "").replace(".alpha", "").replace(".beta", "");
                     returnFragment = (PageFragment) Class.forName(packageName + "." + pageName).newInstance();
+
                 } catch (NullPointerException e) {
                     e.printStackTrace();
                 } catch (ClassNotFoundException e) {

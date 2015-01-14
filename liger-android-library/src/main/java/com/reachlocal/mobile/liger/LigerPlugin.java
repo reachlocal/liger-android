@@ -1,16 +1,8 @@
 package com.reachlocal.mobile.liger;
 
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
+
 import android.util.Log;
 
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.reachlocal.mobile.liger.gcm.GcmRegistrationHelper;
 import com.reachlocal.mobile.liger.ui.DefaultMainActivity;
 import com.reachlocal.mobile.liger.ui.PageFragment;
 import com.reachlocal.mobile.liger.utils.CordovaUtils;
@@ -22,8 +14,7 @@ import org.apache.cordova.CordovaPlugin;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.util.concurrent.atomic.AtomicInteger;
+
 
 import static com.reachlocal.mobile.liger.utils.CordovaUtils.argsToString;
 
@@ -42,18 +33,12 @@ public class LigerPlugin extends CordovaPlugin {
         try {
             if (action.equalsIgnoreCase("openPage")) {
                 return openPage(args.getString(0), args.optString(1), args.optJSONObject(2), args.optJSONObject(3), callbackContext);
-            } else if (action.equalsIgnoreCase("displayNotification")) {
-                return displayNotification(args.getString(0), args.optString(1), args.getString(2));
-            } else if (action.equalsIgnoreCase("getPushToken")) {
-                return getPushToken(callbackContext);
             } else if (action.equalsIgnoreCase("closePage")) {
                 return closePage(callbackContext, args.optString(0));
             } else if (action.equalsIgnoreCase("updateParent")) {
                 return updateParent(args.getJSONObject(1), callbackContext);
             } else if (action.equalsIgnoreCase("openDialog")) {
                 return openDialog(null, args.getString(0), args.optJSONObject(1), args.optJSONObject(2), callbackContext);
-            } else if (action.equalsIgnoreCase("userCanRefresh")) {
-                return userCanRefresh(args.getBoolean(0), callbackContext);
             } else if (action.equalsIgnoreCase("openDialogWithTitle")) {
                 return openDialog(args.getString(0), args.optString(1), args.optJSONObject(2), args.optJSONObject(3), callbackContext);
             } else if (action.equalsIgnoreCase("closeDialog")) {
@@ -73,89 +58,6 @@ public class LigerPlugin extends CordovaPlugin {
             callbackContext.error(e.getMessage());
         }
         return false;
-    }
-
-    public boolean getPushToken(CallbackContext callbackContext){
-        final DefaultMainActivity activity = (DefaultMainActivity) cordova.getActivity();
-        final PageFragment webFragment = PageFragment.fromCallbackContext(callbackContext);
-
-        GcmRegistrationHelper gcmHelper = new GcmRegistrationHelper(activity);
-
-        String regID = gcmHelper.getRegistrationId(activity);
-
-        webFragment.pushNotificationTokenUpdated(regID, "");
-
-        return true;
-    }
-    public boolean displayNotification(String userUri, String message, String appName){
-        final DefaultMainActivity activity = (DefaultMainActivity) cordova.getActivity();
-//        NotificationCompat.Builder mBuilder =
-//                new NotificationCompat.Builder(activity)
-//                        .setSmallIcon(R.drawable.icon_android_notificaiton)
-//                        .setContentTitle("Reach Push")
-//                        .setContentText("This Notification was launched locally!");
-//        // Creates an explicit intent for an Activity in your app
-//        Intent resultIntent = new Intent(activity, DefaultMainActivity.class);
-//
-//        // The stack builder object will contain an artificial back stack for the
-//        // started Activity.
-//        // This ensures that navigating backward from the Activity leads out of
-//        // your application to the Home screen.
-//        TaskStackBuilder stackBuilder = TaskStackBuilder.create(activity);
-//        // Adds the back stack for the Intent (but not the Intent itself)
-//        //stackBuilder.addParentStack(DefaultMainActivity.class);
-//        // Adds the Intent that starts the Activity to the top of the stack
-//        stackBuilder.addNextIntent(resultIntent);
-//        PendingIntent resultPendingIntent =
-//                stackBuilder.getPendingIntent(
-//                        0,
-//                        PendingIntent.FLAG_UPDATE_CURRENT
-//                );
-//        mBuilder.setContentIntent(resultPendingIntent);
-//        NotificationManager mNotificationManager =
-//                (NotificationManager) activity.getSystemService(activity.NOTIFICATION_SERVICE);
-//        // mId allows you to update the notification later on.
-//        int mId = 1;
-//        mNotificationManager.notify(mId, mBuilder.build());
-
-
-        GcmRegistrationHelper gcmHelper = new GcmRegistrationHelper(activity);
-
-        final String regID = gcmHelper.getRegistrationId(activity);
-
-        String msg = "";
-        GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(activity);
-        AtomicInteger msgId = new AtomicInteger();
-        try {
-            Bundle data = new Bundle();
-            data.putString("my_message", message);
-            data.putString("my_action",
-                    "com.google.android.gcm.demo.app.ECHO_NOW");
-            String id = Integer.toString(msgId.incrementAndGet());
-            gcm.send(regID + "@gcm.googleapis.com", id, data);
-            msg = "Sent message";
-        } catch (IOException ex) {
-            msg = "Error :" + ex.getMessage();
-        }
-
-        Log.e(LIGER.TAG, msg);
-
-        return true;
-    }
-
-    private boolean userCanRefresh(final boolean canRefresh, CallbackContext callbackContext) {
-        final DefaultMainActivity activity = (DefaultMainActivity) cordova.getActivity();
-        final PageFragment webFragment = PageFragment.fromCallbackContext(callbackContext);
-        if (webFragment != null) {
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    webFragment.setUserCanRefresh(canRefresh);
-                }
-            });
-        }
-        callbackContext.success();
-        return true;
     }
 
     /**

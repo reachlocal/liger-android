@@ -250,18 +250,6 @@ public class LigerNavigatorFragment extends PageFragment {
 
     }
 
-
-    @Override
-    public void setUserCanRefresh(boolean canRefresh) {
-        if (this.canRefresh != canRefresh) {
-            this.canRefresh = canRefresh;
-            DefaultMainActivity activity = (DefaultMainActivity) getActivity();
-            if (activity != null) {
-                ActivityCompat.invalidateOptionsMenu(activity);
-            }
-        }
-    }
-
     @Override
     public void doPageClosed() {
         super.doPageClosed();

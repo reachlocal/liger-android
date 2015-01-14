@@ -14,10 +14,14 @@ repositories {
     mavenCentral()
 }
 
+def isReleaseBuild() {
+    return version.contains("SNAPSHOT") == false
+}
+
 dependencies {
     compile "com.android.support:support-v4:${rootProject.ext.supportLibVersion}"
     compile "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
-    compile "com.google.android.gms:play-services:4.3.+"
+    compile "com.google.android.gms:play-services:4.3.23"
 
     compile files("./libs/cordova-3.6.4.jar")
 
@@ -49,5 +53,4 @@ android {
     }
 }
 
-//println "Snapshot URL: ${SNAPSHOT_REPOSITORY_URL}"
-//apply from: 'https://raw.github.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
+apply from: './maven_push.gradle'

@@ -1,7 +1,7 @@
+console.log("refresh.js");
+
 PAGE.refreshPage = function(){
     REFRESHPAGES.initialize();
-	PAGE.userCanRefresh = true;
-	PAGE.setupRefresh();
     return true;
 }
 
@@ -13,8 +13,11 @@ PAGE.childUpdates = function(args){
 	$('#args').append(JSON.stringify(args));
 }
 
-PAGE.refresh = function(user){
-	$('#refreshes').append('*');
+PAGE.headerButtonTapped = function(button){
+    console.log("Received Button: " + button);
+	if(button === "refresh"){
+	    $('#refreshes').append('*');
+	}
 }
 
 var REFRESHPAGES = {
