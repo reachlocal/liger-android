@@ -26,15 +26,6 @@ public class LigerGcmIntentService extends IntentService {
         super("LigerGcmIntentService");
     }
 
-    private static final Object NULL = new Object() {
-        @Override public boolean equals(Object o) {
-            return o == this || o == null; // API specifies this broken equals implementation
-        }
-        @Override public String toString() {
-            return "null";
-        }
-    };
-
     @Override
     protected void onHandleIntent(Intent intent) {
         Bundle extras = intent.getExtras();
