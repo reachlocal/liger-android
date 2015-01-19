@@ -10,7 +10,6 @@ import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -27,7 +26,14 @@ public class LigerGcmIntentService extends IntentService {
         super("LigerGcmIntentService");
     }
 
-
+    private static final Object NULL = new Object() {
+        @Override public boolean equals(Object o) {
+            return o == this || o == null; // API specifies this broken equals implementation
+        }
+        @Override public String toString() {
+            return "null";
+        }
+    };
 
     @Override
     protected void onHandleIntent(Intent intent) {
@@ -89,9 +95,13 @@ public class LigerGcmIntentService extends IntentService {
         }
 
         Intent appIntent = new Intent(this, activityClass);
-        appIntent.putExtras(cloudIntent.getExtras());
+        Bundle extras = new Bundle();
+        Bundle cloudExtras = cloudIntent.getExtras();
+        extras.putBundle("notification", cloudExtras );
+
+        appIntent.putExtra("notification", extras);
         appIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        appIntent.putExtra("cloudIntent", cloudIntent);
+
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, appIntent, 0);
         
@@ -112,4 +122,5 @@ public class LigerGcmIntentService extends IntentService {
         mBuilder.setContentIntent(contentIntent);
         mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
     }
+
 }

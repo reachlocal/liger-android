@@ -1,7 +1,10 @@
 package com.reachlocal.mobile.liger.ui;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,16 +24,19 @@ import com.reachlocal.mobile.liger.factories.LigerFragmentFactory;
 import com.reachlocal.mobile.liger.gcm.GcmRegistrationHelper;
 import com.reachlocal.mobile.liger.listeners.RootPageListener;
 import com.reachlocal.mobile.liger.model.AppConfig;
+import com.reachlocal.mobile.liger.utils.LigerJSONObject;
 import com.reachlocal.mobile.liger.widgets.MenuInterface;
 
 import org.apache.cordova.Config;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CordovaWebView;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -52,16 +58,100 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
     protected boolean keepRunning = false;
     protected final ExecutorService threadPool = Executors.newCachedThreadPool();
 
+    private final BroadcastReceiver dynamicReceiver
+            = new BroadcastReceiver()
+    {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle extras = intent.getExtras();
+            // TODO Handle C2DM
+            JSONObject payload = new JSONObject();
+            Set<String> keys = extras.keySet();
+            for (String key : keys) {
+                try {
+                    // json.put(key, bundle.get(key)); see edit below
+                    payload.put(key, LigerJSONObject.wrap(extras.get(key)));
+                } catch(JSONException e) {
+                    //Handle exception here
+                }
+            }
+            // blocks passing broadcast to StaticReceiver instance
+            mRootPageFragment.sendJavascript("PAGE.notificationArrived(" + payload.toString() + ",false);");
+        }
+    };
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(dynamicReceiver);
+    }
+    
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        Intent callingintent = getIntent();
+        Bundle extras = callingintent.getExtras();
+        extras.getString("message_type_id");
+        extras.getString("message");
+        String myString = extras.getString("extrasString");
+        Log.e("EXTRAS", extras.toString());
+
+        final IntentFilter filter = new
+                IntentFilter("com.google.android.c2dm.intent.RECEIVE");
+        filter.addCategory("com.example.gcm");
+        filter.setPriority(1);
+        registerReceiver(dynamicReceiver, filter,
+                "com.google.android.c2dm.permission.SEND", null);
+
+    }
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         AppConfig mAppConfig = AppConfig.getAppConfig(this);
 
+        JSONObject rootPageArgs = mAppConfig.getRootPageArgs();
+        JSONObject subPageArgs = null;
+        try {
+           subPageArgs = rootPageArgs.getJSONObject("args");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-        
+        Intent callingintent = getIntent();
+        Bundle extras = callingintent.getExtras();
+        if(extras != null && subPageArgs != null) {
+            Intent cloudintent = (Intent) extras.get("cloudIntent");
+            if(cloudintent != null) {
+                JSONObject payload = new JSONObject();
+                Set<String> keys = extras.keySet();
+                for (String key : keys) {
+                    try {
+                        // json.put(key, bundle.get(key)); see edit below
+                        payload.put(key, LigerJSONObject.wrap(extras.get(key)));
+                    } catch (JSONException e) {
+                        //Handle exception here
+                    }
+                }
+
+                try {
+                    subPageArgs.put("notification", payload);
+                    rootPageArgs.put("args", subPageArgs);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         LigerFragmentFactory.mContext = this;
-        mRootPageFragment = LigerFragmentFactory.openPage(mAppConfig.getRootPageName(), mAppConfig.getRootPageTitle(), mAppConfig.getRootPageArgs(), mAppConfig.getRootPageOptions());
+        mRootPageFragment = LigerFragmentFactory.openPage(mAppConfig.getRootPageName(), mAppConfig.getRootPageTitle(), rootPageArgs, mAppConfig.getRootPageOptions());
         
         if( mRootPageFragment instanceof DrawerFragment){
             setContentView(R.layout.liger_main_drawer);
