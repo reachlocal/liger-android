@@ -1,12 +1,16 @@
 package com.reachlocal.mobile.liger.utils;
 
+import android.os.Bundle;
+
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Mark Wagner on 1/16/15.
@@ -38,6 +42,19 @@ public class LigerJSONObject extends JSONObject {
             }
             if (o instanceof Map) {
                 return new JSONObject((Map) o);
+            }
+            if( o instanceof Bundle){
+                JSONObject newObject = new JSONObject();
+                Set<String> keys = ((Bundle)o).keySet();
+                for (String key : keys) {
+                    try {
+                        // json.put(key, bundle.get(key)); see edit below
+                        newObject.put(key, wrap(((Bundle)o).get(key)));
+                    } catch (JSONException e) {
+                        //Handle exception here
+                    }
+                }
+                return newObject;
             }
             if (o instanceof Boolean ||
                     o instanceof Byte ||

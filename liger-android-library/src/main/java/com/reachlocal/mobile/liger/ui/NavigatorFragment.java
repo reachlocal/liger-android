@@ -320,6 +320,13 @@ public class NavigatorFragment extends PageFragment {
     }
 
     @Override
+    public void notificationArrived(JSONObject notificationPayload) {
+        if (mFragDeck.size() > 0) {
+            mFragDeck.getLast().notificationArrived(notificationPayload);
+        }
+    }
+
+    @Override
     public String getPageArgs() {
         if (mFragDeck.size() > 0) {
             return mFragDeck.getLast().getPageArgs();

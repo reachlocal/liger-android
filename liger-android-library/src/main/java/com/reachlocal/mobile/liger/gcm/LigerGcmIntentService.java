@@ -86,11 +86,11 @@ public class LigerGcmIntentService extends IntentService {
         }
 
         Intent appIntent = new Intent(this, activityClass);
-        Bundle extras = new Bundle();
+        //Bundle extras = new Bundle();
         Bundle cloudExtras = cloudIntent.getExtras();
-        extras.putBundle("notification", cloudExtras );
+        //extras.putBundle("notification", cloudExtras );
 
-        appIntent.putExtra("notification", extras);
+        appIntent.putExtra("notification", cloudExtras);
         appIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
 

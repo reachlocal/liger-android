@@ -87,6 +87,8 @@ public abstract class PageFragment extends DialogFragment {
 
     public abstract void setChildArgs(String childUpdateArgs);
 
+    public abstract void notificationArrived(JSONObject notificationPayload);
+
     public abstract String getPageArgs();
 
     public abstract String getParentUpdateArgs();

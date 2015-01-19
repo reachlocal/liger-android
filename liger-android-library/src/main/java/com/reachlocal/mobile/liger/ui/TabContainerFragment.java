@@ -164,6 +164,11 @@ public class TabContainerFragment extends PageFragment implements PageLifecycleL
     }
 
     @Override
+    public void notificationArrived(JSONObject notificationPayload) {
+        mTabs.notificationArrived(notificationPayload);
+    }
+
+    @Override
     public String getPageArgs() {
         if (mCurrentTab != null) {
             return mCurrentTab.getPageArgs();

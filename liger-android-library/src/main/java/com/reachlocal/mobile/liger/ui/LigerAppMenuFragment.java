@@ -156,6 +156,11 @@ public class LigerAppMenuFragment extends PageFragment implements MenuInterface 
     }
 
     @Override
+    public void notificationArrived(JSONObject notificationPayload) {
+        
+    }
+
+    @Override
     public String getPageArgs() {
         return null;
     }

@@ -63,20 +63,9 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
     {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Bundle extras = intent.getExtras();
-            // TODO Handle C2DM
-            JSONObject payload = new JSONObject();
-            Set<String> keys = extras.keySet();
-            for (String key : keys) {
-                try {
-                    // json.put(key, bundle.get(key)); see edit below
-                    payload.put(key, LigerJSONObject.wrap(extras.get(key)));
-                } catch(JSONException e) {
-                    //Handle exception here
-                }
-            }
-            // blocks passing broadcast to StaticReceiver instance
-            mRootPageFragment.sendJavascript("PAGE.notificationArrived(" + payload.toString() + ",false);");
+            JSONObject payload = addIntentArgsToRootPageArgs(intent, new JSONObject());
+            mRootPageFragment.notificationArrived(payload);
+            abortBroadcast();
         }
     };
 
@@ -99,8 +88,7 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
 
         Intent callingintent = getIntent();
         Bundle extras = callingintent.getExtras();
-        extras.getString("message_type_id");
-        extras.getString("message");
+
         String myString = extras.getString("extrasString");
         Log.e("EXTRAS", extras.toString());
 
@@ -113,43 +101,34 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
 
     }
     
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        AppConfig mAppConfig = AppConfig.getAppConfig(this);
-
-        JSONObject rootPageArgs = mAppConfig.getRootPageArgs();
-        JSONObject subPageArgs = null;
-        try {
-           subPageArgs = rootPageArgs.getJSONObject("args");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        Intent callingintent = getIntent();
-        Bundle extras = callingintent.getExtras();
-        if(extras != null && subPageArgs != null) {
-            Intent cloudintent = (Intent) extras.get("cloudIntent");
-            if(cloudintent != null) {
-                JSONObject payload = new JSONObject();
-                Set<String> keys = extras.keySet();
-                for (String key : keys) {
-                    try {
-                        // json.put(key, bundle.get(key)); see edit below
-                        payload.put(key, LigerJSONObject.wrap(extras.get(key)));
-                    } catch (JSONException e) {
-                        //Handle exception here
-                    }
-                }
-
+    private JSONObject addIntentArgsToRootPageArgs(Intent callingIntent, JSONObject rootPageArgs){
+        Bundle extras = callingIntent.getExtras();
+        if(extras != null) {
+            JSONObject payload = new JSONObject();
+            Set<String> keys = extras.keySet();
+            for (String key : keys) {
                 try {
-                    subPageArgs.put("notification", payload);
-                    rootPageArgs.put("args", subPageArgs);
+                    // json.put(key, bundle.get(key)); see edit below
+                    rootPageArgs.put(key, LigerJSONObject.wrap(extras.get(key)));
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    //Handle exception here
                 }
             }
         }
+        return rootPageArgs;
+    }
+    
+    
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        android.os.Debug.waitForDebugger();
+        
+        AppConfig mAppConfig = AppConfig.getAppConfig(this);
+        JSONObject rootPageArgs = mAppConfig.getRootPageArgs();
+        
+        rootPageArgs = addIntentArgsToRootPageArgs(getIntent(), rootPageArgs);
+
         LigerFragmentFactory.mContext = this;
         mRootPageFragment = LigerFragmentFactory.openPage(mAppConfig.getRootPageName(), mAppConfig.getRootPageTitle(), rootPageArgs, mAppConfig.getRootPageOptions());
         

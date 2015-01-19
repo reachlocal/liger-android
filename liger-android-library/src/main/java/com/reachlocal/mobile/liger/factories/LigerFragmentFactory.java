@@ -118,6 +118,9 @@ public class LigerFragmentFactory {
             String title = pageObject.optString("title");
             JSONObject args = pageObject.optJSONObject("args");
             JSONObject options = pageObject.optJSONObject("options");
+            if(pageObject.optJSONObject("notification") != null){
+                args.put("notification", pageObject.optJSONObject("notification"));
+            }
             returnFragment = openPage(name, title, args, options);
         } catch (JSONException e) {
             e.printStackTrace();
