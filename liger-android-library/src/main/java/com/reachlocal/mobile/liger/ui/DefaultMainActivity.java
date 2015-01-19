@@ -1,7 +1,10 @@
 package com.reachlocal.mobile.liger.ui;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,16 +24,19 @@ import com.reachlocal.mobile.liger.factories.LigerFragmentFactory;
 import com.reachlocal.mobile.liger.gcm.GcmRegistrationHelper;
 import com.reachlocal.mobile.liger.listeners.RootPageListener;
 import com.reachlocal.mobile.liger.model.AppConfig;
+import com.reachlocal.mobile.liger.utils.LigerJSONObject;
 import com.reachlocal.mobile.liger.widgets.MenuInterface;
 
 import org.apache.cordova.Config;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CordovaWebView;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -52,16 +58,64 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
     protected boolean keepRunning = false;
     protected final ExecutorService threadPool = Executors.newCachedThreadPool();
 
+    private final BroadcastReceiver dynamicReceiver
+            = new BroadcastReceiver()
+    {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            JSONObject payload = addIntentArgsToRootPageArgs(intent, new JSONObject());
+            mRootPageFragment.notificationArrived(payload);
+            abortBroadcast();
+        }
+    };
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(dynamicReceiver);
+    }
+    
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        final IntentFilter filter = new
+                IntentFilter("com.google.android.c2dm.intent.RECEIVE");
+        filter.addCategory("com.example.gcm");
+        filter.setPriority(1);
+        registerReceiver(dynamicReceiver, filter,
+                "com.google.android.c2dm.permission.SEND", null);
+
+    }
+    
+    private JSONObject addIntentArgsToRootPageArgs(Intent callingIntent, JSONObject rootPageArgs){
+        Bundle extras = callingIntent.getExtras();
+        if(extras != null) {
+            Set<String> keys = extras.keySet();
+            for (String key : keys) {
+                try {
+                    rootPageArgs.put(key, LigerJSONObject.wrap(extras.get(key)));
+                } catch (JSONException e) {
+                    //Handle exception here
+                }
+            }
+        }
+        return rootPageArgs;
+    }
+    
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        AppConfig mAppConfig = AppConfig.getAppConfig(this);
-
-
+        android.os.Debug.waitForDebugger();
         
+        AppConfig mAppConfig = AppConfig.getAppConfig(this);
+        JSONObject rootPageArgs = mAppConfig.getRootPageArgs();
+        
+        rootPageArgs = addIntentArgsToRootPageArgs(getIntent(), rootPageArgs);
+
         LigerFragmentFactory.mContext = this;
-        mRootPageFragment = LigerFragmentFactory.openPage(mAppConfig.getRootPageName(), mAppConfig.getRootPageTitle(), mAppConfig.getRootPageArgs(), mAppConfig.getRootPageOptions());
+        mRootPageFragment = LigerFragmentFactory.openPage(mAppConfig.getRootPageName(), mAppConfig.getRootPageTitle(), rootPageArgs, mAppConfig.getRootPageOptions());
         
         if( mRootPageFragment instanceof DrawerFragment){
             setContentView(R.layout.liger_main_drawer);
@@ -137,9 +191,8 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
                 } else {
                     closePage(null, null);
                 }
-
+                return true;
             }
-            return true;
         }
         return super.dispatchKeyEvent(event);
     }

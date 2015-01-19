@@ -183,6 +183,11 @@ public class DrawerFragment extends PageFragment implements PageLifecycleListene
     }
 
     @Override
+    public void notificationArrived(JSONObject notificationPayload) {
+        mDrawer.notificationArrived(notificationPayload);
+    }
+
+    @Override
     public String getPageArgs() {
         if (mFragDeck.size() > 0) {
             return mFragDeck.getLast().getPageArgs();

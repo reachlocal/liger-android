@@ -10,7 +10,6 @@ import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -22,7 +21,6 @@ import com.reachlocal.mobile.liger.ui.DefaultMainActivity;
 public class LigerGcmIntentService extends IntentService {
     public static final int NOTIFICATION_ID = 1;
     private NotificationManager mNotificationManager;
-    NotificationCompat.Builder builder;
 
     public LigerGcmIntentService() {
         super("LigerGcmIntentService");
@@ -55,19 +53,14 @@ public class LigerGcmIntentService extends IntentService {
                 // If it's a regular GCM message, do some work.
             } else if (GoogleCloudMessaging.
                     MESSAGE_TYPE_MESSAGE.equals(messageType)) {
-                // This loop represents the service doing some work.
-                for (int i = 0; i < 5; i++) {
-                    Log.d(LIGER.TAG, "Working... " + (i + 1)
-                            + "/5 @ " + SystemClock.elapsedRealtime());
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException e) {
-                    }
-                }
-                Log.d(LIGER.TAG, "Completed work @ " + SystemClock.elapsedRealtime());
                 // Post notification of received message.
                 sendNotification("Received: " + extras.toString(), intent);
-                Log.d(LIGER.TAG, "Received: " + extras.toString());
+                Log.e(LIGER.TAG, "Received: " + extras.toString());
+            }else {
+                // Post notification of received message.
+                sendNotification("Received: " + extras.toString(), intent);
+                Log.e(LIGER.TAG, "Received: " + extras.toString());
+
             }
         }
         // Release the wake lock provided by the WakefulBroadcastReceiver.
@@ -81,7 +74,7 @@ public class LigerGcmIntentService extends IntentService {
         mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        String activityName = getString(R.string.liger_main_activity_class);
+        String activityName = getResources().getString(R.string.liger_main_activity_class);
         Class<? extends DefaultMainActivity> activityClass = null;
 
         try {
@@ -93,10 +86,16 @@ public class LigerGcmIntentService extends IntentService {
         }
 
         Intent appIntent = new Intent(this, activityClass);
+        //Bundle extras = new Bundle();
+        Bundle cloudExtras = cloudIntent.getExtras();
+        //extras.putBundle("notification", cloudExtras );
+
+        appIntent.putExtra("notification", cloudExtras);
         appIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        appIntent.putExtra("cloudIntent", cloudIntent);
+
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, appIntent, 0);
+        
         Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
         NotificationCompat.Builder mBuilder =
@@ -114,4 +113,5 @@ public class LigerGcmIntentService extends IntentService {
         mBuilder.setContentIntent(contentIntent);
         mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
     }
+
 }

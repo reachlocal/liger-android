@@ -457,6 +457,12 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     }
 
     @Override
+    public void notificationArrived(JSONObject notificationPayload) {
+        //String args = JSUtils.stringListToArgString(notificationPayload.toString(), "false");
+        sendJavascriptWithArgs("PAGE", "notificationArrived", notificationPayload.toString());
+    }
+
+    @Override
     public String getPageArgs() {
         if (LIGER.LOGGING) {
             Log.d(LIGER.TAG, this.getClass().getSimpleName() + ".getPageArgs() " + pageName);
