@@ -70,12 +70,6 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
     };
 
     @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        setIntent(intent);
-    }
-
-    @Override
     protected void onPause() {
         super.onPause();
         unregisterReceiver(dynamicReceiver);
@@ -85,13 +79,6 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
     @Override
     protected void onResume() {
         super.onResume();
-
-        Intent callingintent = getIntent();
-        Bundle extras = callingintent.getExtras();
-
-        String myString = extras.getString("extrasString");
-        Log.e("EXTRAS", extras.toString());
-
         final IntentFilter filter = new
                 IntentFilter("com.google.android.c2dm.intent.RECEIVE");
         filter.addCategory("com.example.gcm");
@@ -104,11 +91,9 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
     private JSONObject addIntentArgsToRootPageArgs(Intent callingIntent, JSONObject rootPageArgs){
         Bundle extras = callingIntent.getExtras();
         if(extras != null) {
-            JSONObject payload = new JSONObject();
             Set<String> keys = extras.keySet();
             for (String key : keys) {
                 try {
-                    // json.put(key, bundle.get(key)); see edit below
                     rootPageArgs.put(key, LigerJSONObject.wrap(extras.get(key)));
                 } catch (JSONException e) {
                     //Handle exception here
