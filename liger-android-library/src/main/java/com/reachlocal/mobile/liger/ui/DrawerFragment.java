@@ -112,7 +112,7 @@ public class DrawerFragment extends PageFragment implements PageLifecycleListene
 
         String reuseIdentifier = pageOptions.optString("reuseIdentifier", null);
 
-        if(reuseIdentifier != null && mDrawerCache.containsKey(reuseIdentifier)){
+        if(reuseIdentifier != null && (mDrawerCache.containsKey(reuseIdentifier) && pageOptions.optBoolean("cached", true) == true)){
             page = mDrawerCache.get(reuseIdentifier);
         }else{
             page = LigerFragmentFactory.openPage(pageName, title, pageArgs, pageOptions);

@@ -107,7 +107,6 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        android.os.Debug.waitForDebugger();
         
         AppConfig mAppConfig = AppConfig.getAppConfig(this);
         JSONObject rootPageArgs = mAppConfig.getRootPageArgs();

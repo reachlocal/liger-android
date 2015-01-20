@@ -98,7 +98,7 @@ public class TabContainerFragment extends PageFragment implements PageLifecycleL
         PageFragment page;
         String reuseIdentifier = pageOptions.optString("reuseIdentifier", null);
 
-        if(reuseIdentifier != null && mTabCache.containsKey(reuseIdentifier)){
+        if(reuseIdentifier != null && (mTabCache.containsKey(reuseIdentifier) && pageOptions.optBoolean("cached", true) == true)){
             page = mTabCache.get(reuseIdentifier);
         }else{
             page = LigerFragmentFactory.openPage(pageName, title, pageArgs, pageOptions);
