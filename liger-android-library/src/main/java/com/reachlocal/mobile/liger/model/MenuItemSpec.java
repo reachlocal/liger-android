@@ -15,16 +15,44 @@ public class MenuItemSpec {
     private boolean mMajor;
     private String mMenuIdString;
 
+    public static MenuItemSpec createFromJSON(JSONObject jsonObject, boolean major, int menuId) {
+        MenuItemSpec spec = new MenuItemSpec();
+        try {
+            spec.mName = jsonObject.getString("name");
+            spec.mIconText = jsonObject.optString("iconText");
+            spec.mPage = jsonObject.getString("page");
+            spec.mArgs = jsonObject.optJSONObject("args");
+            spec.mOptions = jsonObject.optJSONObject("options");
+            String menuLevel = major ? "1" : "2";
+            String reuseIdentifier;
+            if (spec.mOptions != null) {
+                reuseIdentifier = spec.mOptions.optString("reuseIdentifier", "menu_" + menuLevel + "_" + Integer.toString(menuId));
+            } else {
+                spec.mOptions = new JSONObject();
+                reuseIdentifier = "menu_" + menuLevel + "_" + Integer.toString(menuId);
+            }
+            spec.mOptions.put("reuseIdentifier", reuseIdentifier);
+            spec.mDetail = jsonObject.optString("detail");
+            spec.mAccessibilityLabel = jsonObject.optString("accessibilityLabel");
+            spec.mDialog = jsonObject.optBoolean("dialog", false);
+            spec.mMajor = major;
+            spec.mMenuIdString = jsonObject.getString("name") + (major == true ? "_major_" : "_minor_") + Integer.toString(menuId);
+        } catch (JSONException e) {
+            throw new RuntimeException("Invalid menu item spec!", e);
+        }
+        return spec;
+    }
+
     public String getName() {
         return mName;
     }
 
-    public String getMenuIdString() {
-        return mMenuIdString;
-    }
-
     public void setName(String name) {
         mName = name;
+    }
+
+    public String getMenuIdString() {
+        return mMenuIdString;
     }
 
     public String getIconText() {
@@ -47,12 +75,12 @@ public class MenuItemSpec {
         return mArgs;
     }
 
-    public JSONObject getOptions() {
-        return mOptions;
-    }
-
     public void setArgs(JSONObject args) {
         mArgs = args;
+    }
+
+    public JSONObject getOptions() {
+        return mOptions;
     }
 
     public void setOptions(JSONObject options) {
@@ -89,33 +117,5 @@ public class MenuItemSpec {
 
     public void setMajor(boolean major) {
         mMajor = major;
-    }
-
-    public static MenuItemSpec createFromJSON(JSONObject jsonObject, boolean major, int menuId) {
-        MenuItemSpec spec = new MenuItemSpec();
-        try {
-            spec.mName = jsonObject.getString("name");
-            spec.mIconText = jsonObject.optString("iconText");
-            spec.mPage = jsonObject.getString("page");
-            spec.mArgs = jsonObject.optJSONObject("args");
-            spec.mOptions = jsonObject.optJSONObject("options");
-            String menuLevel = major ? "1" : "2";
-            String reuseIdentifier;
-            if(spec.mOptions != null){
-                reuseIdentifier = spec.mOptions.optString("reuseIdentifier", "menu_" + menuLevel + "_" + Integer.toString(menuId) );
-            } else {
-                spec.mOptions = new JSONObject();
-                reuseIdentifier = "menu_" + menuLevel + "_" + Integer.toString(menuId);
-            }
-            spec.mOptions.put("reuseIdentifier", reuseIdentifier );
-            spec.mDetail = jsonObject.optString("detail");
-            spec.mAccessibilityLabel = jsonObject.optString("accessibilityLabel");
-            spec.mDialog = jsonObject.optBoolean("dialog", false);
-            spec.mMajor = major;
-            spec.mMenuIdString = jsonObject.getString("name") + (major == true ? "_major_" : "_minor_") + Integer.toString(menuId);
-        } catch (JSONException e) {
-            throw new RuntimeException("Invalid menu item spec!", e);
-        }
-        return spec;
     }
 }

@@ -15,6 +15,16 @@ public class AlertDialogFragment extends DialogFragment {
     private String mMessage;
     private String mButtonLabel;
 
+    public static AlertDialogFragment build(String title, String message, String buttonLabel) {
+        Bundle args = new Bundle();
+        args.putString("title", title);
+        args.putString("message", message);
+        args.putString("buttonLabel", buttonLabel);
+        AlertDialogFragment frag = new AlertDialogFragment();
+        frag.setArguments(args);
+        return frag;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,15 +50,5 @@ public class AlertDialogFragment extends DialogFragment {
             });
         }
         return builder.create();
-    }
-
-    public static AlertDialogFragment build(String title, String message, String buttonLabel) {
-        Bundle args = new Bundle();
-        args.putString("title", title);
-        args.putString("message", message);
-        args.putString("buttonLabel", buttonLabel);
-        AlertDialogFragment frag = new AlertDialogFragment();
-        frag.setArguments(args);
-        return frag;
     }
 }

@@ -5,8 +5,8 @@ import android.test.ActivityUnitTestCase;
 
 import com.reachlocal.mobile.liger.factories.LigerFragmentFactory;
 import com.reachlocal.mobile.liger.ui.CordovaPageFragment;
-import com.reachlocal.mobile.liger.ui.LigerAppMenuFragment;
 import com.reachlocal.mobile.liger.ui.DrawerFragment;
+import com.reachlocal.mobile.liger.ui.LigerAppMenuFragment;
 import com.reachlocal.mobile.liger.ui.NavigatorFragment;
 import com.reachlocal.mobile.liger.ui.PageFragment;
 
@@ -26,7 +26,7 @@ public class LigerFragmentFactoryTest extends ActivityUnitTestCase<TestDefaultMa
         JSONObject pageArgs = new JSONObject("{\"accessibilityLabel\":\"firstPage\",\"page\":\"firstPage\",\"args\":{\"hello\":\"world\"},\"title\":\"First Page\"}");
         JSONObject pageOptions = new JSONObject("{}");
 
-        PageFragment navigatorFragment = LigerFragmentFactory.openPage(pageName,title,pageArgs,pageOptions);
+        PageFragment navigatorFragment = LigerFragmentFactory.openPage(pageName, title, pageArgs, pageOptions);
 
         assertTrue(navigatorFragment instanceof NavigatorFragment);
     }
@@ -37,7 +37,7 @@ public class LigerFragmentFactoryTest extends ActivityUnitTestCase<TestDefaultMa
         JSONObject pageArgs = new JSONObject("{\"accessibilityLabel\":\"firstPage\",\"page\":\"firstPage\",\"args\":{\"hello\":\"world\"},\"title\":\"First Page\"}");
         JSONObject pageOptions = new JSONObject("{}");
 
-        PageFragment drawerFragment = LigerFragmentFactory.openPage(pageName,title,pageArgs,pageOptions);
+        PageFragment drawerFragment = LigerFragmentFactory.openPage(pageName, title, pageArgs, pageOptions);
 
         assertTrue(drawerFragment instanceof DrawerFragment);
     }
@@ -48,7 +48,7 @@ public class LigerFragmentFactoryTest extends ActivityUnitTestCase<TestDefaultMa
         JSONObject pageArgs = new JSONObject("{\"accessibilityLabel\":\"firstPage\",\"page\":\"firstPage\",\"args\":{\"hello\":\"world\"},\"title\":\"First Page\"}");
         JSONObject pageOptions = new JSONObject("{}");
 
-        PageFragment appMenuFragment = LigerFragmentFactory.openPage(pageName,title,pageArgs,pageOptions);
+        PageFragment appMenuFragment = LigerFragmentFactory.openPage(pageName, title, pageArgs, pageOptions);
 
         assertTrue(appMenuFragment instanceof LigerAppMenuFragment);
     }
@@ -59,16 +59,16 @@ public class LigerFragmentFactoryTest extends ActivityUnitTestCase<TestDefaultMa
         JSONObject pageArgs = new JSONObject("{\"accessibilityLabel\":\"firstPage\",\"page\":\"firstPage\",\"args\":{\"hello\":\"world\"},\"title\":\"First Page\"}");
         JSONObject pageOptions = new JSONObject("{}");
 
-        PageFragment webPageFragment = LigerFragmentFactory.openPage(pageName,title,pageArgs,pageOptions);
+        PageFragment webPageFragment = LigerFragmentFactory.openPage(pageName, title, pageArgs, pageOptions);
 
         assertTrue(webPageFragment instanceof CordovaPageFragment);
     }
 
-    public void testFragmentFactoryLaunchingIntents(){
+    public void testFragmentFactoryLaunchingIntents() {
         String[] SUPPORTED_INTENTS = {"email", "browser", "message", "image", "twitter", "facebook", "sinaweibo", "tencentweibo"};
 
         for (String intent : SUPPORTED_INTENTS) {
-            PageFragment shouldBeNull = LigerFragmentFactory.openPage(intent,"Some Intent", null, null);
+            PageFragment shouldBeNull = LigerFragmentFactory.openPage(intent, "Some Intent", null, null);
             assertNull(shouldBeNull);
 
             Intent launchIntent = getStartedActivityIntent();

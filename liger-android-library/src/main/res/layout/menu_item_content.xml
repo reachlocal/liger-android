@@ -9,10 +9,10 @@
         style="@style/menuTextGlyph"
         android:layout_width="32dp"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        tools:text="H"
         android:checked="true"
-        android:clickable="false" />
+        android:clickable="false"
+        android:gravity="center"
+        tools:text="H" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -24,8 +24,8 @@
             style="@style/menuTextMajor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="Home"
-            android:clickable="false" />
+            android:clickable="false"
+            tools:text="Home" />
 
         <CheckedTextView
             android:id="@+id/menu_item_subtitle"
@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
-            tools:text="Home"
-            android:clickable="false" />
+            android:clickable="false"
+            tools:text="Home" />
     </LinearLayout>
 </merge>

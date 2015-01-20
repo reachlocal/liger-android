@@ -43,24 +43,9 @@ import java.util.concurrent.Executors;
 public class DefaultMainActivity extends ActionBarActivity implements CordovaInterface, GcmRegistrationHelper.OnGcmRegisteredListener, RootPageListener {
 
     public static final String SAVE_CHILD_ARGS = "SAVE_CHILD_ARGS";
-
-    public ActionBarDrawerToggle menuToggle;
-
-    private String lastChildArgs;
-    protected CordovaPlugin activityResultCallback;
-
-    protected PageFragment mRootPageFragment;
-
-
-    public DrawerLayout menuDrawer;
-
-    protected boolean activityResultKeepRunning = false;
-    protected boolean keepRunning = false;
     protected final ExecutorService threadPool = Executors.newCachedThreadPool();
-
     private final BroadcastReceiver dynamicReceiver
-            = new BroadcastReceiver()
-    {
+            = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             JSONObject payload = addIntentArgsToRootPageArgs(intent, new JSONObject());
@@ -68,13 +53,20 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
             abortBroadcast();
         }
     };
+    public ActionBarDrawerToggle menuToggle;
+    public DrawerLayout menuDrawer;
+    protected CordovaPlugin activityResultCallback;
+    protected PageFragment mRootPageFragment;
+    protected boolean activityResultKeepRunning = false;
+    protected boolean keepRunning = false;
+    private String lastChildArgs;
 
     @Override
     protected void onPause() {
         super.onPause();
         unregisterReceiver(dynamicReceiver);
     }
-    
+
 
     @Override
     protected void onResume() {
@@ -87,10 +79,10 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
                 "com.google.android.c2dm.permission.SEND", null);
 
     }
-    
-    private JSONObject addIntentArgsToRootPageArgs(Intent callingIntent, JSONObject rootPageArgs){
+
+    private JSONObject addIntentArgsToRootPageArgs(Intent callingIntent, JSONObject rootPageArgs) {
         Bundle extras = callingIntent.getExtras();
-        if(extras != null) {
+        if (extras != null) {
             Set<String> keys = extras.keySet();
             for (String key : keys) {
                 try {
@@ -102,26 +94,26 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
         }
         return rootPageArgs;
     }
-    
-    
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+
         AppConfig mAppConfig = AppConfig.getAppConfig(this);
         JSONObject rootPageArgs = mAppConfig.getRootPageArgs();
-        
+
         rootPageArgs = addIntentArgsToRootPageArgs(getIntent(), rootPageArgs);
 
         LigerFragmentFactory.mContext = this;
         mRootPageFragment = LigerFragmentFactory.openPage(mAppConfig.getRootPageName(), mAppConfig.getRootPageTitle(), rootPageArgs, mAppConfig.getRootPageOptions());
-        
-        if( mRootPageFragment instanceof DrawerFragment){
+
+        if (mRootPageFragment instanceof DrawerFragment) {
             setContentView(R.layout.liger_main_drawer);
         } else {
             setContentView(R.layout.liger_main_frame);
-        }       
-        
+        }
+
         if (mRootPageFragment != null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             mRootPageFragment.addFragments(ft, R.id.content_frame);
@@ -294,14 +286,14 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
         if (LIGER.LOGGING) {
             Log.d(LIGER.TAG, "DefaultMainActivity openPage() pageName:" + pageName + ", args:" + pageArgs + ", options:" + pageOptions);
         }
-        if(menuDrawer != null){
+        if (menuDrawer != null) {
             menuDrawer.closeDrawers();
         }
         mRootPageFragment.openPage(pageName, title, pageArgs, pageOptions);
     }
 
     public void openDialog(String pageName, String title, JSONObject args, JSONObject options) {
-        if(menuDrawer != null){
+        if (menuDrawer != null) {
             menuDrawer.closeDrawers();
         }
         if (LIGER.LOGGING) {

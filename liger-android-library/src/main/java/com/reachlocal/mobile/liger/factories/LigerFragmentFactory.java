@@ -10,8 +10,8 @@ import com.reachlocal.mobile.liger.ui.DefaultMainActivity;
 import com.reachlocal.mobile.liger.ui.DrawerFragment;
 import com.reachlocal.mobile.liger.ui.LigerAppMenuFragment;
 import com.reachlocal.mobile.liger.ui.NavigatorFragment;
-import com.reachlocal.mobile.liger.ui.TabContainerFragment;
 import com.reachlocal.mobile.liger.ui.PageFragment;
+import com.reachlocal.mobile.liger.ui.TabContainerFragment;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.json.JSONException;
@@ -23,13 +23,10 @@ import org.json.JSONObject;
 public class LigerFragmentFactory {
 
     static final int REQUEST_IMAGE_GET = 1;
-
-    private DefaultMainActivity mDefaultMainActivity;
-
-    public static Context mContext = null;
-
     // Intents to support: browser, email, message (SMS), image, twitter, facebook, sina weibo, tencent weibo
     private final static String[] SUPPORTED_INTENTS = {"email", "browser", "message", "image", "twitter", "facebook", "sinaweibo", "tencentweibo"};
+    public static Context mContext = null;
+    private DefaultMainActivity mDefaultMainActivity;
 
     public static PageFragment openPage(String pageName, String title, JSONObject pageArgs, JSONObject pageOptions) {
         PageFragment returnFragment = null;
@@ -95,7 +92,7 @@ public class LigerFragmentFactory {
                 returnFragment = TabContainerFragment.build(pageName, title, pageArgs, pageOptions);
             } else {
                 try {
-                    String packageName =  mContext.getApplicationContext().getPackageName();
+                    String packageName = mContext.getApplicationContext().getPackageName();
                     packageName = packageName.replace(".debug", "").replace(".alpha", "").replace(".beta", "");
                     returnFragment = (PageFragment) Class.forName(packageName + "." + pageName).newInstance();
                 } catch (NullPointerException e) {
@@ -118,7 +115,7 @@ public class LigerFragmentFactory {
             String title = pageObject.optString("title");
             JSONObject args = pageObject.optJSONObject("args");
             JSONObject options = pageObject.optJSONObject("options");
-            if(pageObject.optJSONObject("notification") != null){
+            if (pageObject.optJSONObject("notification") != null) {
                 args.put("notification", pageObject.optJSONObject("notification"));
             }
             returnFragment = openPage(name, title, args, options);

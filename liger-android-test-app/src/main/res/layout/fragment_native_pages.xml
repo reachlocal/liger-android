@@ -2,31 +2,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#fff8f8f8"
     android:orientation="vertical"
-    tools:context="com.reachlocal.mobile.liger.testApp.nativePages"
-    android:background="#fff8f8f8">
+    tools:context="com.reachlocal.mobile.liger.testApp.nativePages">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:text="Native Page"
         android:textColor="#ff101010"
-        android:textSize="@dimen/abc_dropdownitem_icon_width"
-        android:layout_gravity="center_horizontal" />
+        android:textSize="@dimen/abc_dropdownitem_icon_width" />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Open Page"
         android:id="@+id/button1"
-        android:layout_gravity="center"
-        />
-
-    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Close"
+        android:layout_gravity="center"
+        android:text="Open Page" />
+
+    <Button
         android:id="@+id/button2"
-        android:layout_gravity="center_horizontal|bottom" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|bottom"
+        android:text="Close" />
 
 </LinearLayout>

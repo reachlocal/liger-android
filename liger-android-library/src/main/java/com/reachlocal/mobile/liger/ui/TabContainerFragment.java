@@ -1,7 +1,6 @@
 package com.reachlocal.mobile.liger.ui;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,12 +15,10 @@ import com.reachlocal.mobile.liger.factories.LigerFragmentFactory;
 import com.reachlocal.mobile.liger.listeners.PageLifecycleListener;
 import com.reachlocal.mobile.liger.utils.ViewUtil;
 
-import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.Iterator;
 
 
 /**
@@ -30,15 +27,44 @@ import java.util.Iterator;
 
 public class TabContainerFragment extends PageFragment implements PageLifecycleListener {
 
-    private JSONObject tabsObject;
     protected PageFragment mTabs;
     protected PageFragment mCurrentTab;
-
     HashMap<String, PageFragment> mTabCache = new HashMap<String, PageFragment>();
-
     View mTabsContainer;
     FrameLayout mTabsHolder;
     FrameLayout mTabsContent;
+    private JSONObject tabsObject;
+
+    public static TabContainerFragment build(String pageName, String pageTitle, String pageArgs, String pageOptions) {
+        TabContainerFragment tabsFragment = new TabContainerFragment();
+        Bundle bundle = new Bundle();
+        if (pageName != null) {
+            bundle.putString("pageName", pageName);
+        }
+        if (pageTitle != null) {
+            bundle.putString("pageTitle", pageTitle);
+        }
+        if (pageArgs != null) {
+            bundle.putString("pageArgs", pageArgs);
+            try {
+                tabsFragment.tabsObject = new JSONObject(pageArgs);
+            } catch (JSONException e) {
+                throw new RuntimeException("Invalid app.json!", e);
+            }
+
+        }
+        if (pageOptions != null) {
+            bundle.putString("pageOptions", pageOptions);
+        }
+
+        tabsFragment.setArguments(bundle);
+
+        return tabsFragment;
+    }
+
+    public static TabContainerFragment build(String pageName, String pageTitle, JSONObject pageArgs, JSONObject pageOptions) {
+        return build(pageName, pageTitle, pageArgs == null ? null : pageArgs.toString(), pageOptions == null ? null : pageOptions.toString());
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -57,26 +83,26 @@ public class TabContainerFragment extends PageFragment implements PageLifecycleL
     }
 
     protected View createContentView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mTabsContainer = inflater.inflate(R.layout.tab_layout, container, false);        
-        if(mTabsContainer.getId() == -1)
+        mTabsContainer = inflater.inflate(R.layout.tab_layout, container, false);
+        if (mTabsContainer.getId() == -1)
             mTabsContainer.setId(ViewUtil.generateViewId());
 
         mTabsHolder = new FrameLayout(inflater.getContext());
-        if(mTabsHolder.getId() == -1)
+        if (mTabsHolder.getId() == -1)
             mTabsHolder.setId(ViewUtil.generateViewId());
-        
+
         mTabsContent = new FrameLayout(inflater.getContext());
-        if(mTabsContent.getId() == -1)
+        if (mTabsContent.getId() == -1)
             mTabsContent.setId(ViewUtil.generateViewId());
 
         int dp = (int) getResources().getDimension(R.dimen.tab_height);
-                
+
         RelativeLayout.LayoutParams tabsParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, dp);
         RelativeLayout.LayoutParams containerParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.FILL_PARENT);
         containerParams.addRule(RelativeLayout.BELOW, mTabsHolder.getId());
         ((RelativeLayout) mTabsContainer).addView(mTabsHolder, tabsParams);
         ((RelativeLayout) mTabsContainer).addView(mTabsContent, containerParams);
-        
+
         return mTabsContainer;
     }
 
@@ -95,21 +121,21 @@ public class TabContainerFragment extends PageFragment implements PageLifecycleL
         if (LIGER.LOGGING) {
             Log.d(LIGER.TAG, "TabContainerFragment openPage() pageName:" + pageName + ", args:" + pageArgs + ", options:" + pageOptions);
         }
-        
+
         Boolean cached = true;
         PageFragment page;
         String reuseIdentifier = null;
 
-        if(pageOptions != null) {
+        if (pageOptions != null) {
             reuseIdentifier = pageOptions.optString("reuseIdentifier", null);
             cached = pageOptions.optBoolean("cached", true);
         }
 
-        if(reuseIdentifier != null && (mTabCache.containsKey(reuseIdentifier) && pageOptions.optBoolean("cached", true) == true)){
+        if (reuseIdentifier != null && (mTabCache.containsKey(reuseIdentifier) && pageOptions.optBoolean("cached", true) == true)) {
             page = mTabCache.get(reuseIdentifier);
-        }else{
-            page = LigerFragmentFactory.openPage(pageName, title, pageArgs, pageOptions);                                  
-            if(cached && reuseIdentifier != null){
+        } else {
+            page = LigerFragmentFactory.openPage(pageName, title, pageArgs, pageOptions);
+            if (cached && reuseIdentifier != null) {
                 mTabCache.put(reuseIdentifier, page);
             }
         }
@@ -117,15 +143,15 @@ public class TabContainerFragment extends PageFragment implements PageLifecycleL
         if (page != null) {
             FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
 
-            if(mCurrentTab != null){
+            if (mCurrentTab != null) {
                 ft.detach(mCurrentTab);
             }
 
             page.doPageAppear();
-            
-            if(page.isDetached() || page == mCurrentTab) {
+
+            if (page.isDetached() || page == mCurrentTab) {
                 ft.attach(page);
-            }else{
+            } else {
                 page.addFragments(ft, mTabsContent.getId());
             }
             ft.commit();
@@ -149,7 +175,6 @@ public class TabContainerFragment extends PageFragment implements PageLifecycleL
         }
     }
 
-
     @Override
     public String getPageName() {
         return null;
@@ -161,8 +186,8 @@ public class TabContainerFragment extends PageFragment implements PageLifecycleL
     }
 
     @Override
-    public void setToolbar(String toolbarSpec) {}
-
+    public void setToolbar(String toolbarSpec) {
+    }
 
     @Override
     public void setChildArgs(String childUpdateArgs) {
@@ -198,37 +223,6 @@ public class TabContainerFragment extends PageFragment implements PageLifecycleL
         if (mCurrentTab != null) {
             mCurrentTab.sendJavascript(js);
         }
-    }
-
-    public static TabContainerFragment build(String pageName, String pageTitle, String pageArgs, String pageOptions) {
-        TabContainerFragment tabsFragment = new TabContainerFragment();
-        Bundle bundle = new Bundle();
-        if (pageName != null) {
-            bundle.putString("pageName", pageName);
-        }
-        if (pageTitle != null) {
-            bundle.putString("pageTitle", pageTitle);
-        }
-        if (pageArgs != null) {
-            bundle.putString("pageArgs", pageArgs);
-            try {
-                tabsFragment.tabsObject = new JSONObject(pageArgs);
-            } catch (JSONException e) {
-                throw new RuntimeException("Invalid app.json!", e);
-            }
-
-        }
-        if (pageOptions != null) {
-            bundle.putString("pageOptions", pageOptions);
-        }
-
-        tabsFragment.setArguments(bundle);
-
-        return tabsFragment;
-    }
-
-    public static TabContainerFragment build(String pageName, String pageTitle, JSONObject pageArgs, JSONObject pageOptions) {
-        return build(pageName, pageTitle, pageArgs == null ? null : pageArgs.toString(), pageOptions == null ? null : pageOptions.toString());
     }
 
     @Override

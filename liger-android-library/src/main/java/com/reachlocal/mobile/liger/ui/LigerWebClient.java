@@ -74,14 +74,6 @@ public class LigerWebClient extends CordovaWebViewClient {
             super(fragment, activity, webView);
         }
 
-
-        @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-        @Override
-        public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
-            return getTrimmedAsset(mActivity, url);
-        }
-
-
         public static WebResourceResponse getTrimmedAsset(Context context, String url) {
             if (LIGER.LOGGING) {
                 Log.d(LIGER.TAG, "LigerWebClient.getTrimmedAsset: " + url);
@@ -100,6 +92,12 @@ public class LigerWebClient extends CordovaWebViewClient {
                 Log.e(LIGER.TAG, "Failed to intercept asset request: " + url, e);
             }
             return null;
+        }
+
+        @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+        @Override
+        public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+            return getTrimmedAsset(mActivity, url);
         }
     }
 }

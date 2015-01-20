@@ -45,15 +45,12 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     View mWebViewHolder;
     FixedCordovaWebView mWebView;
     ToolbarLayout mToolbarLayout;
-
-    private boolean isLoaded;
-    private boolean childArgsSent = false;
-
     // Fragment arguments
     String pageArgs;
     String pageOptions;
     boolean isDialog;
-
+    private boolean isLoaded;
+    private boolean childArgsSent = false;
     // Instance State
     private String parentUpdateArgs;
     private String toolbarSpec;
@@ -62,6 +59,30 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
 
     private List<String> javascriptQueue;
 
+    public static CordovaPageFragment build(String pageName, String pageTitle, String pageArgs, String pageOptions) {
+        CordovaPageFragment newFragment = new CordovaPageFragment();
+        Bundle bundle = new Bundle();
+        if (pageName != null) {
+            bundle.putString("pageName", pageName);
+        }
+        if (pageTitle != null) {
+            bundle.putString("pageTitle", pageTitle);
+        }
+        if (pageArgs != null) {
+            bundle.putString("pageArgs", pageArgs);
+        }
+        if (pageOptions != null) {
+            bundle.putString("pageOptions", pageOptions);
+        }
+
+        newFragment.setArguments(bundle);
+
+        return newFragment;
+    }
+
+    public static CordovaPageFragment build(String pageName, String pageTitle, JSONObject pageArgs, JSONObject pageOptions) {
+        return build(pageName, pageTitle, pageArgs == null ? null : pageArgs.toString(), pageOptions == null ? null : pageOptions.toString());
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -95,7 +116,6 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         outState.putString("actionBarTitle", actionBarTitle);
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (LIGER.LOGGING) {
@@ -109,7 +129,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     }
 
     protected View createContentView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if(mWebViewHolder == null){
+        if (mWebViewHolder == null) {
             mWebViewHolder = inflater.inflate(R.layout.page_fragment, container, false);
 
             DefaultMainActivity activity = (DefaultMainActivity) mContext;
@@ -124,7 +144,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
             mWebView.setTag(R.id.web_view_parent_frag, this);
 
             mWebView.init(cordova, activity.createLigerWebClient(this, mWebView), new LoggingChromeClient(activity, mWebView), parser.getPluginEntries(), parser.getInternalWhitelist(), parser.getExternalWhitelist(),
-                    parser.getPreferences() );
+                    parser.getPreferences());
 
             addJavascriptInterfaces();
             mToolbarLayout.setOnToolbarItemClickListener(this);
@@ -136,7 +156,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
                 String url = String.format("file:///android_asset/%1$s/%2$s.html", activity.getAssetBaseDirectory(), pageName);
                 mWebView.loadUrl(url);
             }
-        }else{
+        } else {
             View child = mWebViewHolder.findViewById(R.id.web_fragment_container);
             ((ViewGroup) child.getParent()).removeView(child);
         }
@@ -256,7 +276,6 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         sendJavascriptWithArgs("PAGE", "pushNotificationTokenUpdated", args);
     }
 
-
     public void queueJavascript(String js) {
         if (javascriptQueue == null) {
             javascriptQueue = new ArrayList<String>();
@@ -291,7 +310,6 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         return actionBarTitle;
     }
 
-
     @Override
     public void setToolbar(String toolbarSpec) {
         this.toolbarSpec = toolbarSpec;
@@ -324,7 +342,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
 
         mMenuInflater.inflate(R.menu.liger_blank, mMenu);
         String rightButtonName = JsonUtils.getRightButtonName(pageOptions);
-        if(rightButtonName != null) {
+        if (rightButtonName != null) {
             if (LIGER.LOGGING) {
                 Log.d(LIGER.TAG, "rightButtonName: " + rightButtonName);
             }
@@ -353,7 +371,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
 
     private void addHeaderButtonListener(Menu menu, int id, final String buttonName) {
         MenuItem item = menu.findItem(id);
-        if(item != null) {
+        if (item != null) {
             item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
@@ -479,6 +497,11 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         this.parentUpdateArgs = parentUpdateArgs;
     }
 
+    @Override
+    public void addFragments(FragmentTransaction ft, int contentViewID) {
+        ft.add(contentViewID, this);
+    }
+
     private class DialogKeyListener implements View.OnKeyListener {
         @Override
         public boolean onKey(View view, int i, KeyEvent keyEvent) {
@@ -496,36 +519,6 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
             return false;
         }
 
-    }
-
-    @Override
-    public void addFragments(FragmentTransaction ft, int contentViewID) {
-        ft.add(contentViewID, this);
-    }
-
-    public static CordovaPageFragment build(String pageName, String pageTitle, String pageArgs, String pageOptions) {
-        CordovaPageFragment newFragment = new CordovaPageFragment();
-        Bundle bundle = new Bundle();
-        if (pageName != null) {
-            bundle.putString("pageName", pageName);
-        }
-        if (pageTitle != null) {
-            bundle.putString("pageTitle", pageTitle);
-        }
-        if (pageArgs != null) {
-            bundle.putString("pageArgs", pageArgs);
-        }
-        if (pageOptions != null) {
-            bundle.putString("pageOptions", pageOptions);
-        }
-
-        newFragment.setArguments(bundle);
-
-        return newFragment;
-    }
-
-    public static CordovaPageFragment build(String pageName, String pageTitle, JSONObject pageArgs, JSONObject pageOptions) {
-        return build(pageName, pageTitle, pageArgs == null ? null : pageArgs.toString(), pageOptions == null ? null : pageOptions.toString());
     }
 
 }

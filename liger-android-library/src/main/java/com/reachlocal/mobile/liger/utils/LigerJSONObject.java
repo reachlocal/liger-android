@@ -7,7 +7,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -35,7 +34,7 @@ public class LigerJSONObject extends JSONObject {
                 Object array = o;
                 final int length = Array.getLength(array);
                 for (int i = 0; i < length; ++i) {
-                    newArray.put( wrap(Array.get(array, i)));
+                    newArray.put(wrap(Array.get(array, i)));
                 }
 
                 return newArray;
@@ -43,13 +42,13 @@ public class LigerJSONObject extends JSONObject {
             if (o instanceof Map) {
                 return new JSONObject((Map) o);
             }
-            if( o instanceof Bundle){
+            if (o instanceof Bundle) {
                 JSONObject newObject = new JSONObject();
-                Set<String> keys = ((Bundle)o).keySet();
+                Set<String> keys = ((Bundle) o).keySet();
                 for (String key : keys) {
                     try {
                         // json.put(key, bundle.get(key)); see edit below
-                        newObject.put(key, wrap(((Bundle)o).get(key)));
+                        newObject.put(key, wrap(((Bundle) o).get(key)));
                     } catch (JSONException e) {
                         //Handle exception here
                     }
