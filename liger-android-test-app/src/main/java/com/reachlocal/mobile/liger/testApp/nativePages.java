@@ -24,7 +24,7 @@ public class nativePages extends PageFragment {
 
     View.OnClickListener myhandler1 = new View.OnClickListener() {
         public void onClick(View v) {
-            openPage("firstPage","First Page",null, null);
+            openPage("firstPage", "First Page", null, null);
         }
     };
     View.OnClickListener myhandler2 = new View.OnClickListener() {
@@ -53,7 +53,6 @@ public class nativePages extends PageFragment {
 
 
         page = LigerFragmentFactory.openPage(pageName, title, pageArgs, pageOptions);
-
 
 
         if (page != null) {
