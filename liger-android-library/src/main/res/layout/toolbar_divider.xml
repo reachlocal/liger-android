@@ -10,8 +10,8 @@
 
             <gradient
                 android:angle="90"
-                android:startColor="@color/toolbar_top"
-                android:endColor="@color/toolbar_bottom" />
+                android:endColor="@color/toolbar_bottom"
+                android:startColor="@color/toolbar_top" />
         </shape>
     </item>
 
@@ -23,8 +23,8 @@
 
             <gradient
                 android:angle="90"
-                android:startColor="@color/toolbar_top_pressed"
-                android:endColor="@color/toolbar_bottom_pressed" />
+                android:endColor="@color/toolbar_bottom_pressed"
+                android:startColor="@color/toolbar_top_pressed" />
         </shape>
     </item>
 </layer-list>

@@ -26,13 +26,63 @@ import java.util.List;
 public class LigerAppMenuFragment extends PageFragment implements MenuInterface {
 
     String mSelectedItem;
+    List<MenuItemCell> mMenuItems = new ArrayList<MenuItemCell>();
+    LinearLayout mDrawerContentLayout;
     private List<MenuItemSpec> mMajorMenuItems;
     private List<MenuItemSpec> mMinorMenuItems;
 
-    List<MenuItemCell> mMenuItems = new ArrayList<MenuItemCell>();
+    public static List<MenuItemSpec> createMenuItems(JSONArray menuArray, boolean major) throws JSONException {
+        List<MenuItemSpec> menuList = new ArrayList<MenuItemSpec>();
+        int size = menuArray.length();
+        for (int i = 0; i < size; i++) {
+            menuList.add(MenuItemSpec.createFromJSON(menuArray.getJSONObject(i), major, i));
+        }
+        return menuList;
+    }
 
-    LinearLayout mDrawerContentLayout;
+    public static LigerAppMenuFragment build(String pageName, String pageTitle, String pageArgs, String pageOptions) {
+        LigerAppMenuFragment menu = new LigerAppMenuFragment();
+        Bundle bundle = new Bundle();
+        JSONArray pages = new JSONArray();
+        if (pageName != null) {
+            bundle.putString("pageName", pageName);
+        }
+        if (pageTitle != null) {
+            bundle.putString("pageTitle", pageTitle);
+        }
+        if (pageOptions != null) {
+            bundle.putString("pageOptions", pageOptions);
+        }
 
+        if (pageArgs != null) {
+            bundle.putString("pageArgs", pageArgs);
+
+            JSONObject childPageArgs = null;
+            try {
+                childPageArgs = new JSONObject(pageArgs);
+
+                JSONArray menuParentArray = childPageArgs.getJSONArray("menu");
+                JSONArray majorMenu = menuParentArray.optJSONArray(0);
+                if (majorMenu != null) {
+                    menu.setMajorMenuItems(menu.createMenuItems(majorMenu, true));
+                }
+                JSONArray minorMenu = menuParentArray.optJSONArray(1);
+                if (minorMenu != null) {
+                    menu.setMinorMenuItems(menu.createMenuItems(minorMenu, false));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        menu.setArguments(bundle);
+
+        return menu;
+    }
+
+    public static LigerAppMenuFragment build(String pageName, String pageTitle, JSONObject pageArgs, JSONObject pageOptions) {
+        return build(pageName, pageTitle, pageArgs == null ? null : pageArgs.toString(), pageOptions == null ? null : pageOptions.toString());
+    }
 
     public List<MenuItemSpec> getMajorMenuItems() {
         return mMajorMenuItems;
@@ -112,15 +162,6 @@ public class LigerAppMenuFragment extends PageFragment implements MenuInterface 
         }
     }
 
-    public static List<MenuItemSpec> createMenuItems(JSONArray menuArray, boolean major) throws JSONException {
-        List<MenuItemSpec> menuList = new ArrayList<MenuItemSpec>();
-        int size = menuArray.length();
-        for (int i = 0; i < size; i++) {
-            menuList.add(MenuItemSpec.createFromJSON(menuArray.getJSONObject(i), major, i));
-        }
-        return menuList;
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mDrawerContentLayout = (LinearLayout) inflater.inflate(R.layout.drawer_menu, container, false);
@@ -157,7 +198,7 @@ public class LigerAppMenuFragment extends PageFragment implements MenuInterface 
 
     @Override
     public void notificationArrived(JSONObject notificationPayload) {
-        
+
     }
 
     @Override
@@ -194,49 +235,5 @@ public class LigerAppMenuFragment extends PageFragment implements MenuInterface 
     protected PageFragment getChildPage() {
         //TODO  This should pass to active page displayed
         return null;
-    }
-
-    public static LigerAppMenuFragment build(String pageName, String pageTitle, String pageArgs, String pageOptions) {
-        LigerAppMenuFragment menu = new LigerAppMenuFragment();
-        Bundle bundle = new Bundle();
-        JSONArray pages = new JSONArray();
-        if (pageName != null) {
-            bundle.putString("pageName", pageName);
-        }
-        if (pageTitle != null) {
-            bundle.putString("pageTitle", pageTitle);
-        }
-        if (pageOptions != null) {
-            bundle.putString("pageOptions", pageOptions);
-        }
-
-        if (pageArgs != null) {
-            bundle.putString("pageArgs", pageArgs);
-
-            JSONObject childPageArgs = null;
-            try {
-                childPageArgs = new JSONObject(pageArgs);
-
-                JSONArray menuParentArray = childPageArgs.getJSONArray("menu");
-                JSONArray majorMenu = menuParentArray.optJSONArray(0);
-                if (majorMenu != null) {
-                    menu.setMajorMenuItems(menu.createMenuItems(majorMenu, true));
-                }
-                JSONArray minorMenu = menuParentArray.optJSONArray(1);
-                if (minorMenu != null) {
-                    menu.setMinorMenuItems(menu.createMenuItems(minorMenu, false));
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        menu.setArguments(bundle);
-
-        return menu;
-    }
-
-    public static LigerAppMenuFragment build(String pageName, String pageTitle, JSONObject pageArgs, JSONObject pageOptions) {
-        return build(pageName, pageTitle, pageArgs == null ? null : pageArgs.toString(), pageOptions == null ? null : pageOptions.toString());
     }
 }

@@ -16,16 +16,13 @@ import org.json.JSONObject;
 
 public class MenuItemCell extends LinearLayout implements Checkable {
 
+    public static final int MINOR = 0;
+    public static final int MAJOR = 1;
+    public static final int DISPLAY_PAGE = 0;
+    public static final int DISPLAY_DIALOG = 1;
     CheckedTextView menuIconGlyph;
     CheckedTextView menuItemTitle;
     CheckedTextView menuItemSubtitle;
-
-    public static final int MINOR = 0;
-    public static final int MAJOR = 1;
-
-    public static final int DISPLAY_PAGE = 0;
-    public static final int DISPLAY_DIALOG = 1;
-
     private boolean checked = false;
     private String iconGlyph;
     private String clickAction;
@@ -61,6 +58,10 @@ public class MenuItemCell extends LinearLayout implements Checkable {
         afterViewsInjected();
     }
 
+    public MenuItemCell(Context context) {
+        super(context);
+    }
+
     @Override
     public boolean performClick() {
         DefaultMainActivity webActivity = (DefaultMainActivity) getContext();
@@ -70,10 +71,6 @@ public class MenuItemCell extends LinearLayout implements Checkable {
             webActivity.openDialog(clickAction, itemTitle, itemArgs, itemOptions);
         }
         return true;
-    }
-
-    public MenuItemCell(Context context) {
-        super(context);
     }
 
     @Override
@@ -131,6 +128,10 @@ public class MenuItemCell extends LinearLayout implements Checkable {
         return clickAction;
     }
 
+    public void setClickAction(String clickAction) {
+        this.clickAction = clickAction;
+    }
+
     public String getSubtitle() {
         return itemSubtitle;
     }
@@ -159,16 +160,16 @@ public class MenuItemCell extends LinearLayout implements Checkable {
         return itemSubtitle;
     }
 
+    public void setItemSubtitle(String itemSubtitle) {
+        this.itemSubtitle = itemSubtitle;
+    }
+
     public void setItemArgs(JSONObject args) {
         this.itemArgs = args;
     }
 
     public void setItemOptions(JSONObject options) {
         this.itemOptions = options;
-    }
-
-    public void setItemSubtitle(String itemSubtitle) {
-        this.itemSubtitle = itemSubtitle;
     }
 
     public boolean isMajor() {
@@ -187,15 +188,11 @@ public class MenuItemCell extends LinearLayout implements Checkable {
         mDialog = dialog;
     }
 
-    public void setClickAction(String clickAction) {
-        this.clickAction = clickAction;
+    public String getMenuIdString() {
+        return mMenuIdString;
     }
 
     public void setMenuIdString(String menuIdString) {
         this.mMenuIdString = menuIdString;
-    }
-
-    public String getMenuIdString() {
-        return mMenuIdString;
     }
 }

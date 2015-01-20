@@ -31,15 +31,42 @@ import java.util.Iterator;
 
 public class DrawerFragment extends PageFragment implements PageLifecycleListener {
 
-    private JSONObject drawerObject;
     protected PageFragment mDrawer;
-
     HashMap<String, PageFragment> mDrawerCache = new HashMap<String, PageFragment>();
-
     LinearLayout mDrawerContentLayout;
-
     View mDrawerContentFrame;
+    private JSONObject drawerObject;
 
+    public static DrawerFragment build(String pageName, String pageTitle, String pageArgs, String pageOptions) {
+        DrawerFragment drawerFragment = new DrawerFragment();
+        Bundle bundle = new Bundle();
+        if (pageName != null) {
+            bundle.putString("pageName", pageName);
+        }
+        if (pageTitle != null) {
+            bundle.putString("pageTitle", pageTitle);
+        }
+        if (pageArgs != null) {
+            bundle.putString("pageArgs", pageArgs);
+            try {
+                drawerFragment.drawerObject = new JSONObject(pageArgs);
+            } catch (JSONException e) {
+                throw new RuntimeException("Invalid app.json!", e);
+            }
+
+        }
+        if (pageOptions != null) {
+            bundle.putString("pageOptions", pageOptions);
+        }
+
+        drawerFragment.setArguments(bundle);
+
+        return drawerFragment;
+    }
+
+    public static DrawerFragment build(String pageName, String pageTitle, JSONObject pageArgs, JSONObject pageOptions) {
+        return build(pageName, pageTitle, pageArgs == null ? null : pageArgs.toString(), pageOptions == null ? null : pageOptions.toString());
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -94,17 +121,16 @@ public class DrawerFragment extends PageFragment implements PageLifecycleListene
         ((DefaultMainActivity) mContext).menuDrawer.setDrawerListener(((DefaultMainActivity) mContext).menuToggle);
     }
 
-
     @Override
     public void openPage(String pageName, String title, JSONObject pageArgs, JSONObject pageOptions) {
         if (LIGER.LOGGING) {
             Log.d(LIGER.TAG, "DrawerFragment openPage() pageName:" + pageName + ", args:" + pageArgs + ", options:" + pageOptions);
         }
         PageFragment page;
-        
-        if(mFragDeck.size() > 0){
-            page = mFragDeck.getLast();  
-            if(page.hasContentFrame()){
+
+        if (mFragDeck.size() > 0) {
+            page = mFragDeck.getLast();
+            if (page.hasContentFrame()) {
                 page.openPage(pageName, title, pageArgs, pageOptions);
                 return;
             }
@@ -112,12 +138,12 @@ public class DrawerFragment extends PageFragment implements PageLifecycleListene
 
         String reuseIdentifier = pageOptions.optString("reuseIdentifier", null);
 
-        if(reuseIdentifier != null && (mDrawerCache.containsKey(reuseIdentifier) && pageOptions.optBoolean("cached", true) == true)){
+        if (reuseIdentifier != null && (mDrawerCache.containsKey(reuseIdentifier) && pageOptions.optBoolean("cached", true) == true)) {
             page = mDrawerCache.get(reuseIdentifier);
-        }else{
+        } else {
             page = LigerFragmentFactory.openPage(pageName, title, pageArgs, pageOptions);
             Boolean cached = pageOptions.optBoolean("cached", true);
-            if(cached && reuseIdentifier != null){
+            if (cached && reuseIdentifier != null) {
                 mDrawerCache.put(reuseIdentifier, page);
             }
         }
@@ -127,15 +153,15 @@ public class DrawerFragment extends PageFragment implements PageLifecycleListene
             FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
             if (mFragDeck.size() > 0) {
                 PageFragment previousPage = mFragDeck.getLast();
-                if(previousPage == page)
+                if (previousPage == page)
                     return;
                 //ft.remove(previousPage);
                 ft.detach(previousPage);
                 mFragDeck.removeLast();
             }
-            if(page.isDetached()) {
+            if (page.isDetached()) {
                 ft.attach(page);
-            }else{
+            } else {
                 page.addFragments(ft, R.id.content_frame);
             }
             ft.commit();
@@ -160,7 +186,6 @@ public class DrawerFragment extends PageFragment implements PageLifecycleListene
             dialog.show(getActivity().getSupportFragmentManager(), DIALOG_FRAGMENT);
         }
     }
-
 
     @Override
     public String getPageName() {
@@ -214,37 +239,6 @@ public class DrawerFragment extends PageFragment implements PageLifecycleListene
         }
     }
 
-    public static DrawerFragment build(String pageName, String pageTitle, String pageArgs, String pageOptions) {
-        DrawerFragment drawerFragment = new DrawerFragment();
-        Bundle bundle = new Bundle();
-        if (pageName != null) {
-            bundle.putString("pageName", pageName);
-        }
-        if (pageTitle != null) {
-            bundle.putString("pageTitle", pageTitle);
-        }
-        if (pageArgs != null) {
-            bundle.putString("pageArgs", pageArgs);
-            try {
-                drawerFragment.drawerObject = new JSONObject(pageArgs);
-            } catch (JSONException e) {
-                throw new RuntimeException("Invalid app.json!", e);
-            }
-
-        }
-        if (pageOptions != null) {
-            bundle.putString("pageOptions", pageOptions);
-        }
-
-        drawerFragment.setArguments(bundle);
-
-        return drawerFragment;
-    }
-
-    public static DrawerFragment build(String pageName, String pageTitle, JSONObject pageArgs, JSONObject pageOptions) {
-        return build(pageName, pageTitle, pageArgs == null ? null : pageArgs.toString(), pageOptions == null ? null : pageOptions.toString());
-    }
-
     @Override
     public void addFragments(FragmentTransaction ft, int contentViewID) {
         ft.add(R.id.drawer_menu, this);
@@ -257,7 +251,7 @@ public class DrawerFragment extends PageFragment implements PageLifecycleListene
 
         if (mFragDeck.size() > 0) {
             PageFragment lastPage = mFragDeck.getLast();
-            
+
             if (!StringUtils.isEmpty(closeTo)) {
                 Iterator<PageFragment> it = mFragDeck.descendingIterator();
                 while (it.hasNext()) {

@@ -56,7 +56,7 @@ public class LigerGcmIntentService extends IntentService {
                 // Post notification of received message.
                 sendNotification("Received: " + extras.toString(), intent);
                 Log.e(LIGER.TAG, "Received: " + extras.toString());
-            }else {
+            } else {
                 // Post notification of received message.
                 sendNotification("Received: " + extras.toString(), intent);
                 Log.e(LIGER.TAG, "Received: " + extras.toString());
@@ -95,7 +95,7 @@ public class LigerGcmIntentService extends IntentService {
 
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, appIntent, 0);
-        
+
         Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
         NotificationCompat.Builder mBuilder =

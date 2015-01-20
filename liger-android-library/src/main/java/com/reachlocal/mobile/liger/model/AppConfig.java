@@ -15,21 +15,57 @@ import java.util.List;
 public class AppConfig {
 
     private static int SUPPORTED_APP_FORMAT_VERSION = 6;
-
+    private static AppConfig sAppConfig;
     private long appFormatVersion;
     private List<MenuItemSpec> mMajorMenuItems;
     private List<MenuItemSpec> mMinorMenuItems;
-
     private String mAppConfigString;
-
     private String mRootPageName;
     private String mRootPageTitle = "";
     private JSONObject mRootPageArgs;
     private JSONObject mRootPageOptions;
-
     private boolean mNotifications;
 
-    private static AppConfig sAppConfig;
+    public static AppConfig getAppConfig(Context context) {
+        if (sAppConfig != null) {
+            return sAppConfig;
+        }
+        InputStream is;
+        try {
+            is = context.getAssets().open("app/app.json");
+            sAppConfig = parseAppConfig(IOUtils.toString(is));
+            is.close();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to read app.json!", e);
+        }
+        return sAppConfig;
+    }
+
+    public static void setAppConfig(AppConfig appConfig) {
+        sAppConfig = appConfig;
+    }
+
+    public static AppConfig parseAppConfig(String appConfigString) {
+        AppConfig appConfig = new AppConfig();
+        try {
+            JSONObject parentObj = new JSONObject(appConfigString);
+            appConfig.setAppFormatVersion(parentObj.getLong("appFormatVersion"));
+
+            if (appConfig.appFormatVersion >= SUPPORTED_APP_FORMAT_VERSION) {
+                JSONObject rootPage = parentObj.getJSONObject("rootPage");
+                appConfig.mRootPageArgs = rootPage.getJSONObject("args");
+                appConfig.mRootPageName = rootPage.getString("page");
+                appConfig.mAppConfigString = appConfig.mRootPageArgs.toString();
+                appConfig.mNotifications = parentObj.optBoolean("notifications");
+            } else {
+                throw new RuntimeException("Not Supported appFormatVersion");
+            }
+
+        } catch (JSONException e) {
+            throw new RuntimeException("Invalid app.json!", e);
+        }
+        return appConfig;
+    }
 
     public long getAppFormatVersion() {
         return appFormatVersion;
@@ -80,47 +116,6 @@ public class AppConfig {
 
     public boolean getNotificationsEnabled() {
         return mNotifications;
-    }
-
-    public static AppConfig getAppConfig(Context context) {
-        if (sAppConfig != null) {
-            return sAppConfig;
-        }
-        InputStream is;
-        try {
-            is = context.getAssets().open("app/app.json");
-            sAppConfig = parseAppConfig(IOUtils.toString(is));
-            is.close();
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to read app.json!", e);
-        }
-        return sAppConfig;
-    }
-
-    public static void setAppConfig(AppConfig appConfig) {
-        sAppConfig = appConfig;
-    }
-
-    public static AppConfig parseAppConfig(String appConfigString) {
-        AppConfig appConfig = new AppConfig();
-        try {
-            JSONObject parentObj = new JSONObject(appConfigString);
-            appConfig.setAppFormatVersion(parentObj.getLong("appFormatVersion"));
-
-            if (appConfig.appFormatVersion >= SUPPORTED_APP_FORMAT_VERSION) {
-                JSONObject rootPage = parentObj.getJSONObject("rootPage");
-                appConfig.mRootPageArgs = rootPage.getJSONObject("args");
-                appConfig.mRootPageName = rootPage.getString("page");
-                appConfig.mAppConfigString = appConfig.mRootPageArgs.toString();
-                appConfig.mNotifications = parentObj.optBoolean("notifications");
-            } else {
-                throw new RuntimeException("Not Supported appFormatVersion");
-            }
-
-        } catch (JSONException e) {
-            throw new RuntimeException("Invalid app.json!", e);
-        }
-        return appConfig;
     }
 
 }

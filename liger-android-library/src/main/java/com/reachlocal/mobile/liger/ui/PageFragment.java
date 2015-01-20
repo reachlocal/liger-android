@@ -22,21 +22,14 @@ import java.util.List;
 
 public abstract class PageFragment extends DialogFragment {
 
-    String pageName;
-
-    RootPageListener mActivity;
-
-    protected FragmentActivity mContext;
-
-    protected PageFragment mContainer = null;
-
     public static final String DIALOG_FRAGMENT = "ligerDialogFragment";
-
+    protected FragmentActivity mContext;
+    protected PageFragment mContainer = null;
     protected Deque<PageFragment> mFragDeck = new LinkedList<PageFragment>();
-
     protected List<PageLifecycleListener> mLifecycleListeners = new ArrayList<PageLifecycleListener>();
-
     protected NotificationToken mTokenHolder;
+    String pageName;
+    RootPageListener mActivity;
 
     public static PageFragment fromCallbackContext(CallbackContext cc) {
         return CordovaUtils.fromCallbackContext(cc, R.id.web_view_parent_frag);
@@ -104,7 +97,7 @@ public abstract class PageFragment extends DialogFragment {
 
     public void doPageClosed() {
     }
-    
+
     public boolean hasContentFrame() {
         return false;
     }

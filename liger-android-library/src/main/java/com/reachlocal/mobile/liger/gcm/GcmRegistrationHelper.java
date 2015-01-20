@@ -22,8 +22,8 @@ import java.io.IOException;
 
 public class GcmRegistrationHelper {
 
-    private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     public static final String PROPERTY_REG_ID = "gcm_registration_id";
+    private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private static final String PROPERTY_APP_VERSION = "gcm_app_version";
 
     private Activity mActivity;
@@ -41,6 +41,20 @@ public class GcmRegistrationHelper {
     public GcmRegistrationHelper(Activity activity) {
         mActivity = activity;
         mAppContext = activity.getApplicationContext();
+    }
+
+    /**
+     * @return Application's version code from the {@code PackageManager}.
+     */
+    private static int getAppVersion(Context context) {
+        try {
+            PackageInfo packageInfo = context.getPackageManager()
+                    .getPackageInfo(context.getPackageName(), 0);
+            return packageInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            // should never happen
+            throw new RuntimeException("GcmRegistrationHelper: Could not get package name: " + e);
+        }
     }
 
     public void registerGcm() {
@@ -108,20 +122,6 @@ public class GcmRegistrationHelper {
     }
 
     /**
-     * @return Application's version code from the {@code PackageManager}.
-     */
-    private static int getAppVersion(Context context) {
-        try {
-            PackageInfo packageInfo = context.getPackageManager()
-                    .getPackageInfo(context.getPackageName(), 0);
-            return packageInfo.versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            // should never happen
-            throw new RuntimeException("GcmRegistrationHelper: Could not get package name: " + e);
-        }
-    }
-
-    /**
      * Registers the application with GCM servers asynchronously.
      * <p/>
      * Stores the registration ID and app versionCode in the application's
@@ -129,6 +129,10 @@ public class GcmRegistrationHelper {
      */
     private void registerInBackground() {
         new RegistrationTask().execute();
+    }
+
+    public interface OnGcmRegisteredListener {
+        public void onGcmRegistered(String registrationId, String errorMessage);
     }
 
     private class RegistrationTask extends AsyncTask<Void, Void, String> {
@@ -156,9 +160,5 @@ public class GcmRegistrationHelper {
 
             mListener.onGcmRegistered(regId, exception == null ? null : exception.getMessage());
         }
-    }
-
-    public interface OnGcmRegisteredListener {
-        public void onGcmRegistered(String registrationId, String errorMessage);
     }
 }

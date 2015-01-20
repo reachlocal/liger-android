@@ -2,8 +2,10 @@
     package="com.reachlocal.mobile.liger.test"
     android:versionCode="1"
     android:versionName="1.0">
+
     <application>
-        <activity android:name=".TestDefaultMainActivity"
+        <activity
+            android:name=".TestDefaultMainActivity"
             android:label="TestActivity"
             android:launchMode="singleTask"
             android:theme="@style/Theme.AppCompat">
@@ -18,6 +20,7 @@
     </application>
     <uses-sdk android:minSdkVersion="8" />
     <!-- This line below! -->
-    <instrumentation android:targetPackage="com.reachlocal.mobile.liger.test"
-        android:name="android.test.InstrumentationTestRunner" />
+    <instrumentation
+        android:name="android.test.InstrumentationTestRunner"
+        android:targetPackage="com.reachlocal.mobile.liger.test" />
 </manifest>

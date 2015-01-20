@@ -18,6 +18,15 @@ public class ToolbarLayout extends LinearLayout {
 
     private List<ToolbarItemSpec> toolbarSpecs;
     private OnToolbarItemClickListener onToolbarItemClickListener;
+    private OnClickListener itemClickListener = new OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if (onToolbarItemClickListener != null) {
+                ToolbarItemSpec spec = (ToolbarItemSpec) view.getTag();
+                onToolbarItemClickListener.onToolbarItemClicked(spec);
+            }
+        }
+    };
 
     public ToolbarLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -51,16 +60,6 @@ public class ToolbarLayout extends LinearLayout {
             }
         }
     }
-
-    private OnClickListener itemClickListener = new OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            if (onToolbarItemClickListener != null) {
-                ToolbarItemSpec spec = (ToolbarItemSpec) view.getTag();
-                onToolbarItemClickListener.onToolbarItemClicked(spec);
-            }
-        }
-    };
 
     public OnToolbarItemClickListener getOnToolbarItemClickListener() {
         return onToolbarItemClickListener;

@@ -15,22 +15,6 @@ public class ToolbarItemSpec {
     private String callback;
     private String iconGlyph;
 
-    public String getCallback() {
-        return callback;
-    }
-
-    public void setCallback(String callback) {
-        this.callback = callback;
-    }
-
-    public String getIconGlyph() {
-        return iconGlyph;
-    }
-
-    public void setIconGlyph(String iconGlyph) {
-        this.iconGlyph = iconGlyph;
-    }
-
     public static ToolbarItemSpec parseSpec(JSONObject object) {
         if (object == null) {
             return null;
@@ -67,5 +51,21 @@ public class ToolbarItemSpec {
             Log.e(LIGER.TAG, "Failed to parse toolbar spec array: " + specAsJsonString, e);
         }
         return parseSpecArray(array);
+    }
+
+    public String getCallback() {
+        return callback;
+    }
+
+    public void setCallback(String callback) {
+        this.callback = callback;
+    }
+
+    public String getIconGlyph() {
+        return iconGlyph;
+    }
+
+    public void setIconGlyph(String iconGlyph) {
+        this.iconGlyph = iconGlyph;
     }
 }
