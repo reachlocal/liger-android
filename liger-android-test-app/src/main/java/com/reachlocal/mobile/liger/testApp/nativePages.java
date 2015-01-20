@@ -85,6 +85,11 @@ public class nativePages extends PageFragment {
     }
 
     @Override
+    public void notificationArrived(JSONObject notificationPayload) {
+
+    }
+
+    @Override
     public String getPageArgs() {
         return null;
     }
