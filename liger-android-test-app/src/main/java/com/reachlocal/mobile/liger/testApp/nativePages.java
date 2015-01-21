@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.reachlocal.mobile.liger.ApplicationState;
 import com.reachlocal.mobile.liger.LIGER;
 import com.reachlocal.mobile.liger.factories.LigerFragmentFactory;
 import com.reachlocal.mobile.liger.ui.PageFragment;
@@ -84,7 +85,7 @@ public class nativePages extends PageFragment {
     }
 
     @Override
-    public void notificationArrived(JSONObject notificationPayload) {
+    public void notificationArrived(JSONObject notificationPayload, ApplicationState applicationState) {
 
     }
 
