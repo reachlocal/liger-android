@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.webkit.WebView;
 
+import com.reachlocal.mobile.liger.ApplicationState;
 import com.reachlocal.mobile.liger.LIGER;
 import com.reachlocal.mobile.liger.R;
 import com.reachlocal.mobile.liger.listeners.PageLifecycleListener;
@@ -475,8 +476,9 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     }
 
     @Override
-    public void notificationArrived(JSONObject notificationPayload) {
-        sendJavascriptWithArgs("PAGE", "notificationArrived", notificationPayload.toString());
+    public void notificationArrived(JSONObject notificationPayload, ApplicationState applicationState) {
+        String args = JSUtils.stringListToArgString( notificationPayload.toString(), applicationState.toString());
+        sendJavascriptWithArgs("PAGE", "notificationArrived", args);
     }
 
     @Override

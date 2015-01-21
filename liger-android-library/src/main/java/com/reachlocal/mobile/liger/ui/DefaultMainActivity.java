@@ -18,6 +18,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.reachlocal.mobile.liger.ApplicationState;
 import com.reachlocal.mobile.liger.LIGER;
 import com.reachlocal.mobile.liger.R;
 import com.reachlocal.mobile.liger.factories.LigerFragmentFactory;
@@ -49,7 +50,7 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
         @Override
         public void onReceive(Context context, Intent intent) {
             JSONObject payload = addIntentArgsToRootPageArgs(intent, new JSONObject());
-            mRootPageFragment.notificationArrived(payload);
+            mRootPageFragment.notificationArrived(payload, ApplicationState.ACTIVE);
             abortBroadcast();
         }
     };
@@ -67,7 +68,20 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
         unregisterReceiver(dynamicReceiver);
     }
 
+    @Override
+    public void onNewIntent(Intent intent){
+        Bundle extras = intent.getExtras();
+        if(extras != null){
+            if(extras.containsKey("notification"))
+            {
+                JSONObject payload = addIntentArgsToRootPageArgs(intent, new JSONObject());
+                mRootPageFragment.notificationArrived(payload, ApplicationState.INACTIVE);
+            }
+        }
 
+
+    }
+    
     @Override
     protected void onResume() {
         super.onResume();

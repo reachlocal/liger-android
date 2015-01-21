@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 
+import com.reachlocal.mobile.liger.ApplicationState;
 import com.reachlocal.mobile.liger.LIGER;
 import com.reachlocal.mobile.liger.R;
 import com.reachlocal.mobile.liger.listeners.PageLifecycleListener;
@@ -80,7 +81,7 @@ public abstract class PageFragment extends DialogFragment {
 
     public abstract void setChildArgs(String childUpdateArgs);
 
-    public abstract void notificationArrived(JSONObject notificationPayload);
+    public abstract void notificationArrived(JSONObject notificationPayload, ApplicationState applicationState);
 
     public abstract String getPageArgs();
 
@@ -137,6 +138,7 @@ public abstract class PageFragment extends DialogFragment {
 
         if (lastRemoved || (mFragDeck.size() == 1 && mFragDeck.getLast().isDetached())) {
             if (!mContext.isFinishing()) {
+//TODO - Fix this to work appropriately
 //                FragmentTransaction ft = mContext.getSupportFragmentManager().beginTransaction();
 //                ft.remove(this);
 //                ft.commit();

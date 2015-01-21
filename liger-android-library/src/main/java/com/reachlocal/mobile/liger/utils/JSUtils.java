@@ -18,6 +18,8 @@ public class JSUtils {
             String arg = args[i];
             if (arg == null) {
                 sb.append("null");
+            } else if(arg.startsWith("{") || arg.startsWith("[")){
+                sb.append(arg);
             } else {
                 sb.append("\"");
                 sb.append(arg);

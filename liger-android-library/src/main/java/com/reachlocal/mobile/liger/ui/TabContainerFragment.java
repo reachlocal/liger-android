@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
+import com.reachlocal.mobile.liger.ApplicationState;
 import com.reachlocal.mobile.liger.LIGER;
 import com.reachlocal.mobile.liger.R;
 import com.reachlocal.mobile.liger.factories.LigerFragmentFactory;
@@ -195,8 +196,8 @@ public class TabContainerFragment extends PageFragment implements PageLifecycleL
     }
 
     @Override
-    public void notificationArrived(JSONObject notificationPayload) {
-        mTabs.notificationArrived(notificationPayload);
+    public void notificationArrived(JSONObject notificationPayload, ApplicationState applicationState) {
+        mTabs.notificationArrived(notificationPayload, applicationState);
     }
 
     @Override

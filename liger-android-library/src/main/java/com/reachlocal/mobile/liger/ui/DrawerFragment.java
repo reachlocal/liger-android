@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.reachlocal.mobile.liger.ApplicationState;
 import com.reachlocal.mobile.liger.LIGER;
 import com.reachlocal.mobile.liger.R;
 import com.reachlocal.mobile.liger.factories.LigerFragmentFactory;
@@ -208,8 +209,8 @@ public class DrawerFragment extends PageFragment implements PageLifecycleListene
     }
 
     @Override
-    public void notificationArrived(JSONObject notificationPayload) {
-        mDrawer.notificationArrived(notificationPayload);
+    public void notificationArrived(JSONObject notificationPayload, ApplicationState applicationState) {
+        mDrawer.notificationArrived(notificationPayload, applicationState);
     }
 
     @Override
