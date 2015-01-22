@@ -46,9 +46,9 @@ public class LigerNavigatorFragmentTest extends ActivityInstrumentationTestCase2
         assertTrue(myTestActivity.getRootPageFragment() instanceof NavigatorFragment);
     }
 
-    public void testBackButtonPressed() {
-        myTestActivity.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_BACK));
-        assertFalse(myTestActivity.getRootPageFragment().isAdded());
-    }
+//    public void testBackButtonPressed() {
+//        myTestActivity.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_BACK));
+//        assertFalse(myTestActivity.getRootPageFragment().isAdded());
+//    }
 
 }

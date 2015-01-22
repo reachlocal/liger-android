@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 
+import com.reachlocal.mobile.liger.ApplicationState;
 import com.reachlocal.mobile.liger.LIGER;
 import com.reachlocal.mobile.liger.R;
 import com.reachlocal.mobile.liger.factories.LigerFragmentFactory;
@@ -374,9 +375,9 @@ public class NavigatorFragment extends PageFragment {
     }
 
     @Override
-    public void notificationArrived(JSONObject notificationPayload) {
+    public void notificationArrived(JSONObject notificationPayload, ApplicationState applicationState) {
         if (mFragDeck.size() > 0) {
-            mFragDeck.getLast().notificationArrived(notificationPayload);
+            mFragDeck.getLast().notificationArrived(notificationPayload, applicationState);
         }
     }
 

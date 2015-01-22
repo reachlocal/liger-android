@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.reachlocal.mobile.liger.ApplicationState;
 import com.reachlocal.mobile.liger.R;
 import com.reachlocal.mobile.liger.model.MenuItemSpec;
 import com.reachlocal.mobile.liger.widgets.MenuInterface;
@@ -197,7 +198,7 @@ public class LigerAppMenuFragment extends PageFragment implements MenuInterface 
     }
 
     @Override
-    public void notificationArrived(JSONObject notificationPayload) {
+    public void notificationArrived(JSONObject notificationPayload, ApplicationState applicationState) {
 
     }
 
