@@ -21,7 +21,7 @@ import android.view.MenuItem;
 import com.reachlocal.mobile.liger.ApplicationState;
 import com.reachlocal.mobile.liger.LIGER;
 import com.reachlocal.mobile.liger.R;
-import com.reachlocal.mobile.liger.factories.LigerFragmentFactory;
+import com.reachlocal.mobile.liger.factories.FragmentFactory;
 import com.reachlocal.mobile.liger.gcm.GcmRegistrationHelper;
 import com.reachlocal.mobile.liger.listeners.RootPageListener;
 import com.reachlocal.mobile.liger.model.AppConfig;
@@ -69,11 +69,10 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
     }
 
     @Override
-    public void onNewIntent(Intent intent){
+    public void onNewIntent(Intent intent) {
         Bundle extras = intent.getExtras();
-        if(extras != null){
-            if(extras.containsKey("notification"))
-            {
+        if (extras != null) {
+            if (extras.containsKey("notification")) {
                 JSONObject payload = addIntentArgsToRootPageArgs(intent, new JSONObject());
                 mRootPageFragment.notificationArrived(payload, ApplicationState.INACTIVE);
             }
@@ -81,7 +80,7 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
 
 
     }
-    
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -119,8 +118,8 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
 
         rootPageArgs = addIntentArgsToRootPageArgs(getIntent(), rootPageArgs);
 
-        LigerFragmentFactory.mContext = this;
-        mRootPageFragment = LigerFragmentFactory.openPage(mAppConfig.getRootPageName(), mAppConfig.getRootPageTitle(), rootPageArgs, mAppConfig.getRootPageOptions());
+        FragmentFactory.mContext = this;
+        mRootPageFragment = FragmentFactory.openPage(mAppConfig.getRootPageName(), mAppConfig.getRootPageTitle(), rootPageArgs, mAppConfig.getRootPageOptions());
 
         if (mRootPageFragment instanceof DrawerFragment) {
             setContentView(R.layout.liger_main_drawer);
@@ -327,8 +326,24 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
 
 
     public void resetApp() {
-        //TODO fragStack.resetToHome();
-        //setMenuSelection(fragStack.getCurrentFragment().getPageName());
+
+        String activityName = getResources().getString(R.string.liger_main_activity_class);
+        Class<? extends DefaultMainActivity> activityClass = null;
+
+        try {
+            activityClass = (Class<? extends DefaultMainActivity>) Class.forName(activityName);
+        } catch (ClassNotFoundException e) {
+            Log.e(LIGER.TAG, "Failed to find class for main activity named " + activityName, e);
+        } catch (ClassCastException e) {
+            Log.e(LIGER.TAG, "Main activity class named " + activityName + " is not an Activity!", e);
+        }
+
+        Intent appIntent = new Intent(this, activityClass);
+        appIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        appIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        startActivity(appIntent);
+        overridePendingTransition(0, 0);
+        finish();
     }
 
 

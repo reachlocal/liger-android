@@ -20,7 +20,7 @@ import org.json.JSONObject;
 /**
  * Created by Mark Wagner on 10/22/14.
  */
-public class LigerFragmentFactory {
+public class FragmentFactory {
 
     static final int REQUEST_IMAGE_GET = 1;
     // Intents to support: browser, email, message (SMS), image, twitter, facebook, sina weibo, tencent weibo

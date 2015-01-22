@@ -6,10 +6,10 @@ import com.reachlocal.mobile.liger.model.AppConfig;
 import com.reachlocal.mobile.liger.ui.DrawerFragment;
 
 
-public class LigerDrawerFragmentWithHtmlMenuTest extends ActivityInstrumentationTestCase2<TestDefaultMainActivity> {
+public class DrawerFragmentWithHtmlMenuTest extends ActivityInstrumentationTestCase2<TestDefaultMainActivity> {
     TestDefaultMainActivity myTestActivity;
 
-    public LigerDrawerFragmentWithHtmlMenuTest() {
+    public DrawerFragmentWithHtmlMenuTest() {
         super(TestDefaultMainActivity.class);
 
     }

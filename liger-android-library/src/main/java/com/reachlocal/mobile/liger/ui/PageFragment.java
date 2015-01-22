@@ -36,6 +36,26 @@ public abstract class PageFragment extends DialogFragment {
         return CordovaUtils.fromCallbackContext(cc, R.id.web_view_parent_frag);
     }
 
+    public abstract void setToolbar(String toolbarSpec);
+
+    public abstract void setChildArgs(String childUpdateArgs);
+
+    public abstract void notificationArrived(JSONObject notificationPayload, ApplicationState applicationState);
+
+    public abstract void sendJavascript(String js);
+
+    public abstract void addFragments(FragmentTransaction ft, int contentViewID);
+
+    public abstract String getPageArgs();
+
+    public abstract String getParentUpdateArgs();
+
+    public abstract void setParentUpdateArgs(String parentUpdateArgs);
+
+    public abstract String getPageName();
+
+    public abstract String getPageTitle();
+
     protected boolean popTo(FragmentTransaction ft, PageFragment newTop) {
         if (mFragDeck.size() > 0 && mFragDeck.getLast().equals(newTop)) {
             return false;
@@ -73,28 +93,10 @@ public abstract class PageFragment extends DialogFragment {
         return mContainer;
     }
 
-    public abstract String getPageName();
-
-    public abstract String getPageTitle();
-
-    public abstract void setToolbar(String toolbarSpec);
-
-    public abstract void setChildArgs(String childUpdateArgs);
-
-    public abstract void notificationArrived(JSONObject notificationPayload, ApplicationState applicationState);
-
-    public abstract String getPageArgs();
-
-    public abstract String getParentUpdateArgs();
-
-    public abstract void setParentUpdateArgs(String parentUpdateArgs);
-
-    public abstract void sendJavascript(String js);
 
     public void doPageAppear() {
     }
 
-    public abstract void addFragments(FragmentTransaction ft, int contentViewID);
 
     public void doPageClosed() {
     }

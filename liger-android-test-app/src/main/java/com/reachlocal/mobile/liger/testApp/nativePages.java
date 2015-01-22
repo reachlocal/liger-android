@@ -10,7 +10,7 @@ import android.widget.Button;
 
 import com.reachlocal.mobile.liger.ApplicationState;
 import com.reachlocal.mobile.liger.LIGER;
-import com.reachlocal.mobile.liger.factories.LigerFragmentFactory;
+import com.reachlocal.mobile.liger.factories.FragmentFactory;
 import com.reachlocal.mobile.liger.ui.PageFragment;
 
 import org.json.JSONObject;
@@ -53,7 +53,7 @@ public class nativePages extends PageFragment {
         PageFragment page = null;
 
 
-        page = LigerFragmentFactory.openPage(pageName, title, pageArgs, pageOptions);
+        page = FragmentFactory.openPage(pageName, title, pageArgs, pageOptions);
 
 
         if (page != null) {
