@@ -8,6 +8,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.String;
+
 
 /**
  * Created by Mark Wagner on 1/21/15.
@@ -16,6 +18,11 @@ public class JSUtilsTest extends TestCase{
 
 
     public void testCleanJSString() {
+        String returnValue = JSUtils.cleanJSString("{\"foo\": \"bar\"}");
+        assertNotNull(returnValue);
+        
+        returnValue = JSUtils.cleanJSString("undefined");
+        assertNull(returnValue);
         
     }
 
