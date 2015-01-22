@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 import com.reachlocal.mobile.liger.ApplicationState;
 import com.reachlocal.mobile.liger.LIGER;
 import com.reachlocal.mobile.liger.R;
-import com.reachlocal.mobile.liger.factories.LigerFragmentFactory;
+import com.reachlocal.mobile.liger.factories.FragmentFactory;
 import com.reachlocal.mobile.liger.listeners.PageLifecycleListener;
 import com.reachlocal.mobile.liger.utils.ViewUtil;
 
@@ -76,7 +76,7 @@ public class DrawerFragment extends PageFragment implements PageLifecycleListene
             Log.d(LIGER.TAG, "DrawerFragment.onCreateView() " + pageName);
         }
 
-        mDrawer = LigerFragmentFactory.openPage(drawerObject);
+        mDrawer = FragmentFactory.openPage(drawerObject);
         FragmentTransaction ft = getChildFragmentManager().beginTransaction();
         mDrawer.addFragments(ft, mDrawerContentFrame.getId());
         ft.commit();
@@ -142,7 +142,7 @@ public class DrawerFragment extends PageFragment implements PageLifecycleListene
         if (reuseIdentifier != null && (mDrawerCache.containsKey(reuseIdentifier) && pageOptions.optBoolean("cached", true) == true)) {
             page = mDrawerCache.get(reuseIdentifier);
         } else {
-            page = LigerFragmentFactory.openPage(pageName, title, pageArgs, pageOptions);
+            page = FragmentFactory.openPage(pageName, title, pageArgs, pageOptions);
             Boolean cached = pageOptions.optBoolean("cached", true);
             if (cached && reuseIdentifier != null) {
                 mDrawerCache.put(reuseIdentifier, page);
@@ -181,7 +181,7 @@ public class DrawerFragment extends PageFragment implements PageLifecycleListene
                             + (args == null ? null : args.toString()) + ", options:"
                             + (options == null ? null : options.toString()));
         }
-        PageFragment dialog = LigerFragmentFactory.openPage(pageName, title, args, options);
+        PageFragment dialog = FragmentFactory.openPage(pageName, title, args, options);
         if (dialog != null) {
             mFragDeck.addLast(dialog);
             dialog.show(getActivity().getSupportFragmentManager(), DIALOG_FRAGMENT);

@@ -12,7 +12,7 @@ import android.widget.RelativeLayout;
 import com.reachlocal.mobile.liger.ApplicationState;
 import com.reachlocal.mobile.liger.LIGER;
 import com.reachlocal.mobile.liger.R;
-import com.reachlocal.mobile.liger.factories.LigerFragmentFactory;
+import com.reachlocal.mobile.liger.factories.FragmentFactory;
 import com.reachlocal.mobile.liger.listeners.PageLifecycleListener;
 import com.reachlocal.mobile.liger.utils.ViewUtil;
 
@@ -74,7 +74,7 @@ public class TabContainerFragment extends PageFragment implements PageLifecycleL
             Log.d(LIGER.TAG, "TabContainerFragment.onCreateView() " + pageName);
         }
 
-        mTabs = LigerFragmentFactory.openPage(tabsObject);
+        mTabs = FragmentFactory.openPage(tabsObject);
         FragmentTransaction ft = getChildFragmentManager().beginTransaction();
         mTabs.addFragments(ft, mTabsHolder.getId());
         ft.commit();
@@ -135,7 +135,7 @@ public class TabContainerFragment extends PageFragment implements PageLifecycleL
         if (reuseIdentifier != null && (mTabCache.containsKey(reuseIdentifier) && pageOptions.optBoolean("cached", true) == true)) {
             page = mTabCache.get(reuseIdentifier);
         } else {
-            page = LigerFragmentFactory.openPage(pageName, title, pageArgs, pageOptions);
+            page = FragmentFactory.openPage(pageName, title, pageArgs, pageOptions);
             if (cached && reuseIdentifier != null) {
                 mTabCache.put(reuseIdentifier, page);
             }
@@ -169,7 +169,7 @@ public class TabContainerFragment extends PageFragment implements PageLifecycleL
                             + (args == null ? null : args.toString()) + ", options:"
                             + (options == null ? null : options.toString()));
         }
-        PageFragment dialog = LigerFragmentFactory.openPage(pageName, title, args, options);
+        PageFragment dialog = FragmentFactory.openPage(pageName, title, args, options);
         if (dialog != null) {
             mFragDeck.addLast(dialog);
             dialog.show(getActivity().getSupportFragmentManager(), DIALOG_FRAGMENT);

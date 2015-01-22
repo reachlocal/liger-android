@@ -8,6 +8,7 @@ public enum ApplicationState {
     INACTIVE("android_inactive");
 
     private String stringValue;
+
     private ApplicationState(String toString) {
         stringValue = toString;
 

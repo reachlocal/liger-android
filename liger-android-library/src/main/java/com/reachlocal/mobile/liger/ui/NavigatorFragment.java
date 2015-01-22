@@ -15,7 +15,7 @@ import android.view.Window;
 import com.reachlocal.mobile.liger.ApplicationState;
 import com.reachlocal.mobile.liger.LIGER;
 import com.reachlocal.mobile.liger.R;
-import com.reachlocal.mobile.liger.factories.LigerFragmentFactory;
+import com.reachlocal.mobile.liger.factories.FragmentFactory;
 import com.reachlocal.mobile.liger.listeners.PageLifecycleListener;
 import com.reachlocal.mobile.liger.utils.ViewUtil;
 
@@ -83,7 +83,7 @@ public class NavigatorFragment extends PageFragment {
             }
             for (int i = 0; i < pages.length(); i++) {
                 JSONObject page = pages.getJSONObject(i);
-                PageFragment newPage = LigerFragmentFactory.openPage(page.getString("page"), page.getString("title"), page.optJSONObject("args"), page.optJSONObject("options"));
+                PageFragment newPage = FragmentFactory.openPage(page.getString("page"), page.getString("title"), page.optJSONObject("args"), page.optJSONObject("options"));
                 if (newPage != null) {
                     if (navigator.mCached) {
                         navigator.mFragCache.put(page.getString("page"), newPage);
@@ -258,7 +258,7 @@ public class NavigatorFragment extends PageFragment {
 //        if (mCached && mFragCache.containsKey(pageName)) {
 //            page = mFragCache.get(pageName);
 //        } else {
-        page = LigerFragmentFactory.openPage(pageName, title, pageArgs, pageOptions);
+        page = FragmentFactory.openPage(pageName, title, pageArgs, pageOptions);
 //        }
 
         if (page != null) {
@@ -283,7 +283,7 @@ public class NavigatorFragment extends PageFragment {
                             + (args == null ? null : args.toString()) + ", options:"
                             + (options == null ? null : options.toString()));
         }
-        PageFragment dialog = LigerFragmentFactory.openPage(pageName, title, args, options);
+        PageFragment dialog = FragmentFactory.openPage(pageName, title, args, options);
         if (dialog != null) {
             //mFragDeck.addLast(dialog);
             dialog.show(getActivity().getSupportFragmentManager(), DIALOG_FRAGMENT);
