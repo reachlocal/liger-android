@@ -17,6 +17,8 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Locale;
+
 /**
  * Created by Mark Wagner on 10/22/14.
  */
