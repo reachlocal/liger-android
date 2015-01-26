@@ -17,6 +17,8 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Locale;
+
 /**
  * Created by Mark Wagner on 10/22/14.
  */
@@ -24,7 +26,7 @@ public class FragmentFactory {
 
     static final int REQUEST_IMAGE_GET = 1;
     // Intents to support: browser, email, message (SMS), image, twitter, facebook, sina weibo, tencent weibo
-    private final static String[] SUPPORTED_INTENTS = {"email", "browser", "message", "image", "twitter", "facebook", "sinaweibo", "tencentweibo"};
+    private final static String[] SUPPORTED_INTENTS = {"email", "browser", "message", "image", "twitter", "facebook", "sinaweibo", "tencentweibo", "maps"};
     public static Context mContext = null;
     private DefaultMainActivity mDefaultMainActivity;
 
@@ -37,6 +39,11 @@ public class FragmentFactory {
                 intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse("mailto:"));
                 mContext.startActivity(Intent.createChooser(intent, "Send email..."));
+            } else if (pageName.equalsIgnoreCase("maps")){
+                String address = pageArgs.optString("address");
+                String uri = String.format(Locale.ENGLISH, "geo:0,0?q=%s", address );
+                intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                mContext.startActivity(Intent.createChooser(intent, "Open Maps..."));
             } else if (pageName.equalsIgnoreCase("browser")) {
                 String url = "http://www.google.com";
                 intent = new Intent(Intent.ACTION_VIEW);
