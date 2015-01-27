@@ -26,7 +26,7 @@ public class FragmentFactory {
 
     static final int REQUEST_IMAGE_GET = 1;
     // Intents to support: browser, email, message (SMS), image, twitter, facebook, sina weibo, tencent weibo
-    private final static String[] SUPPORTED_INTENTS = {"email", "browser", "message", "image", "twitter", "facebook", "sinaweibo", "tencentweibo"};
+    private final static String[] SUPPORTED_INTENTS = {"email", "browser", "message", "image", "twitter", "facebook", "sinaweibo", "tencentweibo", "maps"};
     public static Context mContext = null;
     private DefaultMainActivity mDefaultMainActivity;
 
@@ -42,6 +42,11 @@ public class FragmentFactory {
                 intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse(String.format(Locale.getDefault(), "mailto:%s?subject=%s&body=%s", email_addresses, subject, body )));
                 mContext.startActivity(Intent.createChooser(intent, "Send email..."));
+            } else if (pageName.equalsIgnoreCase("maps")){
+                String address = pageArgs.optString("address");
+                String uri = String.format(Locale.getDefault(), "geo:0,0?q=%s", address );
+                intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                mContext.startActivity(Intent.createChooser(intent, "Open Maps..."));
             } else if (pageName.equalsIgnoreCase("browser")) {
                 String url = pageArgs.optString("link", "about:empty");
                 intent = new Intent(Intent.ACTION_VIEW);
