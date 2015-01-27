@@ -40,7 +40,7 @@ public class FragmentFactory {
                 String subject = pageArgs.optString("subject");
                 String body = pageArgs.optString("body");
                 intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(String.format(Locale.ENGLISH, "mailto:%s?subject=%s&body=%s", email_addresses, subject, body )));
+                intent.setData(Uri.parse(String.format(Locale.getDefault(), "mailto:%s?subject=%s&body=%s", email_addresses, subject, body )));
                 mContext.startActivity(Intent.createChooser(intent, "Send email..."));
             } else if (pageName.equalsIgnoreCase("browser")) {
                 String url = "http://www.google.com";
