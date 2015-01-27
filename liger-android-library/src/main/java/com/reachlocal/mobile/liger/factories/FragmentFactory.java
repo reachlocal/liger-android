@@ -41,7 +41,7 @@ public class FragmentFactory {
                 mContext.startActivity(Intent.createChooser(intent, "Send email..."));
             } else if (pageName.equalsIgnoreCase("maps")){
                 String address = pageArgs.optString("address");
-                String uri = String.format(Locale.ENGLISH, "geo:0,0?q=%s", address );
+                String uri = String.format(Locale.getDefault(), "geo:0,0?q=%s", address );
                 intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
                 mContext.startActivity(Intent.createChooser(intent, "Open Maps..."));
             } else if (pageName.equalsIgnoreCase("browser")) {
