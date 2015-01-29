@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
+import com.reachlocal.mobile.liger.R;
 import com.reachlocal.mobile.liger.ui.CordovaPageFragment;
 import com.reachlocal.mobile.liger.ui.DefaultMainActivity;
 import com.reachlocal.mobile.liger.ui.DrawerFragment;
@@ -41,21 +42,21 @@ public class FragmentFactory {
                 String body = pageArgs.optString("body");
                 intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse(String.format(Locale.getDefault(), "mailto:%s?subject=%s&body=%s", email_addresses, subject, body )));
-                mContext.startActivity(Intent.createChooser(intent, "Send email..."));
+                mContext.startActivity(Intent.createChooser(intent, mContext.getResources().getString(R.string.send_email)));
             } else if (pageName.equalsIgnoreCase("maps")){
                 String address = pageArgs.optString("address");
                 String uri = String.format(Locale.getDefault(), "geo:0,0?q=%s", address );
                 intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-                mContext.startActivity(Intent.createChooser(intent, "Open Maps..."));
+                mContext.startActivity(Intent.createChooser(intent, mContext.getResources().getString(R.string.open_maps)));
             } else if (pageName.equalsIgnoreCase("browser")) {
                 String url = pageArgs.optString("link", "about:empty");
                 intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse(url));
-                mContext.startActivity(Intent.createChooser(intent, "Open Browser..."));
+                mContext.startActivity(Intent.createChooser(intent, mContext.getResources().getString(R.string.open_browser)));
             } else if (pageName.equalsIgnoreCase("message")) {
                 intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse("sms:"));
-                mContext.startActivity(Intent.createChooser(intent, "Send message..."));
+                mContext.startActivity(Intent.createChooser(intent, mContext.getResources().getString(R.string.send_message)));
             } else if (pageName.equalsIgnoreCase("image")) {
                 intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("image/*");
@@ -64,7 +65,7 @@ public class FragmentFactory {
                 }
             } else if (pageName.equalsIgnoreCase("twitter")) {
                 intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com"));
-                mContext.startActivity(Intent.createChooser(intent, "Open Twitter..."));
+                mContext.startActivity(Intent.createChooser(intent, mContext.getResources().getString(R.string.open_twitter)));
             } else if (pageName.equalsIgnoreCase("facebook")) {
                 try {
                     mContext.getPackageManager().getPackageInfo("com.facebook.katana", 0);
@@ -72,7 +73,7 @@ public class FragmentFactory {
                 } catch (Exception e) {
                     intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/"));
                 }
-                mContext.startActivity(Intent.createChooser(intent, "Open Facebook..."));
+                mContext.startActivity(Intent.createChooser(intent, mContext.getResources().getString(R.string.open_facebook)));
             } else if (pageName.equalsIgnoreCase("sinaweibo")) {
                 try {
                     mContext.getPackageManager().getPackageInfo("com.sina.weibo", 0);
@@ -80,7 +81,7 @@ public class FragmentFactory {
                 } catch (Exception e) {
                     intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://weibo.com/"));
                 }
-                mContext.startActivity(Intent.createChooser(intent, "Open Sina Weibo..."));
+                mContext.startActivity(Intent.createChooser(intent, mContext.getResources().getString(R.string.open_sina_weibo)));
             } else if (pageName.equalsIgnoreCase("tencentweibo")) {
                 try {
                     mContext.getPackageManager().getPackageInfo("com.tencent.weibo", 0);
@@ -88,7 +89,7 @@ public class FragmentFactory {
                 } catch (Exception e) {
                     intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://t.qq.com/"));
                 }
-                mContext.startActivity(Intent.createChooser(intent, "Open Tencent Weibo..."));
+                mContext.startActivity(Intent.createChooser(intent, mContext.getResources().getString(R.string.open_tencent_weibo)));
             }
         } else {
 
