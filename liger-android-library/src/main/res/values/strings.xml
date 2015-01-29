@@ -6,4 +6,16 @@
     <string name="action_refresh">Refresh</string>
     <string name="liger_gcm_sender_id"></string>
     <string name="liger_main_activity_class">com.reachlocal.mobile.liger.DefaultMainActivity</string>
+    
+    
+    
+    <string name="send_email"        >Send email...</string>
+    <string name="open_maps"         >Open maps...</string>
+    <string name="open_browser"      >Open Browser...</string>
+    <string name="send_message"      >Send Message...</string>
+    <string name="open_twitter"      >Open Twitter...</string>
+    <string name="open_facebook"     >Open Facebook...</string>
+    <string name="open_sina_weibo"   >Open Sina Weibo...</string>
+    <string name="open_tencent_weibo">Open Tencent Weibo...</string>
+    
 </resources>

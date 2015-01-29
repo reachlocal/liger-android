@@ -1,0 +1,12 @@
+<resources>
+    
+    <string name="send_email"        >Enviar correo electrónico...</string>
+    <string name="open_maps"         >Abrir mapas...</string>
+    <string name="open_browser"      >Abrir Navegador...</string>
+    <string name="send_message"      >Enviar Mensaje...</string>
+    <string name="open_twitter"      >Abra Twitter...</string>
+    <string name="open_facebook"     >Abra Facebook...</string>
+    <string name="open_sina_weibo"   >Abra Sina Weibo...</string>
+    <string name="open_tencent_weibo">Abra Tencent Weibo...</string>
+    
+</resources>
