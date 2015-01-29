@@ -54,11 +54,11 @@ public class LigerGcmIntentService extends IntentService {
             } else if (GoogleCloudMessaging.
                     MESSAGE_TYPE_MESSAGE.equals(messageType)) {
                 // Post notification of received message.
-                sendNotification("Received: " + extras.toString(), intent);
+                sendNotification(extras.getString("message", "No message attribute found"), intent);
                 Log.e(LIGER.TAG, "Received: " + extras.toString());
             } else {
                 // Post notification of received message.
-                sendNotification("Received: " + extras.toString(), intent);
+                sendNotification(extras.getString("message", "No message attribute found"), intent);
                 Log.e(LIGER.TAG, "Received: " + extras.toString());
 
             }
