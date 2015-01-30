@@ -100,7 +100,7 @@ public class LigerGcmIntentService extends IntentService {
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.icon_android_notificaiton)
+                        .setSmallIcon(R.drawable.ic_launcher)
                         .setContentTitle(this.getString(this.getApplicationInfo().labelRes))
                         .setLights(Color.YELLOW, 1, 2)
                         .setAutoCancel(true)
