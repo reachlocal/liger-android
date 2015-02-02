@@ -30,6 +30,7 @@ public class TabContainerFragment extends PageFragment implements PageLifecycleL
 
     protected PageFragment mTabs;
     protected PageFragment mCurrentTab;
+    
     HashMap<String, PageFragment> mTabCache = new HashMap<String, PageFragment>();
     View mTabsContainer;
     FrameLayout mTabsHolder;
@@ -247,7 +248,7 @@ public class TabContainerFragment extends PageFragment implements PageLifecycleL
 
     @Override
     protected PageFragment getChildPage() {
-        return mTabs;
+        return mCurrentTab;
     }
 
 

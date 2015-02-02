@@ -94,7 +94,6 @@ public class LigerPlugin extends CordovaPlugin {
                 } else {
                     webFragment.getContainer().openDialog(pageName, title, args, options);
                 }
-
             }
         });
         callbackContext.success();
@@ -171,21 +170,19 @@ public class LigerPlugin extends CordovaPlugin {
             @Override
             public void run() {
                 JSONObject argObj = CordovaUtils.stringToArgs(args);
-                String page = argObj.optString("page");
-                boolean hasReset = argObj.optBoolean("resetApp") || StringUtils.isEmpty(page);
+                boolean hasReset = argObj.optBoolean("resetApp");
 
-                if (dialog != null) {
-                    PageFragment parent = dialog.getContainer();
-                    if (parent != null) {
-                        parent.dismiss();
-                    } else {
-                        dialog.dismiss();
-                    }
-                }
                 if (hasReset) {
                     activity.resetApp();
-                } else {
-                    activity.openPage(page, null, argObj, null);
+                }else {
+                    if (dialog != null) {
+                        PageFragment parent = dialog.getContainer();
+                        if (parent != null) {
+                            parent.dismiss();
+                        } else {
+                            dialog.dismiss();
+                        }
+                    }
                     activity.getRootPageFragment().closeDialogArguments(args);
                 }
             }
