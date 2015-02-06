@@ -51,10 +51,6 @@ public class LigerGcmIntentService extends IntentService {
                     MESSAGE_TYPE_DELETED.equals(messageType)) {
                 sendNotification("Deleted messages on server: " +
                         extras.toString(), intent);
-                // If it's a regular GCM message, do some work.
-            } else if (GoogleCloudMessaging.
-                    MESSAGE_TYPE_MESSAGE.equals(messageType)) {
-                // Post notification of received message.
             } else {
                 // Post notification of received message.
                 sendNotification(extras.getString("message", "No message attribute found"), intent);
