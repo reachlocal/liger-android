@@ -43,6 +43,7 @@ public class LigerGcmIntentService extends IntentService {
              * any message types you're not interested in, or that you don't
              * recognize.
              */
+            Log.d(LIGER.TAG, "Received: " + messageType + " - " + extras.toString());
             if (GoogleCloudMessaging.
                     MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
                 sendNotification("Send error: " + extras.toString(), intent);
@@ -50,17 +51,9 @@ public class LigerGcmIntentService extends IntentService {
                     MESSAGE_TYPE_DELETED.equals(messageType)) {
                 sendNotification("Deleted messages on server: " +
                         extras.toString(), intent);
-                // If it's a regular GCM message, do some work.
-            } else if (GoogleCloudMessaging.
-                    MESSAGE_TYPE_MESSAGE.equals(messageType)) {
-                // Post notification of received message.
-                sendNotification(extras.getString("message", "No message attribute found"), intent);
-                Log.e(LIGER.TAG, "Received: " + extras.toString());
             } else {
                 // Post notification of received message.
                 sendNotification(extras.getString("message", "No message attribute found"), intent);
-                Log.e(LIGER.TAG, "Received: " + extras.toString());
-
             }
         }
         // Release the wake lock provided by the WakefulBroadcastReceiver.
@@ -86,10 +79,9 @@ public class LigerGcmIntentService extends IntentService {
         }
 
         Intent appIntent = new Intent(this, activityClass);
-        //Bundle extras = new Bundle();
         Bundle cloudExtras = cloudIntent.getExtras();
-        //extras.putBundle("notification", cloudExtras );
 
+        Log.d(LIGER.TAG, "Recieved cloudExtras: " + cloudExtras.toString());
         appIntent.putExtra("notification", cloudExtras);
         appIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
