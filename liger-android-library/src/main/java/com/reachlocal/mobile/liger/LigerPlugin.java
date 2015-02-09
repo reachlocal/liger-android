@@ -111,12 +111,6 @@ public class LigerPlugin extends CordovaPlugin {
                 FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction();
                 PageFragment dialog = FragmentFactory.openPage(pageName, title, args, options);
                 ft.add(R.id.content_frame, dialog);
-                
-                //if (webFragment.getContainer() == null) {
-//                    activity.openPage();
-               // } else {
-                 //   webFragment.getContainer().openPage(pageName, title, args, options);
-               // }
                 ft.commit();
             }
         });
