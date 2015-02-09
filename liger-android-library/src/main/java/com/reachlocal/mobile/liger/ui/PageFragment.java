@@ -89,6 +89,10 @@ public abstract class PageFragment extends DialogFragment {
         throw new RuntimeException(this.getClass().getSimpleName() + " openDialog Not Implemented");
     }
 
+    public void openDialogWithTitle(String pageName, String title, JSONObject args, JSONObject options) {
+        throw new RuntimeException(this.getClass().getSimpleName() + " openDialog Not Implemented");
+    }
+
     public PageFragment getContainer() {
         return mContainer;
     }
