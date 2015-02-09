@@ -317,7 +317,7 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
         }
         mRootPageFragment.openDialog(pageName, title, args, options);
     }
-
+    
     public void setMenuSelection(String pageName) {
         if (mRootPageFragment instanceof MenuInterface) {
             ((MenuInterface) mRootPageFragment).setSelectedItem(pageName);

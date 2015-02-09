@@ -1,12 +1,14 @@
 package com.reachlocal.mobile.liger;
 
 
+import android.app.DialogFragment;
+import android.app.Fragment;
 import android.util.Log;
-
+import android.support.v4.app.FragmentTransaction;
 import com.reachlocal.mobile.liger.ui.DefaultMainActivity;
 import com.reachlocal.mobile.liger.ui.PageFragment;
 import com.reachlocal.mobile.liger.utils.CordovaUtils;
-
+import com.reachlocal.mobile.liger.factories.FragmentFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaArgs;
@@ -38,7 +40,7 @@ public class LigerPlugin extends CordovaPlugin {
             } else if (action.equalsIgnoreCase("openDialog")) {
                 return openDialog(null, args.getString(0), args.optJSONObject(1), args.optJSONObject(2), callbackContext);
             } else if (action.equalsIgnoreCase("openDialogWithTitle")) {
-                return openDialog(args.getString(0), args.optString(1), args.optJSONObject(2), args.optJSONObject(3), callbackContext);
+                return openDialogWithTitle(args.getString(0), args.optString(1), args.optJSONObject(2), args.optJSONObject(3), callbackContext);
             } else if (action.equalsIgnoreCase("closeDialog")) {
                 return closeDialog(args.getString(0), callbackContext);
             } else if (action.equalsIgnoreCase("getPageArgs")) {
@@ -94,6 +96,28 @@ public class LigerPlugin extends CordovaPlugin {
                 } else {
                     webFragment.getContainer().openDialog(pageName, title, args, options);
                 }
+            }
+        });
+        callbackContext.success();
+        return true;
+    }
+
+    public boolean openDialogWithTitle(final String title, final String pageName, final JSONObject args, final JSONObject options, CallbackContext callbackContext) {
+        final DefaultMainActivity activity = (DefaultMainActivity) cordova.getActivity();
+        final PageFragment webFragment = PageFragment.fromCallbackContext(callbackContext);
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction();
+                PageFragment dialog = FragmentFactory.openPage(pageName, title, args, options);
+                ft.add(R.id.content_frame, dialog);
+                
+                //if (webFragment.getContainer() == null) {
+//                    activity.openPage();
+               // } else {
+                 //   webFragment.getContainer().openPage(pageName, title, args, options);
+               // }
+                ft.commit();
             }
         });
         callbackContext.success();
