@@ -36,6 +36,7 @@ public class TabContainerFragment extends PageFragment implements PageLifecycleL
     FrameLayout mTabsHolder;
     FrameLayout mTabsContent;
     private JSONObject tabsObject;
+    private JSONObject tabsContainerOptions;
 
     public static TabContainerFragment build(String pageName, String pageTitle, String pageArgs, String pageOptions) {
         TabContainerFragment tabsFragment = new TabContainerFragment();
@@ -57,6 +58,11 @@ public class TabContainerFragment extends PageFragment implements PageLifecycleL
         }
         if (pageOptions != null) {
             bundle.putString("pageOptions", pageOptions);
+            try {
+                tabsFragment.tabsContainerOptions = new JSONObject(pageOptions);
+            } catch (JSONException e) {
+                throw new RuntimeException("Invalid app.json!", e);
+            }
         }
 
         tabsFragment.setArguments(bundle);
@@ -97,7 +103,13 @@ public class TabContainerFragment extends PageFragment implements PageLifecycleL
         if (mTabsContent.getId() == -1)
             mTabsContent.setId(ViewUtil.generateViewId());
 
-        int dp = (int) getResources().getDimension(R.dimen.tab_height);
+        
+        int dp;
+        if(tabsContainerOptions != null){
+            dp = tabsContainerOptions.optInt("tabHeight", (int) getResources().getDimension(R.dimen.tab_height));
+        } else {
+            dp = (int) getResources().getDimension(R.dimen.tab_height);
+        }
 
         RelativeLayout.LayoutParams tabsParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, dp);
         RelativeLayout.LayoutParams containerParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.FILL_PARENT);
