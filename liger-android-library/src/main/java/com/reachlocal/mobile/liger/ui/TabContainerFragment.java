@@ -1,8 +1,10 @@
 package com.reachlocal.mobile.liger.ui;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -103,12 +105,18 @@ public class TabContainerFragment extends PageFragment implements PageLifecycleL
         if (mTabsContent.getId() == -1)
             mTabsContent.setId(ViewUtil.generateViewId());
 
-        
+
         int dp;
+        Resources r = getResources();
         if(tabsContainerOptions != null){
-            dp = tabsContainerOptions.optInt("tabHeight", (int) getResources().getDimension(R.dimen.tab_height));
+            int pixels =  tabsContainerOptions.optInt("tabHeight", -1);
+            if(pixels == -1){
+                dp = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, pixels, r.getDisplayMetrics());
+            }else{
+                dp = (int) r.getDimension(R.dimen.tab_height);
+            }
         } else {
-            dp = (int) getResources().getDimension(R.dimen.tab_height);
+            dp = (int) r.getDimension(R.dimen.tab_height);
         }
 
         RelativeLayout.LayoutParams tabsParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, dp);
