@@ -61,7 +61,7 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
     protected boolean activityResultKeepRunning = false;
     protected boolean keepRunning = false;
     private String lastChildArgs;
-
+    
     @Override
     protected void onPause() {
         super.onPause();
@@ -70,15 +70,12 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
 
     @Override
     public void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
         Bundle extras = intent.getExtras();
-        if (extras != null) {
-            if (extras.containsKey("notification")) {
-                JSONObject payload = addIntentArgsToRootPageArgs(intent, new JSONObject());
-                mRootPageFragment.notificationArrived(payload, ApplicationState.INACTIVE);
-            }
+        if (extras != null && extras.containsKey("notification")) {
+            JSONObject payload = addIntentArgsToRootPageArgs(getIntent(), new JSONObject()).optJSONObject("notification");
+            mRootPageFragment.notificationArrived(payload, ApplicationState.INACTIVE);
         }
-
-
     }
 
     @Override
@@ -88,9 +85,7 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
                 IntentFilter("com.google.android.c2dm.intent.RECEIVE");
         filter.addCategory("com.example.gcm");
         filter.setPriority(1);
-        registerReceiver(dynamicReceiver, filter,
-                "com.google.android.c2dm.permission.SEND", null);
-
+        registerReceiver(dynamicReceiver, filter, "com.google.android.c2dm.permission.SEND", null);
     }
 
     private JSONObject addIntentArgsToRootPageArgs(Intent callingIntent, JSONObject rootPageArgs) {
@@ -112,7 +107,7 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        
         AppConfig mAppConfig = AppConfig.getAppConfig(this);
         JSONObject rootPageArgs = mAppConfig.getRootPageArgs();
 
