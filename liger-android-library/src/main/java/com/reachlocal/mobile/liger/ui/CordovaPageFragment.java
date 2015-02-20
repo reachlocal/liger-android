@@ -481,6 +481,8 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         if(notificationPayload != null) {
             String args = JSUtils.stringListToArgString(notificationPayload.toString(), applicationState.toString());
             sendJavascriptWithArgs("PAGE", "notificationArrived", args);
+        }else{
+            Log.e(LIGER.TAG, "Null notification payload sent to notificationArrived" )
         }
     }
 
