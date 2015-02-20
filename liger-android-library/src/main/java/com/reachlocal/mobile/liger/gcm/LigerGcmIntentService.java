@@ -85,8 +85,7 @@ public class LigerGcmIntentService extends IntentService {
         appIntent.putExtra("notification", cloudExtras);
         appIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, appIntent, 0);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT );
 
         Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
