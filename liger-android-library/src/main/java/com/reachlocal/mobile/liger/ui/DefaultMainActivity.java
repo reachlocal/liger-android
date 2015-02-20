@@ -73,7 +73,7 @@ public class DefaultMainActivity extends ActionBarActivity implements CordovaInt
         super.onNewIntent(intent);
         Bundle extras = intent.getExtras();
         if (extras != null && extras.containsKey("notification")) {
-            JSONObject payload = addIntentArgsToRootPageArgs(getIntent(), new JSONObject()).optJSONObject("notification");
+            JSONObject payload = addIntentArgsToRootPageArgs(intent, new JSONObject()).optJSONObject("notification");
             mRootPageFragment.notificationArrived(payload, ApplicationState.INACTIVE);
         }
     }
