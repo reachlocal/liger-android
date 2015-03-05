@@ -121,17 +121,19 @@ public class FragmentFactory {
 
     public static PageFragment openPage(JSONObject pageObject) {
         PageFragment returnFragment = null;
-        try {
-            String name = pageObject.getString("page");
-            String title = pageObject.optString("title");
-            JSONObject args = pageObject.optJSONObject("args");
-            JSONObject options = pageObject.optJSONObject("options");
-            if (pageObject.optJSONObject("notification") != null) {
-                args.put("notification", pageObject.optJSONObject("notification"));
+        if(pageObject != null) {
+            try {
+                String name = pageObject.getString("page");
+                String title = pageObject.optString("title");
+                JSONObject args = pageObject.optJSONObject("args");
+                JSONObject options = pageObject.optJSONObject("options");
+                if (pageObject.optJSONObject("notification") != null) {
+                    args.put("notification", pageObject.optJSONObject("notification"));
+                }
+                returnFragment = openPage(name, title, args, options);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-            returnFragment = openPage(name, title, args, options);
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
         return returnFragment;
     }
