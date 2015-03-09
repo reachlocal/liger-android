@@ -254,7 +254,9 @@ public class TabContainerFragment extends PageFragment implements PageLifecycleL
 
     @Override
     public String closeLastPage(PageFragment closePage, String closeTo) {
-        mCurrentTab.closeLastPage(closePage, closeTo);
+        if(mCurrentTab != null) {
+            mCurrentTab.closeLastPage(closePage, closeTo);
+        }
         getFragmentManager().executePendingTransactions();
         int childCount = mTabsContent.getChildCount();
         if(childCount < 1){
