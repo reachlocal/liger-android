@@ -159,7 +159,9 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
             }
         } else {
             View child = mWebViewHolder.findViewById(R.id.web_fragment_container);
-            ((ViewGroup) child.getParent()).removeView(child);
+            if(child != null && child.getParent() != null) {
+                ((ViewGroup) child.getParent()).removeView(child);
+            }
         }
         updateTitle();
         return mWebViewHolder;
