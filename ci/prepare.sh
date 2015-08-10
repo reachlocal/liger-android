@@ -28,8 +28,8 @@ export UPDATE="android update sdk --no-ui --force --all --filter"
 # Install desired packages
 echo "Downloading additional packages..."
 echo yes | $UPDATE platform-tools               > /dev/null
-echo yes | $UPDATE build-tools-19.0.1           > /dev/null
-echo yes | $UPDATE android-18                   > /dev/null
+echo yes | $UPDATE build-tools-22.0.1           > /dev/null
+echo yes | $UPDATE android-22                   > /dev/null
 echo yes | $UPDATE extra-android-support        > /dev/null
 echo yes | $UPDATE extra-android-m2repository   > /dev/null
 
