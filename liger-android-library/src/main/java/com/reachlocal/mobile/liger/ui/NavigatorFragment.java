@@ -266,7 +266,7 @@ public class NavigatorFragment extends PageFragment {
             FragmentManager childFragmentManager = getChildFragmentManager();
             FragmentTransaction ft = childFragmentManager.beginTransaction();
             page.addFragments(ft, mNavigatorContentFrame.getId());
-            ft.commit();
+            ft.commitAllowingStateLoss();
             mFragDeck.addLast(page);
             if (mCached) {
                 mFragCache.put(pageName, page);
@@ -350,7 +350,7 @@ public class NavigatorFragment extends PageFragment {
                         parentPage.doPageAppear();
                         ((DefaultMainActivity) getActivity()).setActionBarTitle(parentPage.getPageTitle());
                     }
-                    ft.commit();
+                    ft.commitAllowingStateLoss();
                 }
 
                 logStack("closeLastPage");
