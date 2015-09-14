@@ -1,5 +1,6 @@
 package com.reachlocal.mobile.liger.ui;
 
+import android.support.v4.app.FragmentManager;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -84,11 +85,13 @@ public class TabContainerFragment extends PageFragment implements PageLifecycleL
         }
 
         mTabs = FragmentFactory.openPage(tabsObject);
-        FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-        mTabs.addFragments(ft, mTabsHolder.getId());
-        ft.commit();
+        if(mTabs != null) {
+            FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+            mTabs.addFragments(ft, mTabsHolder.getId());
+            ft.commit();
 
-        mTabs.mLifecycleListeners.add(this);
+            mTabs.mLifecycleListeners.add(this);
+        }
         return mTabsContainer;
     }
 
@@ -176,7 +179,7 @@ public class TabContainerFragment extends PageFragment implements PageLifecycleL
             } else {
                 page.addFragments(ft, mTabsContent.getId());
             }
-            ft.commit();
+            ft.commitAllowingStateLoss();
             mCurrentTab = page;
             mCurrentTab.mContainer = this;
         }
@@ -257,7 +260,8 @@ public class TabContainerFragment extends PageFragment implements PageLifecycleL
         if(mCurrentTab != null) {
             mCurrentTab.closeLastPage(closePage, closeTo);
         }
-        getFragmentManager().executePendingTransactions();
+        FragmentManager fm = getFragmentManager();
+        fm.executePendingTransactions();
         int childCount = mTabsContent.getChildCount();
         if(childCount < 1){
             FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();

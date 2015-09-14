@@ -3,6 +3,7 @@ package com.reachlocal.mobile.liger.ui;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -266,7 +267,7 @@ public class NavigatorFragment extends PageFragment {
             FragmentManager childFragmentManager = getChildFragmentManager();
             FragmentTransaction ft = childFragmentManager.beginTransaction();
             page.addFragments(ft, mNavigatorContentFrame.getId());
-            ft.commit();
+            ft.commitAllowingStateLoss();
             mFragDeck.addLast(page);
             if (mCached) {
                 mFragCache.put(pageName, page);
@@ -285,8 +286,7 @@ public class NavigatorFragment extends PageFragment {
         }
         PageFragment dialog = FragmentFactory.openPage(pageName, title, args, options);
         if (dialog != null) {
-            //mFragDeck.addLast(dialog);
-            dialog.show(getActivity().getSupportFragmentManager(), DIALOG_FRAGMENT);
+            dialog.show(getChildFragmentManager(), DIALOG_FRAGMENT);
         }
     }
 
@@ -350,7 +350,7 @@ public class NavigatorFragment extends PageFragment {
                         parentPage.doPageAppear();
                         ((DefaultMainActivity) getActivity()).setActionBarTitle(parentPage.getPageTitle());
                     }
-                    ft.commit();
+                    ft.commitAllowingStateLoss();
                 }
 
                 logStack("closeLastPage");
