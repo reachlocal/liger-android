@@ -3,6 +3,7 @@ package com.reachlocal.mobile.liger.ui;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -285,8 +286,7 @@ public class NavigatorFragment extends PageFragment {
         }
         PageFragment dialog = FragmentFactory.openPage(pageName, title, args, options);
         if (dialog != null) {
-            //mFragDeck.addLast(dialog);
-            dialog.show(getActivity().getSupportFragmentManager(), DIALOG_FRAGMENT);
+            dialog.show(getChildFragmentManager(), DIALOG_FRAGMENT);
         }
     }
 
