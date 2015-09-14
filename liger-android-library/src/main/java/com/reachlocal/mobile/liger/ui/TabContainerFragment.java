@@ -179,7 +179,7 @@ public class TabContainerFragment extends PageFragment implements PageLifecycleL
             } else {
                 page.addFragments(ft, mTabsContent.getId());
             }
-            ft.commit();
+            ft.commitAllowingStateLoss();
             mCurrentTab = page;
             mCurrentTab.mContainer = this;
         }
