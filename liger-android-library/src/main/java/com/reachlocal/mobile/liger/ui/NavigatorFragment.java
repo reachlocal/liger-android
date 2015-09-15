@@ -286,7 +286,13 @@ public class NavigatorFragment extends PageFragment {
         }
         PageFragment dialog = FragmentFactory.openPage(pageName, title, args, options);
         if (dialog != null) {
-            dialog.show(getChildFragmentManager(), DIALOG_FRAGMENT);
+            try{
+                dialog.show(getChildFragmentManager(), DIALOG_FRAGMENT);
+            }catch (IllegalStateException e) {
+                FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+                ft.add(dialog, DIALOG_FRAGMENT);
+                ft.commitAllowingStateLoss();
+            }
         }
     }
 
