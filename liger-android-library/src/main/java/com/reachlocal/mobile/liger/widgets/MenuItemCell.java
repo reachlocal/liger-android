@@ -11,7 +11,6 @@ import android.widget.LinearLayout;
 import com.reachlocal.mobile.liger.R;
 import com.reachlocal.mobile.liger.ui.DefaultMainActivity;
 
-import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 
 public class MenuItemCell extends LinearLayout implements Checkable {
@@ -115,7 +114,7 @@ public class MenuItemCell extends LinearLayout implements Checkable {
         menuIconGlyph.setText(iconGlyph);
         menuItemTitle.setText(itemTitle);
         menuItemSubtitle.setText(itemSubtitle);
-        menuItemSubtitle.setVisibility(StringUtils.isEmpty(itemSubtitle) ? GONE : VISIBLE);
+        menuItemSubtitle.setVisibility(itemSubtitle == null || itemSubtitle.isEmpty() ? GONE : VISIBLE);
     }
 
     private void updateChecked() {

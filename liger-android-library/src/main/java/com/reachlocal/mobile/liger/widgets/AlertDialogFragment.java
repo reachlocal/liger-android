@@ -7,8 +7,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 
-import org.apache.commons.lang3.StringUtils;
-
 public class AlertDialogFragment extends DialogFragment {
 
     private String mTitle;
@@ -37,7 +35,7 @@ public class AlertDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        if (!StringUtils.isEmpty(mTitle)) {
+        if (mTitle != null && !mTitle.isEmpty()) {
             builder.setTitle(mTitle);
         }
         builder.setMessage(mMessage);

@@ -18,7 +18,6 @@ import com.reachlocal.mobile.liger.factories.FragmentFactory;
 import com.reachlocal.mobile.liger.listeners.PageLifecycleListener;
 import com.reachlocal.mobile.liger.utils.ViewUtil;
 
-import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -253,11 +252,11 @@ public class DrawerFragment extends PageFragment implements PageLifecycleListene
         if (mFragDeck.size() > 0) {
             PageFragment lastPage = mFragDeck.getLast();
 
-            if (!StringUtils.isEmpty(closeTo)) {
+            if (closeTo != null && !closeTo.isEmpty()) {
                 Iterator<PageFragment> it = mFragDeck.descendingIterator();
                 while (it.hasNext()) {
                     PageFragment candidate = it.next();
-                    if (StringUtils.equals(closeTo, candidate.getPageName())) {
+                    if (closeTo != null && closeTo.equals(candidate.getPageName())) {
                         parentPage = candidate;
                         break;
                     }

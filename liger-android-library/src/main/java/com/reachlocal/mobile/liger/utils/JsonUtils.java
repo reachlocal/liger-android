@@ -5,14 +5,13 @@ import android.util.Log;
 
 import com.reachlocal.mobile.liger.LIGER;
 
-import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class JsonUtils {
 
     public static String getRightButtonName(String optionsString) {
-        if (StringUtils.isEmpty(optionsString)) {
+        if (optionsString == null || optionsString.isEmpty()) {
             return null;
         }
         String buttonName = null;

@@ -20,7 +20,6 @@ import com.reachlocal.mobile.liger.factories.FragmentFactory;
 import com.reachlocal.mobile.liger.listeners.PageLifecycleListener;
 import com.reachlocal.mobile.liger.utils.ViewUtil;
 
-import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -187,7 +186,7 @@ public class NavigatorFragment extends PageFragment {
         window.requestFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(contentView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
-        boolean cancelable = !(StringUtils.equalsIgnoreCase(pageName, "signin") || StringUtils.equalsIgnoreCase(pageName, "advertisers"));
+        boolean cancelable = pageName == null || !(pageName.equalsIgnoreCase("signin") || pageName.equalsIgnoreCase("advertisers"));
         dialog.setCancelable(cancelable);
         dialog.setCanceledOnTouchOutside(cancelable);
 
@@ -324,11 +323,11 @@ public class NavigatorFragment extends PageFragment {
         PageFragment parentPage = null;
         if (mFragDeck.size() > 0) {
             PageFragment lastPage = mFragDeck.getLast();
-            if (!StringUtils.isEmpty(closeTo)) {
+            if (closeTo != null && !closeTo.isEmpty()) {
                 Iterator<PageFragment> it = mFragDeck.descendingIterator();
                 while (it.hasNext()) {
                     PageFragment candidate = it.next();
-                    if (StringUtils.equals(closeTo, candidate.getPageName())) {
+                    if (closeTo != null && closeTo.equals(candidate.getPageName())) {
                         parentPage = candidate;
                         break;
                     }
@@ -425,7 +424,7 @@ public class NavigatorFragment extends PageFragment {
             int keyCode = keyEvent.getKeyCode();
             if ((keyCode == KeyEvent.KEYCODE_BACK)) {
                 if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
-                    if (StringUtils.equalsIgnoreCase(pageName, "signin")) {
+                    if (pageName != null && pageName.equalsIgnoreCase("signin")) {
                         getActivity().finish();
                     } else {
                         dismiss();
