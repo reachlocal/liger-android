@@ -24,7 +24,6 @@ import com.reachlocal.mobile.liger.utils.JSUtils;
 import com.reachlocal.mobile.liger.utils.JsonUtils;
 import com.reachlocal.mobile.liger.widgets.ToolbarLayout;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.cordova.ConfigXmlParser;
 import org.apache.cordova.CordovaInterface;
 import org.json.JSONObject;
@@ -180,7 +179,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         window.requestFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(contentView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
-        boolean cancelable = !(StringUtils.equalsIgnoreCase(pageName, "signin") || StringUtils.equalsIgnoreCase(pageName, "advertisers"));
+        boolean cancelable = pageName == null || !(pageName.equalsIgnoreCase("signin") || pageName.equalsIgnoreCase("advertisers"));
         dialog.setCancelable(cancelable);
         dialog.setCanceledOnTouchOutside(cancelable);
 
@@ -350,17 +349,17 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
             if (LIGER.LOGGING) {
                 Log.d(LIGER.TAG, "rightButtonName: " + rightButtonName);
             }
-            if (StringUtils.equalsIgnoreCase(rightButtonName, "refresh")) {
+            if (rightButtonName.equalsIgnoreCase("refresh")) {
                 menu.add(0, REFRESH, Menu.NONE, "Refresh")
                         .setIcon(R.drawable.ic_action_refresh)
                         .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
                 addHeaderButtonListener(menu, REFRESH, rightButtonName);
-            } else if (StringUtils.equalsIgnoreCase(rightButtonName, "save")) {
+            } else if (rightButtonName.equalsIgnoreCase("save")) {
                 menu.add(0, SAVE, Menu.NONE, "Save")
                         .setIcon(R.drawable.ic_action_save)
                         .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
                 addHeaderButtonListener(menu, SAVE, rightButtonName);
-            } else if (StringUtils.equalsIgnoreCase(rightButtonName, "search")) {
+            } else if (rightButtonName.equalsIgnoreCase("search")) {
                 menu.add(0, SEARCH, Menu.NONE, "Search")
                         .setIcon(R.drawable.ic_action_search)
                         .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
@@ -418,7 +417,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
         }
         isLoaded = true;
         String webTitle = webView.getTitle();
-        if (StringUtils.isEmpty(actionBarTitle) && !StringUtils.isEmpty(webTitle)) {
+        if ((actionBarTitle == null || actionBarTitle.isEmpty()) && (webTitle != null && !webTitle.isEmpty())) {
             actionBarTitle = webTitle;
         }
         if (!isHidden()) {
@@ -457,14 +456,14 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
     }
 
     private void sendChildArgs() {
-        if (!StringUtils.isEmpty(childUpdateArgs) && !childArgsSent) {
+        if (childUpdateArgs != null && !childUpdateArgs.isEmpty() && !childArgsSent) {
             childArgsSent = true;
             sendJavascriptWithArgs("PAGE", "childUpdates", childUpdateArgs);
         }
     }
 
     private void sendPageArgs() {
-        if (!StringUtils.isEmpty(pageArgs)) {
+        if (pageArgs != null && !pageArgs.isEmpty()) {
             sendJavascriptWithArgs("PAGE", "gotPageArgs", pageArgs);
         }
     }
@@ -517,7 +516,7 @@ public class CordovaPageFragment extends PageFragment implements ToolbarLayout.O
             int keyCode = keyEvent.getKeyCode();
             if ((keyCode == KeyEvent.KEYCODE_BACK)) {
                 if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
-                    if (StringUtils.equalsIgnoreCase(pageName, "signin")) {
+                    if (pageName != null && pageName.equalsIgnoreCase("signin")) {
                         getActivity().finish();
                     } else {
                         dismiss();

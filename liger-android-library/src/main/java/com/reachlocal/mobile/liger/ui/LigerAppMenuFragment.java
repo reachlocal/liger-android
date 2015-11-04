@@ -13,7 +13,6 @@ import com.reachlocal.mobile.liger.model.MenuItemSpec;
 import com.reachlocal.mobile.liger.widgets.MenuInterface;
 import com.reachlocal.mobile.liger.widgets.MenuItemCell;
 
-import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -158,7 +157,7 @@ public class LigerAppMenuFragment extends PageFragment implements MenuInterface 
 
     private void updateSelectedItem() {
         for (MenuItemCell cell : mMenuItems) {
-            boolean checked = StringUtils.equalsIgnoreCase(mSelectedItem, cell.getClickAction());
+            boolean checked = mSelectedItem != null & mSelectedItem.equalsIgnoreCase(cell.getClickAction());
             cell.setChecked(checked);
         }
     }
