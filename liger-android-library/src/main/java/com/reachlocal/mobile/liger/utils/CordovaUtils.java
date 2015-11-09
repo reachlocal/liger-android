@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.reachlocal.mobile.liger.LIGER;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaArgs;
 import org.apache.cordova.CordovaWebView;
@@ -32,7 +31,7 @@ public class CordovaUtils {
     public static JSONObject stringToArgs(String argString) {
         JSONObject result = null;
 
-        if (argString == null || argString.length() == 0 || StringUtils.equals(argString, "null")) {
+        if (argString == null || argString.length() == 0 || argString.equals("null")) {
             argString = "{}";
         }
         try {

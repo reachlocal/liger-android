@@ -9,7 +9,6 @@ import com.reachlocal.mobile.liger.ui.DefaultMainActivity;
 import com.reachlocal.mobile.liger.ui.PageFragment;
 import com.reachlocal.mobile.liger.utils.CordovaUtils;
 import com.reachlocal.mobile.liger.factories.FragmentFactory;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaArgs;
 import org.apache.cordova.CordovaPlugin;

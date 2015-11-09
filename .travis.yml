@@ -23,6 +23,9 @@ android:
     - extra-android-m2repository
     - addon-google_apis-google-22
 
+    # Emulators
+    - sys-img-x86-addon-google_apis-google-22
+
 # Explicitly disable build caching
 cache: false
 

@@ -16,8 +16,6 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.reachlocal.mobile.liger.LIGER;
 import com.reachlocal.mobile.liger.R;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.io.IOException;
 
 public class GcmRegistrationHelper {
@@ -64,7 +62,7 @@ public class GcmRegistrationHelper {
             mGcm = GoogleCloudMessaging.getInstance(mAppContext);
             String regId = getRegistrationId(mAppContext);
 
-            if (StringUtils.isEmpty(regId)) {
+            if (regId == null || regId.isEmpty()) {
                 registerInBackground();
             } else {
                 mListener.onGcmRegistered(regId, null);
@@ -105,7 +103,7 @@ public class GcmRegistrationHelper {
     public String getRegistrationId(Context context) {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         String registrationId = prefs.getString(PROPERTY_REG_ID, "");
-        if (StringUtils.isEmpty(registrationId)) {
+        if (registrationId == null || registrationId.isEmpty()) {
             Log.i(LIGER.TAG, "GcmRegistrationHelper: GCM Registration not found.");
             return "";
         }

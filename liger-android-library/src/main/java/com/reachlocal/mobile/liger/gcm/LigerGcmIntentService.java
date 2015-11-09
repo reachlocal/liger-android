@@ -36,7 +36,7 @@ public class LigerGcmIntentService extends IntentService {
         if (LIGER.LOGGING) {
             Log.d(LIGER.TAG, "LigerGcmIntentService onHandleIntent");
         }
-        if (!extras.isEmpty()) {  // has effect of unparcelling Bundle
+        if (extras != null && !extras.isEmpty()) {  // has effect of unparcelling Bundle
             /*
              * Filter messages based on message type. Since it is likely that GCM
              * will be extended in the future with new message types, just ignore
