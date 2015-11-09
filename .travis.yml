@@ -29,6 +29,8 @@ android:
 # Explicitly disable build caching
 cache: false
 
+sudo: false
+
 # Tell commands to behave, add bintray key
 env:
   global:
