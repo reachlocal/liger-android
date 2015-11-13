@@ -24,7 +24,7 @@ dependencies {
     compile "com.google.android.gms:play-services-games:7.5.0"
     compile "com.google.android.gms:play-services-gcm:7.5.0"
 
-    compile files("./libs/cordova-3.6.4.jar")
+    compile files("./libs/cordova-3.7.2.jar")
 
     compile "org.apache.commons:commons-io:${rootProject.ext.commonsIoVersion}"
 

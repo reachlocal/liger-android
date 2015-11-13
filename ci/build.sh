@@ -1,3 +1,3 @@
 #/bin/bash -e
 
-./gradlew assembleRelease
+./gradlew assembleRelease --stacktrace
