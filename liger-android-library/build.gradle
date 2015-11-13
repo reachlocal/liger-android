@@ -21,7 +21,8 @@ def isReleaseBuild() {
 dependencies {
     compile "com.android.support:support-v4:${rootProject.ext.supportLibVersion}"
     compile "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
-    compile "com.google.android.gms:play-services:7.5.0"
+    compile "com.google.android.gms:play-services-games:7.5.0"
+    compile "com.google.android.gms:play-services-gcm:7.5.0"
 
     compile files("./libs/cordova-3.6.4.jar")
 
