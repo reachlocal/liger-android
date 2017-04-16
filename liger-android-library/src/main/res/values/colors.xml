@@ -8,7 +8,7 @@
     <color name="toolbar_glyph">#666262</color>
     <color name="toolbar_top">#f4f4f4</color>
     <color name="toolbar_bottom">#9e9e9e</color>
-
+    <color name="tab_bottom_border">#000</color>
     <color name="toolbar_top_pressed">#9e9e9e</color>
     <color name="toolbar_bottom_pressed">#565656</color>
 </resources>

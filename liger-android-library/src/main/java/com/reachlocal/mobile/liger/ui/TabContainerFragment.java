@@ -103,7 +103,13 @@ public class TabContainerFragment extends PageFragment implements PageLifecycleL
         mTabsHolder = new FrameLayout(inflater.getContext());
         if (mTabsHolder.getId() == -1)
             mTabsHolder.setId(ViewUtil.generateViewId());
-
+        
+        View border = new View(inflater.getContext());
+        if (border.getId() == -1)
+            border.setId(ViewUtil.generateViewId());
+        border.setBackgroundColor(getResources().getColor(R.color.tab_bottom_border));
+        
+        
         mTabsContent = new FrameLayout(inflater.getContext());
         if (mTabsContent.getId() == -1)
             mTabsContent.setId(ViewUtil.generateViewId());
@@ -123,9 +129,12 @@ public class TabContainerFragment extends PageFragment implements PageLifecycleL
         }
 
         RelativeLayout.LayoutParams tabsParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, dp);
+        RelativeLayout.LayoutParams borderParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, 1);
         RelativeLayout.LayoutParams containerParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.FILL_PARENT);
-        containerParams.addRule(RelativeLayout.BELOW, mTabsHolder.getId());
+        borderParams.addRule(RelativeLayout.BELOW, mTabsHolder.getId());
+        containerParams.addRule(RelativeLayout.BELOW, border.getId());
         ((RelativeLayout) mTabsContainer).addView(mTabsHolder, tabsParams);
+        ((RelativeLayout) mTabsContainer).addView(border, borderParams);
         ((RelativeLayout) mTabsContainer).addView(mTabsContent, containerParams);
 
         return mTabsContainer;
